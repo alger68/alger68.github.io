@@ -1,0 +1,3050 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自主學習工具集 - 增強版錯題本</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: #f0f0f0;
+        }
+        
+        .tool-card {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .tool-card:hover {
+            background: #f8f9ff;
+            transform: scale(1.02);
+        }
+        
+        .tool-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .tool-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .tool-desc {
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        .learning-area {
+            display: none;
+            padding: 20px;
+            background: white;
+        }
+        
+        .back-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #45b7aa;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .result-area {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            min-height: 100px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .timer {
+            font-size: 1.5em;
+            text-align: center;
+            color: #667eea;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.2em;
+            color: #4ecdc4;
+            font-weight: bold;
+        }
+        
+        /* 錯題本專用樣式 */
+        .error-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .error-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .subject-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .subject-math { background: #ff6b6b; }
+        .subject-english { background: #4ecdc4; }
+        .subject-physics { background: #667eea; }
+        .subject-chemistry { background: #feca57; }
+        .subject-other { background: #6c757d; }
+        
+        .error-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .review-schedule {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .review-item {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.85em;
+        }
+        
+        .review-pending { background: #fff3cd; color: #856404; }
+        .review-completed { background: #d4edda; color: #155724; }
+        .review-overdue { background: #f8d7da; color: #721c24; }
+        
+        .difficulty-stars {
+            color: #ffd700;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin: 15px 0;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 10px 10px 0 0;
+            background: #f8f9fa;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 5px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 自主學習工具集</h1>
+            <p>讓學習變得更有趣！</p>
+        </div>
+
+        <!-- 主選單 -->
+        <div id="mainMenu" class="tool-grid">
+            <div class="tool-card" onclick="showTool('vocabulary')">
+                <div class="tool-icon">📝</div>
+                <div class="tool-name">單字記憶</div>
+                <div class="tool-desc">背誦單字</div>
+            </div>
+            
+            <div class="tool-card" onclick="showTool('math')">
+                <div class="tool-icon">🔢</div>
+                <div class="tool-name">數學練習</div>
+                <div class="tool-desc">計算訓練</div>
+            </div>
+            
+            <div class="tool-card" onclick="showTool('timer')">
+                <div class="tool-icon">⏰</div>
+                <div class="tool-name">專注計時</div>
+                <div class="tool-desc">番茄鐘法</div>
+            </div>
+            
+            <div class="tool-card" onclick="showTool('notes')">
+                <div class="tool-icon">📋</div>
+                <div class="tool-name">筆記本</div>
+                <div class="tool-desc">記錄重點</div>
+            </div>
+            
+            <div class="tool-card" onclick="showTool('quiz')">
+                <div class="tool-icon">🎯</div>
+                <div class="tool-name">隨機問答</div>
+                <div class="tool-desc">自我測驗</div>
+            </div>
+            
+            <div class="tool-card" onclick="showTool('irregular')">
+                <div class="tool-icon">📖</div>
+                <div class="tool-name">不規則動詞</div>
+                <div class="tool-desc">三態練習</div>
+            </div>
+            
+            <div class="tool-card" onclick="showTool('errors')">
+                <div class="tool-icon">❌</div>
+                <div class="tool-name">錯題本</div>
+                <div class="tool-desc">弱點分析</div>
+            </div>
+            
+            <div class="tool-card" onclick="showTool('goals')">
+                <div class="tool-icon">🎯</div>
+                <div class="tool-name">學習目標</div>
+                <div class="tool-desc">進度追蹤</div>
+            </div>
+        </div>
+        
+        <!-- 單字記憶工具 -->
+        <div id="vocabulary" class="learning-area">
+            <button class="back-btn" onclick="showMain()">← 返回主選單</button>
+            <h2>📝 單字記憶</h2>
+            
+            <!-- 108課綱單字庫選擇 -->
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <h3>📚 108課綱官方單字庫</h3>
+                <div class="input-group">
+                    <label>選擇主題：</label>
+                    <select id="curriculumTheme" onchange="updateThemeInfo()">
+                        <option value="">-- 選擇主題 --</option>
+                        <option value="family">家庭與人際關係</option>
+                        <option value="school">學校生活</option>
+                        <option value="daily">日常活動</option>
+                        <option value="food">食物與飲食</option>
+                        <option value="body">身體與健康</option>
+                        <option value="clothes">衣著與購物</option>
+                        <option value="home">住家與環境</option>
+                        <option value="time">時間與日期</option>
+                        <option value="numbers">數字與計算</option>
+                        <option value="transport">交通與旅遊</option>
+                        <option value="sports">運動與休閒</option>
+                        <option value="jobs">職業與工作</option>
+                        <option value="weather">天氣與季節</option>
+                        <option value="animals">動物與自然</option>
+                        <option value="tech">科技與媒體</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>選擇年級：</label>
+                    <select id="gradeLevel">
+                        <option value="all">全部</option>
+                        <option value="7">七年級</option>
+                        <option value="8">八年級</option>
+                        <option value="9">九年級</option>
+                    </select>
+                </div>
+                
+                <div id="themeInfo" style="margin-top: 10px; padding: 10px; background: white; border-radius: 5px; display: none;">
+                    <p id="themeDescription"></p>
+                    <p>單字數量：<span id="themeWordCount">0</span> 個</p>
+                </div>
+                
+                <button class="btn" onclick="loadCurriculumWords()" style="background: #1976d2;">載入官方單字</button>
+                <button class="btn btn-success" onclick="showLearningPath()">智慧學習路徑</button>
+            </div>
+            
+            <!-- 學習進度視覺化 -->
+            <div id="learningProgress" style="display: none; margin: 15px 0;">
+                <h4>📊 學習進度</h4>
+                <div class="progress-bar" style="height: 30px; position: relative;">
+                    <div class="progress-fill" id="vocabularyProgress" style="width: 0%"></div>
+                    <span style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: #333; font-weight: bold;">
+                        <span id="learnedWords">0</span> / <span id="totalWords">0</span>
+                    </span>
+                </div>
+                <div style="margin-top: 10px; display: flex; justify-content: space-between; font-size: 0.9em;">
+                    <span>🆕 新學：<span id="newWordsCount">0</span></span>
+                    <span>📝 複習中：<span id="reviewingCount">0</span></span>
+                    <span>✅ 已掌握：<span id="masteredCount">0</span></span>
+                </div>
+            </div>
+            
+            <!-- 單字輸入區 -->
+            <div class="input-group">
+                <label>新增單字：</label>
+                <input type="text" id="newWord" placeholder="輸入英文單字">
+            </div>
+            
+            <div class="input-group">
+                <label>中文意思：</label>
+                <input type="text" id="wordMeaning" placeholder="輸入中文意思">
+            </div>
+            
+            <div class="input-group">
+                <label>例句（選填）：</label>
+                <input type="text" id="wordExample" placeholder="輸入例句">
+            </div>
+            
+            <button class="btn" onclick="addWord()">新增單字</button>
+            
+            <!-- 批量匯入區 -->
+            <div style="margin: 20px 0; padding: 15px; border: 2px dashed #ddd; border-radius: 10px;">
+                <h3>📥 批量匯入單字</h3>
+                <div class="input-group">
+                    <label>匯入格式：英文單字,中文意思[,例句]（每行一組）</label>
+                    <textarea id="importWords" rows="4" placeholder="例如：&#10;apple,蘋果&#10;book,書本,I love reading books.&#10;computer,電腦,I use a computer every day."></textarea>
+                </div>
+                <button class="btn" onclick="importWords()">匯入單字</button>
+                
+                <div class="input-group" style="margin-top: 15px;">
+                    <label>或上傳CSV檔案：</label>
+                    <input type="file" id="csvFile" accept=".csv,.txt" onchange="handleFileUpload(event)">
+                </div>
+            </div>
+            
+            <!-- 學習模式選擇 -->
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                <h4>🎯 學習模式</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn" onclick="startWordTest()">📝 單字測驗</button>
+                    <button class="btn" onclick="startExamplePractice()">💬 例句練習</button>
+                    <button class="btn" onclick="startSpellingTest()">✏️ 拼字測驗</button>
+                    <button class="btn" onclick="reviewWords()">🔄 智慧複習</button>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="showAllWords()" style="background: #28a745;">顯示所有單字</button>
+            <button class="btn" onclick="exportWords()" style="background: #6c757d;">匯出單字</button>
+            
+            <div class="result-area" id="wordResult">
+                <p>目前單字庫：<span id="wordCount">0</span> 個單字</p>
+                <div id="wordDisplay"></div>
+            </div>
+        </div>
+        
+        <!-- 數學練習工具 -->
+        <div id="math" class="learning-area">
+            <button class="back-btn" onclick="showMain()">← 返回主選單</button>
+            <h2>🔢 數學練習</h2>
+            
+            <div class="input-group">
+                <label>選擇難度：</label>
+                <select id="mathLevel">
+                    <option value="easy">簡單 (1-10)</option>
+                    <option value="medium">中等 (1-50)</option>
+                    <option value="hard">困難 (1-100)</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>運算類型：</label>
+                <select id="mathType">
+                    <option value="add">加法</option>
+                    <option value="sub">減法</option>
+                    <option value="mul">乘法</option>
+                    <option value="mix">混合</option>
+                </select>
+            </div>
+            
+            <button class="btn" onclick="startMathPractice()">開始練習</button>
+            
+            <div class="result-area" id="mathResult">
+                <div class="score">答對：<span id="correctCount">0</span> / <span id="totalCount">0</span></div>
+                <div id="mathQuestion"></div>
+                <input type="number" id="mathAnswer" placeholder="輸入答案" style="display:none;">
+                <button class="btn" id="submitMath" onclick="checkMathAnswer()" style="display:none;">提交答案</button>
+            </div>
+        </div>
+        
+        <!-- 專注計時工具 -->
+        <div id="timer" class="learning-area">
+            <button class="back-btn" onclick="showMain()">← 返回主選單</button>
+            <h2>⏰ 專注計時</h2>
+            
+            <div class="input-group">
+                <label>設定時間（分鐘）：</label>
+                <select id="timerMinutes">
+                    <option value="5">5分鐘</option>
+                    <option value="15">15分鐘</option>
+                    <option value="25" selected>25分鐘（番茄鐘）</option>
+                    <option value="30">30分鐘</option>
+                    <option value="60">60分鐘</option>
+                </select>
+            </div>
+            
+            <button class="btn" onclick="startTimer()">開始計時</button>
+            <button class="btn" onclick="pauseTimer()">暫停/繼續</button>
+            <button class="btn" onclick="resetTimer()">重設</button>
+            
+            <div class="result-area">
+                <div class="timer" id="timerDisplay">25:00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="timerProgress"></div>
+                </div>
+                <div id="timerStatus">準備開始專注學習！</div>
+            </div>
+        </div>
+        
+        <!-- 筆記本工具 -->
+        <div id="notes" class="learning-area">
+            <button class="back-btn" onclick="showMain()">← 返回主選單</button>
+            <h2>📋 筆記本</h2>
+            
+            <div class="input-group">
+                <label>筆記標題：</label>
+                <input type="text" id="noteTitle" placeholder="輸入筆記標題">
+            </div>
+            
+            <div class="input-group">
+                <label>筆記內容：</label>
+                <textarea id="noteContent" rows="6" placeholder="輸入筆記內容..."></textarea>
+            </div>
+            
+            <button class="btn" onclick="saveNote()">儲存筆記</button>
+            <button class="btn" onclick="showNotes()">顯示所有筆記</button>
+            <button class="btn" onclick="exportNotes()" style="background: #6c757d;">匯出筆記</button>
+            
+            <div class="result-area" id="notesResult">
+                <p>筆記會自動儲存在瀏覽器中</p>
+            </div>
+        </div>
+        
+        <!-- 隨機問答工具 -->
+        <div id="quiz" class="learning-area">
+            <button class="back-btn" onclick="showMain()">← 返回主選單</button>
+            <h2>🎯 隨機問答</h2>
+            
+            <div class="input-group">
+                <label>新增問題：</label>
+                <input type="text" id="newQuestion" placeholder="輸入問題">
+            </div>
+            
+            <div class="input-group">
+                <label>答案：</label>
+                <input type="text" id="questionAnswer" placeholder="輸入答案">
+            </div>
+            
+            <button class="btn" onclick="addQuestion()">新增問題</button>
+            <button class="btn" onclick="startQuiz()">開始問答</button>
+            <button class="btn" onclick="showAllQuestions()" style="background: #28a745;">顯示所有問題</button>
+            <button class="btn" onclick="exportQuestions()" style="background: #6c757d;">匯出題庫</button>
+            
+            <div class="result-area" id="quizResult">
+                <p>題庫：<span id="questionCount">0</span> 題</p>
+                <div id="quizDisplay"></div>
+            </div>
+        </div>
+        
+        <!-- 錯題本工具（增強版） -->
+        <div id="errors" class="learning-area">
+            <button class="back-btn" onclick="showMain()">← 返回主選單</button>
+            <h2>❌ 錯題本</h2>
+            
+            <!-- 統計區域 -->
+            <div class="error-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="errorTotal">0</div>
+                    <div class="stat-label">總錯題數</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="errorReviewed">0</div>
+                    <div class="stat-label">已複習</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="errorMastered">0</div>
+                    <div class="stat-label">已掌握</div>
+                </div>
+            </div>
+            
+            <!-- 標籤頁 -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchErrorTab('add')">新增錯題</div>
+                <div class="tab" onclick="switchErrorTab('review')">複習錯題</div>
+                <div class="tab" onclick="switchErrorTab('list')">錯題列表</div>
+                <div class="tab" onclick="switchErrorTab('analysis')">弱點分析</div>
+            </div>
+            
+            <!-- 新增錯題頁面 -->
+            <div id="errorAddTab" class="error-tab-content">
+                <div class="input-group">
+                    <label>科目：</label>
+                    <select id="errorSubject">
+                        <option value="math">數學</option>
+                        <option value="english">英語</option>
+                        <option value="physics">物理</option>
+                        <option value="chemistry">化學</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>章節/單元：</label>
+                    <input type="text" id="errorChapter" placeholder="例如：二次方程式">
+                </div>
+                
+                <div class="input-group">
+                    <label>題目：</label>
+                    <textarea id="errorQuestion" rows="3" placeholder="輸入題目內容"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>我的答案（錯誤）：</label>
+                    <input type="text" id="errorMyAnswer" placeholder="輸入錯誤答案">
+                </div>
+                
+                <div class="input-group">
+                    <label>正確答案：</label>
+                    <input type="text" id="errorCorrectAnswer" placeholder="輸入正確答案">
+                </div>
+                
+                <div class="input-group">
+                    <label>解題步驟：</label>
+                    <textarea id="errorSolution" rows="3" placeholder="詳細解題過程"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>錯誤原因：</label>
+                    <textarea id="errorReason" rows="2" placeholder="分析錯誤原因"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>難度：</label>
+                    <select id="errorDifficulty">
+                        <option value="1">⭐ 簡單</option>
+                        <option value="2">⭐⭐ 中等</option>
+                        <option value="3">⭐⭐⭐ 困難</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="addError()">儲存錯題</button>
+                <button class="btn btn-secondary" onclick="clearErrorForm()">清除表單</button>
+                <button class="btn" onclick="importFromQuestions()" style="background: #17a2b8;">從題庫匯入</button>
+            </div>
+            
+            <!-- 複習錯題頁面 -->
+            <div id="errorReviewTab" class="error-tab-content" style="display: none;">
+                <div class="filter-controls">
+                    <button class="filter-btn active" onclick="filterReview('all')">全部</button>
+                    <button class="filter-btn" onclick="filterReview('today')">今日複習</button>
+                    <button class="filter-btn" onclick="filterReview('overdue')">逾期未複習</button>
+                    <button class="filter-btn" onclick="filterReview('subject')">按科目</button>
+                </div>
+                
+                <div id="reviewContent">
+                    <p style="text-align: center; color: #666; margin: 20px 0;">選擇篩選條件開始複習</p>
+                </div>
+            </div>
+            
+            <!-- 錯題列表頁面 -->
+            <div id="errorListTab" class="error-tab-content" style="display: none;">
+                <div class="filter-controls">
+                    <button class="filter-btn active" onclick="filterErrors('all')">全部</button>
+                    <button class="filter-btn" onclick="filterErrors('math')">數學</button>
+                    <button class="filter-btn" onclick="filterErrors('english')">英語</button>
+                    <button class="filter-btn" onclick="filterErrors('physics')">物理</button>
+                    <button class="filter-btn" onclick="filterErrors('chemistry')">化學</button>
+                    <button class="filter-btn" onclick="filterErrors('other')">其他</button>
+                </div>
+                
+                <button class="btn btn-success" onclick="exportErrors()">匯出錯題</button>
+                <button class="btn btn-danger" onclick="clearAllErrors()">清空所有</button>
+                
+                <div id="errorListContent">
+                    <!-- 錯題列表會動態生成在這裡 -->
+                </div>
+            </div>
+            
+            <!-- 弱點分析頁面 -->
+            <div id="errorAnalysisTab" class="error-tab-content" style="display: none;">
+                <div id="analysisContent">
+                    <!-- 分析內容會動態生成在這裡 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 學習目標工具 -->
+        <div id="goals" class="learning-area">
+            <button class="back-btn" onclick="showMain()">← 返回主選單</button>
+            <h2>🎯 學習目標</h2>
+            
+            <div class="input-group">
+                <label>新增目標：</label>
+                <input type="text" id="newGoal" placeholder="輸入學習目標">
+            </div>
+            
+            <button class="btn" onclick="addGoal()">新增目標</button>
+            <button class="btn" onclick="showGoals()">顯示目標列表</button>
+            
+            <div class="result-area" id="goalsResult">
+                <p>設定目標，追蹤學習進度！</p>
+            </div>
+        </div>
+        
+        <!-- 不規則動詞工具 -->
+        <div id="irregular" class="learning-area">
+            <button class="back-btn" onclick="showMain()">← 返回主選單</button>
+            <h2>📖 不規則動詞三態練習</h2>
+            
+            <!-- 設定區 -->
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <div class="input-group">
+                    <label>選擇難度：</label>
+                    <select id="irregularLevel">
+                        <option value="basic">基礎11個（最重要）</option>
+                        <option value="intermediate">進階39個</option>
+                        <option value="all">全部50個</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>練習模式：</label>
+                    <select id="practiceMode">
+                        <option value="past">原形→過去式</option>
+                        <option value="pp">原形→過去分詞</option>
+                        <option value="base">過去式→原形</option>
+                        <option value="mixed">混合練習</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>音效設定：</label>
+                    <label style="display: flex; align-items: center; margin-top: 5px;">
+                        <input type="checkbox" id="soundEnabled" checked style="margin-right: 8px;">
+                        開啟音效回饋
+                    </label>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="startIrregularTest()">開始練習</button>
+            <button class="btn" onclick="showVerbList()" style="background: #28a745;">動詞清單</button>
+            
+            <div class="result-area" id="irregularResult">
+                <div class="score">
+                    答對：<span id="irregularCorrect">0</span> / <span id="irregularTotal">0</span>
+                    <span style="margin-left: 15px;">正確率：<span id="irregularRate">0%</span></span>
+                </div>
+                <div id="irregularDisplay">
+                    <p>🎯 根據教育部研究，這50個不規則動詞是國中最重要的！</p>
+                    <p>💡 建議從「基礎11個」開始，它們占英文使用量的50%！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全域變數
+        let vocabulary = JSON.parse(localStorage.getItem('vocabulary') || '[]');
+        let questions = JSON.parse(localStorage.getItem('questions') || '[]');
+        let goals = JSON.parse(localStorage.getItem('goals') || '[]');
+        let notes = JSON.parse(localStorage.getItem('notes') || '[]');
+        let errors = JSON.parse(localStorage.getItem('errors') || '[]'); // 錯題數據
+        let timerInterval;
+        let timerSeconds = 0;
+        let timerRunning = false;
+        let mathScore = {correct: 0, total: 0};
+        let currentMathQuestion = {};
+        let currentWordTest = {};
+        let currentQuiz = {};
+        let irregularScore = {correct: 0, total: 0};
+        let currentIrregularTest = {};
+        
+        // 108課綱單字庫
+        const curriculum108 = {
+            family: {
+                name: "家庭與人際關係",
+                description: "包含家庭成員、親屬關係、朋友等相關詞彙",
+                words: [
+                    {word: "family", meaning: "家庭", example: "My family eats dinner together every night.", grade: 7},
+                    {word: "father", meaning: "父親", example: "My father drives me to school every morning.", grade: 7},
+                    {word: "mother", meaning: "母親", example: "My mother helps me with my homework.", grade: 7},
+                    {word: "brother", meaning: "兄弟", example: "My brother plays basketball with his friends.", grade: 7},
+                    {word: "sister", meaning: "姊妹", example: "My sister and I share the same room.", grade: 7},
+                    {word: "son", meaning: "兒子", example: "Their son is very smart.", grade: 7},
+                    {word: "daughter", meaning: "女兒", example: "My daughter loves to read books.", grade: 7},
+                    {word: "grandfather", meaning: "祖父", example: "My grandfather tells interesting stories.", grade: 7},
+                    {word: "grandmother", meaning: "祖母", example: "My grandmother makes delicious cookies.", grade: 7},
+                    {word: "uncle", meaning: "叔叔/舅舅", example: "My uncle lives in America.", grade: 7},
+                    {word: "aunt", meaning: "阿姨/姑姑", example: "My aunt is a teacher.", grade: 7},
+                    {word: "cousin", meaning: "表/堂兄弟姊妹", example: "I play with my cousins on weekends.", grade: 7},
+                    {word: "friend", meaning: "朋友", example: "I talk to my best friend every day.", grade: 7},
+                    {word: "parents", meaning: "父母", example: "My parents are very kind.", grade: 7},
+                    {word: "husband", meaning: "丈夫", example: "Her husband is a doctor.", grade: 8},
+                    {word: "wife", meaning: "妻子", example: "His wife works at a bank.", grade: 8}
+                ]
+            },
+            school: {
+                name: "學校生活",
+                description: "學校環境、科目、學習活動相關詞彙",
+                words: [
+                    {word: "school", meaning: "學校", example: "I go to school every day.", grade: 7},
+                    {word: "teacher", meaning: "老師", example: "Our teacher is very nice.", grade: 7},
+                    {word: "student", meaning: "學生", example: "There are forty students in my class.", grade: 7},
+                    {word: "class", meaning: "班級；課程", example: "My favorite class is English.", grade: 7},
+                    {word: "classroom", meaning: "教室", example: "We study in the classroom.", grade: 7},
+                    {word: "homework", meaning: "家庭作業", example: "I do my homework after dinner.", grade: 7},
+                    {word: "book", meaning: "書", example: "I have many books at home.", grade: 7},
+                    {word: "pen", meaning: "筆", example: "I write with a blue pen.", grade: 7},
+                    {word: "pencil", meaning: "鉛筆", example: "I use a pencil for math.", grade: 7},
+                    {word: "paper", meaning: "紙", example: "Please take out a piece of paper.", grade: 7},
+                    {word: "desk", meaning: "書桌", example: "My desk is next to the window.", grade: 7},
+                    {word: "test", meaning: "測驗", example: "We have a test tomorrow.", grade: 7},
+                    {word: "exam", meaning: "考試", example: "The final exam is next week.", grade: 8},
+                    {word: "library", meaning: "圖書館", example: "I study in the library after school.", grade: 7},
+                    {word: "computer", meaning: "電腦", example: "We use computers in our IT class.", grade: 7}
+                ]
+            },
+            daily: {
+                name: "日常活動",
+                description: "日常生活動作、習慣相關詞彙",
+                words: [
+                    {word: "wake up", meaning: "醒來", example: "I wake up at seven o'clock every morning.", grade: 7},
+                    {word: "get up", meaning: "起床", example: "I get up early on weekdays.", grade: 7},
+                    {word: "eat", meaning: "吃", example: "We eat breakfast at home together.", grade: 7},
+                    {word: "drink", meaning: "喝", example: "I drink milk every morning.", grade: 7},
+                    {word: "sleep", meaning: "睡覺", example: "I sleep for eight hours every night.", grade: 7},
+                    {word: "study", meaning: "學習", example: "I study English after school.", grade: 7},
+                    {word: "play", meaning: "玩；運動", example: "We play basketball in the gym after school.", grade: 7},
+                    {word: "watch", meaning: "觀看", example: "I watch TV after dinner.", grade: 7},
+                    {word: "listen", meaning: "聽", example: "I listen to music while studying.", grade: 7},
+                    {word: "read", meaning: "閱讀", example: "I read books before bed.", grade: 7},
+                    {word: "write", meaning: "寫", example: "I write in my diary every day.", grade: 7},
+                    {word: "go", meaning: "去", example: "I go to school by bus.", grade: 7},
+                    {word: "come", meaning: "來", example: "Please come to my house.", grade: 7},
+                    {word: "walk", meaning: "走路", example: "I walk to school every morning.", grade: 7},
+                    {word: "run", meaning: "跑", example: "I run in the park every weekend.", grade: 7}
+                ]
+            },
+            food: {
+                name: "食物與飲食",
+                description: "各類食物、飲料、用餐相關詞彙",
+                words: [
+                    {word: "rice", meaning: "米飯", example: "I eat rice for lunch.", grade: 7},
+                    {word: "bread", meaning: "麵包", example: "I have bread for breakfast.", grade: 7},
+                    {word: "apple", meaning: "蘋果", example: "An apple a day keeps the doctor away.", grade: 7},
+                    {word: "banana", meaning: "香蕉", example: "Bananas are yellow and sweet.", grade: 7},
+                    {word: "water", meaning: "水", example: "I drink water when I'm thirsty.", grade: 7},
+                    {word: "milk", meaning: "牛奶", example: "I drink milk every morning.", grade: 7},
+                    {word: "breakfast", meaning: "早餐", example: "Breakfast is the most important meal.", grade: 7},
+                    {word: "lunch", meaning: "午餐", example: "I have lunch at school.", grade: 7},
+                    {word: "dinner", meaning: "晚餐", example: "We have dinner at 7 PM.", grade: 7},
+                    {word: "chicken", meaning: "雞肉", example: "I like fried chicken.", grade: 7},
+                    {word: "fish", meaning: "魚", example: "Fish is healthy food.", grade: 7},
+                    {word: "vegetable", meaning: "蔬菜", example: "Vegetables are good for health.", grade: 8},
+                    {word: "fruit", meaning: "水果", example: "I eat fruit every day.", grade: 8},
+                    {word: "juice", meaning: "果汁", example: "Orange juice is my favorite drink.", grade: 7},
+                    {word: "tea", meaning: "茶", example: "My mother drinks tea every afternoon.", grade: 7}
+                ]
+            },
+            time: {
+                name: "時間與日期",
+                description: "時間、日期、星期相關詞彙",
+                words: [
+                    {word: "morning", meaning: "早上", example: "I have breakfast in the morning.", grade: 7},
+                    {word: "afternoon", meaning: "下午", example: "I play sports in the afternoon.", grade: 7},
+                    {word: "evening", meaning: "晚上", example: "I do homework in the evening.", grade: 7},
+                    {word: "night", meaning: "夜晚", example: "I sleep at night.", grade: 7},
+                    {word: "today", meaning: "今天", example: "Today is a sunny day.", grade: 7},
+                    {word: "yesterday", meaning: "昨天", example: "I went to the park yesterday.", grade: 7},
+                    {word: "tomorrow", meaning: "明天", example: "I will visit my friend tomorrow.", grade: 7},
+                    {word: "Monday", meaning: "星期一", example: "I go to school on Monday.", grade: 7},
+                    {word: "Tuesday", meaning: "星期二", example: "We have PE on Tuesday.", grade: 7},
+                    {word: "Wednesday", meaning: "星期三", example: "Wednesday is the middle of the week.", grade: 7},
+                    {word: "Thursday", meaning: "星期四", example: "I have music class on Thursday.", grade: 7},
+                    {word: "Friday", meaning: "星期五", example: "Friday is the last school day.", grade: 7},
+                    {word: "Saturday", meaning: "星期六", example: "I sleep late on Saturday.", grade: 7},
+                    {word: "Sunday", meaning: "星期日", example: "Sunday is a holiday.", grade: 7},
+                    {word: "week", meaning: "星期", example: "There are seven days in a week.", grade: 7}
+                ]
+            },
+            body: {
+                name: "身體與健康",
+                description: "身體部位、健康狀況、醫療相關詞彙",
+                words: [
+                    {word: "head", meaning: "頭", example: "My head hurts.", grade: 7},
+                    {word: "eye", meaning: "眼睛", example: "She has beautiful eyes.", grade: 7},
+                    {word: "ear", meaning: "耳朵", example: "I can't hear with my left ear.", grade: 7},
+                    {word: "nose", meaning: "鼻子", example: "My nose is running.", grade: 7},
+                    {word: "mouth", meaning: "嘴巴", example: "Open your mouth, please.", grade: 7},
+                    {word: "hand", meaning: "手", example: "Wash your hands before eating.", grade: 7},
+                    {word: "foot", meaning: "腳", example: "My foot is sore.", grade: 7},
+                    {word: "healthy", meaning: "健康的", example: "I want to be healthy.", grade: 7},
+                    {word: "sick", meaning: "生病的", example: "I feel sick today.", grade: 7},
+                    {word: "doctor", meaning: "醫生", example: "The doctor is very kind.", grade: 7},
+                    {word: "hospital", meaning: "醫院", example: "She works at the hospital.", grade: 7},
+                    {word: "medicine", meaning: "藥", example: "Take your medicine after meals.", grade: 8}
+                ]
+            },
+            clothes: {
+                name: "衣著與購物",
+                description: "服裝、配件、購物相關詞彙",
+                words: [
+                    {word: "shirt", meaning: "襯衫", example: "I wear a white shirt to school.", grade: 7},
+                    {word: "pants", meaning: "長褲", example: "These pants are too long.", grade: 7},
+                    {word: "shoes", meaning: "鞋子", example: "I need new shoes.", grade: 7},
+                    {word: "dress", meaning: "洋裝", example: "She looks pretty in that dress.", grade: 7},
+                    {word: "jacket", meaning: "夾克", example: "It's cold, wear your jacket.", grade: 7},
+                    {word: "buy", meaning: "買", example: "I want to buy a new book.", grade: 7},
+                    {word: "sell", meaning: "賣", example: "They sell fresh fruit here.", grade: 7},
+                    {word: "price", meaning: "價格", example: "What's the price of this shirt?", grade: 8},
+                    {word: "cheap", meaning: "便宜的", example: "This store has cheap clothes.", grade: 7},
+                    {word: "expensive", meaning: "昂貴的", example: "That car is too expensive.", grade: 8}
+                ]
+            },
+            home: {
+                name: "住家與環境",
+                description: "家庭環境、房間、家具相關詞彙",
+                words: [
+                    {word: "home", meaning: "家", example: "I do my homework at home.", grade: 7},
+                    {word: "house", meaning: "房子", example: "We live in a small house.", grade: 7},
+                    {word: "room", meaning: "房間", example: "My room is upstairs.", grade: 7},
+                    {word: "kitchen", meaning: "廚房", example: "Mom is cooking in the kitchen.", grade: 7},
+                    {word: "bathroom", meaning: "浴室", example: "The bathroom is clean.", grade: 7},
+                    {word: "bedroom", meaning: "臥室", example: "I sleep in my bedroom.", grade: 7},
+                    {word: "living room", meaning: "客廳", example: "We watch TV in the living room.", grade: 7},
+                    {word: "door", meaning: "門", example: "Please close the door.", grade: 7},
+                    {word: "window", meaning: "窗戶", example: "Open the window, please.", grade: 7},
+                    {word: "table", meaning: "桌子", example: "Put the book on the table.", grade: 7},
+                    {word: "chair", meaning: "椅子", example: "Sit on the chair.", grade: 7},
+                    {word: "bed", meaning: "床", example: "I make my bed every morning.", grade: 7}
+                ]
+            },
+            numbers: {
+                name: "數字與計算",
+                description: "數字、數學運算相關詞彙",
+                words: [
+                    {word: "zero", meaning: "零", example: "Zero plus one equals one.", grade: 7},
+                    {word: "first", meaning: "第一", example: "I'm first in line.", grade: 7},
+                    {word: "second", meaning: "第二", example: "This is my second try.", grade: 7},
+                    {word: "third", meaning: "第三", example: "He came in third place.", grade: 7},
+                    {word: "add", meaning: "加", example: "Add these two numbers.", grade: 7},
+                    {word: "minus", meaning: "減", example: "Ten minus three equals seven.", grade: 7},
+                    {word: "multiply", meaning: "乘", example: "Multiply five by two.", grade: 8},
+                    {word: "divide", meaning: "除", example: "Divide ten by two.", grade: 8},
+                    {word: "equal", meaning: "等於", example: "Two plus two equals four.", grade: 7},
+                    {word: "count", meaning: "數", example: "Can you count to 100?", grade: 7}
+                ]
+            },
+            transport: {
+                name: "交通與旅遊",
+                description: "交通工具、旅行相關詞彙",
+                words: [
+                    {word: "car", meaning: "汽車", example: "My father drives a car to work.", grade: 7},
+                    {word: "bus", meaning: "公車", example: "I take the bus to school.", grade: 7},
+                    {word: "train", meaning: "火車", example: "The train is fast.", grade: 7},
+                    {word: "bike", meaning: "腳踏車", example: "I ride my bike to the park.", grade: 7},
+                    {word: "airplane", meaning: "飛機", example: "We travel by airplane.", grade: 7},
+                    {word: "walk", meaning: "走路", example: "I walk to school every morning.", grade: 7},
+                    {word: "drive", meaning: "開車", example: "Can you drive a car?", grade: 8},
+                    {word: "ride", meaning: "騎；搭乘", example: "I ride the bus every day.", grade: 7},
+                    {word: "trip", meaning: "旅行", example: "We had a great trip.", grade: 8},
+                    {word: "travel", meaning: "旅遊", example: "I love to travel.", grade: 8}
+                ]
+            },
+            sports: {
+                name: "運動與休閒",
+                description: "運動、休閒活動相關詞彙",
+                words: [
+                    {word: "basketball", meaning: "籃球", example: "I play basketball after school.", grade: 7},
+                    {word: "baseball", meaning: "棒球", example: "Baseball is popular in Taiwan.", grade: 7},
+                    {word: "soccer", meaning: "足球", example: "Let's play soccer!", grade: 7},
+                    {word: "swim", meaning: "游泳", example: "I can swim very fast.", grade: 7},
+                    {word: "run", meaning: "跑", example: "I run every morning.", grade: 7},
+                    {word: "jump", meaning: "跳", example: "Can you jump high?", grade: 7},
+                    {word: "game", meaning: "遊戲；比賽", example: "We won the game.", grade: 7},
+                    {word: "sport", meaning: "運動", example: "What's your favorite sport?", grade: 7},
+                    {word: "music", meaning: "音樂", example: "I listen to music every day.", grade: 7},
+                    {word: "movie", meaning: "電影", example: "Let's watch a movie.", grade: 7}
+                ]
+            },
+            jobs: {
+                name: "職業與工作",
+                description: "各種職業、工作相關詞彙",
+                words: [
+                    {word: "work", meaning: "工作", example: "I work hard every day.", grade: 7},
+                    {word: "job", meaning: "工作；職業", example: "She has a good job.", grade: 8},
+                    {word: "teacher", meaning: "老師", example: "My teacher is very nice.", grade: 7},
+                    {word: "doctor", meaning: "醫生", example: "The doctor helps sick people.", grade: 7},
+                    {word: "nurse", meaning: "護士", example: "The nurse takes care of patients.", grade: 8},
+                    {word: "police", meaning: "警察", example: "The police keep us safe.", grade: 7},
+                    {word: "driver", meaning: "司機", example: "The bus driver is friendly.", grade: 8},
+                    {word: "cook", meaning: "廚師；煮", example: "The cook makes delicious food.", grade: 7},
+                    {word: "office", meaning: "辦公室", example: "Dad works in an office.", grade: 8},
+                    {word: "company", meaning: "公司", example: "She works for a big company.", grade: 8}
+                ]
+            },
+            weather: {
+                name: "天氣與季節",
+                description: "天氣狀況、季節相關詞彙",
+                words: [
+                    {word: "sunny", meaning: "晴朗的", example: "It is sunny today.", grade: 7},
+                    {word: "rainy", meaning: "下雨的", example: "The weather is rainy.", grade: 7},
+                    {word: "cloudy", meaning: "多雲的", example: "It's cloudy this morning.", grade: 7},
+                    {word: "hot", meaning: "熱的", example: "Summer is very hot.", grade: 7},
+                    {word: "cold", meaning: "冷的", example: "I feel cold in winter.", grade: 7},
+                    {word: "warm", meaning: "溫暖的", example: "Spring is warm.", grade: 7},
+                    {word: "cool", meaning: "涼爽的", example: "Autumn is cool.", grade: 7},
+                    {word: "spring", meaning: "春天", example: "Flowers bloom in spring.", grade: 7},
+                    {word: "summer", meaning: "夏天", example: "We swim in summer.", grade: 7},
+                    {word: "autumn", meaning: "秋天", example: "Leaves fall in autumn.", grade: 7},
+                    {word: "winter", meaning: "冬天", example: "It's cold in winter.", grade: 7}
+                ]
+            },
+            animals: {
+                name: "動物與自然",
+                description: "動物、植物、自然環境相關詞彙",
+                words: [
+                    {word: "dog", meaning: "狗", example: "The dog is running fast.", grade: 7},
+                    {word: "cat", meaning: "貓", example: "My cat is sleeping.", grade: 7},
+                    {word: "bird", meaning: "鳥", example: "Birds can fly.", grade: 7},
+                    {word: "fish", meaning: "魚", example: "Fish live in water.", grade: 7},
+                    {word: "tree", meaning: "樹", example: "The tree is very tall.", grade: 7},
+                    {word: "flower", meaning: "花", example: "The flowers are beautiful.", grade: 7},
+                    {word: "animal", meaning: "動物", example: "I love animals.", grade: 7},
+                    {word: "pet", meaning: "寵物", example: "Do you have a pet?", grade: 7},
+                    {word: "zoo", meaning: "動物園", example: "Let's go to the zoo.", grade: 7},
+                    {word: "park", meaning: "公園", example: "Children play in the park.", grade: 7}
+                ]
+            },
+            tech: {
+                name: "科技與媒體",
+                description: "科技產品、網路、媒體相關詞彙",
+                words: [
+                    {word: "computer", meaning: "電腦", example: "I use a computer for homework.", grade: 7},
+                    {word: "phone", meaning: "電話", example: "My phone is ringing.", grade: 7},
+                    {word: "internet", meaning: "網路", example: "I search on the internet.", grade: 8},
+                    {word: "email", meaning: "電子郵件", example: "Send me an email.", grade: 8},
+                    {word: "website", meaning: "網站", example: "This website is useful.", grade: 8},
+                    {word: "game", meaning: "遊戲", example: "I play games on my phone.", grade: 7},
+                    {word: "video", meaning: "影片", example: "Watch this video.", grade: 8},
+                    {word: "TV", meaning: "電視", example: "I watch TV after dinner.", grade: 7},
+                    {word: "news", meaning: "新聞", example: "I read the news every day.", grade: 8},
+                    {word: "message", meaning: "訊息", example: "I got your message.", grade: 8}
+                ]
+            }
+        };
+
+        // 不規則動詞清單（根據教育部研究報告）
+        const irregularVerbs = {
+            // 最高優先級11個動詞（占總使用量50%）
+            basic: [
+                {base: 'be', past: 'was/were', pp: 'been', meaning: '是'},
+                {base: 'have', past: 'had', pp: 'had', meaning: '有'},
+                {base: 'do', past: 'did', pp: 'done', meaning: '做'},
+                {base: 'say', past: 'said', pp: 'said', meaning: '說'},
+                {base: 'go', past: 'went', pp: 'gone', meaning: '去'},
+                {base: 'get', past: 'got', pp: 'got', meaning: '得到'},
+                {base: 'make', past: 'made', pp: 'made', meaning: '製作'},
+                {base: 'know', past: 'knew', pp: 'known', meaning: '知道'},
+                {base: 'think', past: 'thought', pp: 'thought', meaning: '想'},
+                {base: 'take', past: 'took', pp: 'taken', meaning: '拿'},
+                {base: 'see', past: 'saw', pp: 'seen', meaning: '看見'}
+            ],
+            
+            // 次要39個動詞
+            intermediate: [
+                {base: 'come', past: 'came', pp: 'come', meaning: '來'},
+                {base: 'give', past: 'gave', pp: 'given', meaning: '給'},
+                {base: 'find', past: 'found', pp: 'found', meaning: '找到'},
+                {base: 'tell', past: 'told', pp: 'told', meaning: '告訴'},
+                {base: 'become', past: 'became', pp: 'become', meaning: '變成'},
+                {base: 'leave', past: 'left', pp: 'left', meaning: '離開'},
+                {base: 'feel', past: 'felt', pp: 'felt', meaning: '感覺'},
+                {base: 'bring', past: 'brought', pp: 'brought', meaning: '帶來'},
+                {base: 'begin', past: 'began', pp: 'begun', meaning: '開始'},
+                {base: 'keep', past: 'kept', pp: 'kept', meaning: '保持'},
+                {base: 'hold', past: 'held', pp: 'held', meaning: '拿著'},
+                {base: 'write', past: 'wrote', pp: 'written', meaning: '寫'},
+                {base: 'stand', past: 'stood', pp: 'stood', meaning: '站'},
+                {base: 'hear', past: 'heard', pp: 'heard', meaning: '聽見'},
+                {base: 'let', past: 'let', pp: 'let', meaning: '讓'},
+                {base: 'mean', past: 'meant', pp: 'meant', meaning: '意思是'},
+                {base: 'set', past: 'set', pp: 'set', meaning: '設定'},
+                {base: 'meet', past: 'met', pp: 'met', meaning: '遇見'},
+                {base: 'run', past: 'ran', pp: 'run', meaning: '跑'},
+                {base: 'pay', past: 'paid', pp: 'paid', meaning: '付錢'},
+                {base: 'sit', past: 'sat', pp: 'sat', meaning: '坐'},
+                {base: 'speak', past: 'spoke', pp: 'spoken', meaning: '說話'},
+                {base: 'lie', past: 'lay', pp: 'lain', meaning: '躺'},
+                {base: 'lead', past: 'led', pp: 'led', meaning: '領導'},
+                {base: 'read', past: 'read', pp: 'read', meaning: '讀'},
+                {base: 'grow', past: 'grew', pp: 'grown', meaning: '長大'},
+                {base: 'lose', past: 'lost', pp: 'lost', meaning: '失去'},
+                {base: 'fall', past: 'fell', pp: 'fallen', meaning: '掉落'},
+                {base: 'send', past: 'sent', pp: 'sent', meaning: '送'},
+                {base: 'build', past: 'built', pp: 'built', meaning: '建造'},
+                {base: 'understand', past: 'understood', pp: 'understood', meaning: '理解'},
+                {base: 'draw', past: 'drew', pp: 'drawn', meaning: '畫'},
+                {base: 'break', past: 'broke', pp: 'broken', meaning: '打破'},
+                {base: 'spend', past: 'spent', pp: 'spent', meaning: '花費'},
+                {base: 'cut', past: 'cut', pp: 'cut', meaning: '切'},
+                {base: 'rise', past: 'rose', pp: 'risen', meaning: '上升'},
+                {base: 'drive', past: 'drove', pp: 'driven', meaning: '開車'},
+                {base: 'buy', past: 'bought', pp: 'bought', meaning: '買'},
+                {base: 'wear', past: 'wore', pp: 'worn', meaning: '穿'}
+            ]
+        };
+
+        // 新增的缺失函數
+        function updateThemeInfo() {
+            const themeSelect = document.getElementById('curriculumTheme');
+            const themeInfo = document.getElementById('themeInfo');
+            const themeDesc = document.getElementById('themeDescription');
+            const themeWordCount = document.getElementById('themeWordCount');
+            
+            const selectedTheme = themeSelect.value;
+            
+            if (selectedTheme && curriculum108[selectedTheme]) {
+                const theme = curriculum108[selectedTheme];
+                const gradeLevel = document.getElementById('gradeLevel').value;
+                
+                let filteredWords = theme.words;
+                if (gradeLevel !== 'all') {
+                    filteredWords = theme.words.filter(word => word.grade === parseInt(gradeLevel));
+                }
+                
+                themeDesc.textContent = theme.description;
+                themeWordCount.textContent = filteredWords.length;
+                themeInfo.style.display = 'block';
+            } else {
+                themeInfo.style.display = 'none';
+            }
+        }
+
+        function loadCurriculumWords() {
+            const themeSelect = document.getElementById('curriculumTheme');
+            const gradeLevel = document.getElementById('gradeLevel').value;
+            const selectedTheme = themeSelect.value;
+            
+            if (!selectedTheme) {
+                alert('請先選擇主題！');
+                return;
+            }
+            
+            const theme = curriculum108[selectedTheme];
+            let wordsToLoad = theme.words;
+            
+            if (gradeLevel !== 'all') {
+                wordsToLoad = theme.words.filter(word => word.grade === parseInt(gradeLevel));
+            }
+            
+            let addedCount = 0;
+            wordsToLoad.forEach(wordData => {
+                // 檢查是否已存在
+                const exists = vocabulary.some(existing => existing.word.toLowerCase() === wordData.word.toLowerCase());
+                if (!exists) {
+                    vocabulary.push({
+                        word: wordData.word,
+                        meaning: wordData.meaning,
+                        example: wordData.example || '',
+                        theme: selectedTheme,
+                        grade: wordData.grade,
+                        learned: false,
+                        mastery: 0,
+                        addedDate: new Date().toISOString(),
+                        reviewCount: 0,
+                        nextReviewDate: getNextReviewDate(0)
+                    });
+                    addedCount++;
+                }
+            });
+            
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            updateWordCount();
+            updateLearningProgress();
+            
+            alert(`成功載入 ${addedCount} 個新單字（跳過 ${wordsToLoad.length - addedCount} 個重複單字）！`);
+        }
+
+        function showLearningPath() {
+            const learningPathHTML = `
+                <div style="background: #e8f5e8; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                    <h3>🎯 智慧學習路徑建議</h3>
+                    <ol style="padding-left: 20px; margin: 10px 0;">
+                        <li><strong>第一階段：</strong>基礎詞彙（家庭、學校、日常活動）</li>
+                        <li><strong>第二階段：</strong>實用詞彙（食物、時間、身體）</li>
+                        <li><strong>第三階段：</strong>擴展詞彙（運動、職業、科技）</li>
+                        <li><strong>第四階段：</strong>進階詞彙（天氣、動物、交通）</li>
+                    </ol>
+                    <p style="color: #666; font-size: 0.9em;">💡 建議每天學習10-15個新單字，並定期複習舊單字！</p>
+                </div>
+            `;
+            
+            const existingPath = document.querySelector('.learning-path');
+            if (existingPath) {
+                existingPath.remove();
+            }
+            
+            const pathDiv = document.createElement('div');
+            pathDiv.className = 'learning-path';
+            pathDiv.innerHTML = learningPathHTML;
+            
+            const themeSection = document.querySelector('#vocabulary .input-group').parentNode;
+            themeSection.appendChild(pathDiv);
+        }
+
+        function updateWordCount() {
+            document.getElementById('wordCount').textContent = vocabulary.length;
+        }
+
+        function updateLearningProgress() {
+            const totalWords = vocabulary.length;
+            const learnedWords = vocabulary.filter(word => word.mastery >= 60).length;
+            const newWords = vocabulary.filter(word => word.mastery === 0).length;
+            const reviewingWords = vocabulary.filter(word => word.mastery > 0 && word.mastery < 80).length;
+            const masteredWords = vocabulary.filter(word => word.mastery >= 80).length;
+            
+            if (totalWords > 0) {
+                const progressElement = document.getElementById('learningProgress');
+                if (progressElement) {
+                    progressElement.style.display = 'block';
+                    
+                    const progressPercent = Math.round((learnedWords / totalWords) * 100);
+                    document.getElementById('vocabularyProgress').style.width = progressPercent + '%';
+                    document.getElementById('learnedWords').textContent = learnedWords;
+                    document.getElementById('totalWords').textContent = totalWords;
+                    document.getElementById('newWordsCount').textContent = newWords;
+                    document.getElementById('reviewingCount').textContent = reviewingWords;
+                    document.getElementById('masteredCount').textContent = masteredWords;
+                }
+            }
+        }
+
+        function startExamplePractice() {
+            const wordsWithExamples = vocabulary.filter(word => word.example);
+            
+            if (wordsWithExamples.length === 0) {
+                alert('沒有包含例句的單字！請先添加一些例句。');
+                return;
+            }
+            
+            const randomWord = wordsWithExamples[Math.floor(Math.random() * wordsWithExamples.length)];
+            currentWordTest = randomWord;
+            
+            // 將例句中的單字用空格代替
+            const exampleWithBlank = randomWord.example.replace(new RegExp(randomWord.word, 'gi'), '____');
+            
+            document.getElementById('wordDisplay').innerHTML = `
+                <h3>請填入正確的單字：</h3>
+                <p style="font-size: 1.2em; color: #667eea; margin: 15px 0;">${exampleWithBlank}</p>
+                <p style="color: #666;">提示：${randomWord.meaning}</p>
+                <input type="text" id="exampleAnswer" placeholder="輸入英文單字">
+                <button class="btn" onclick="checkExampleAnswer()">檢查答案</button>
+            `;
+            
+            document.getElementById('exampleAnswer').focus();
+        }
+
+        function checkExampleAnswer() {
+            const userAnswer = document.getElementById('exampleAnswer').value.trim();
+            const correct = userAnswer.toLowerCase() === currentWordTest.word.toLowerCase();
+            
+            if (correct) {
+                currentWordTest.mastery = Math.min(100, (currentWordTest.mastery || 0) + 15);
+                playSound('correct');
+            } else {
+                currentWordTest.mastery = Math.max(0, (currentWordTest.mastery || 0) - 5);
+                playSound('error');
+            }
+            
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            updateLearningProgress();
+            
+            document.getElementById('wordDisplay').innerHTML = `
+                <h3>${correct ? '✅ 正確！' : '❌ 錯誤'}</h3>
+                <p><strong>正確答案：</strong>${currentWordTest.word}</p>
+                <p><strong>完整例句：</strong>${currentWordTest.example}</p>
+                <p><strong>中文意思：</strong>${currentWordTest.meaning}</p>
+                <button class="btn" onclick="startExamplePractice()">下一題</button>
+            `;
+        }
+
+        function startSpellingTest() {
+            if (vocabulary.length === 0) {
+                alert('請先新增一些單字！');
+                return;
+            }
+            
+            const randomWord = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+            currentWordTest = randomWord;
+            
+            document.getElementById('wordDisplay').innerHTML = `
+                <h3>請拼出這個單字：</h3>
+                <p style="font-size: 1.5em; color: #667eea; font-weight: bold; margin: 15px 0;">${randomWord.meaning}</p>
+                ${randomWord.example ? `<p style="color: #666; font-style: italic;">"${randomWord.example}"</p>` : ''}
+                <input type="text" id="spellingAnswer" placeholder="輸入英文拼字">
+                <button class="btn" onclick="checkSpellingAnswer()">檢查拼字</button>
+            `;
+            
+            document.getElementById('spellingAnswer').focus();
+        }
+
+        function checkSpellingAnswer() {
+            const userAnswer = document.getElementById('spellingAnswer').value.trim();
+            const correct = userAnswer.toLowerCase() === currentWordTest.word.toLowerCase();
+            
+            if (correct) {
+                currentWordTest.mastery = Math.min(100, (currentWordTest.mastery || 0) + 20);
+                playSound('correct');
+            } else {
+                currentWordTest.mastery = Math.max(0, (currentWordTest.mastery || 0) - 10);
+                playSound('error');
+            }
+            
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            updateLearningProgress();
+            
+            document.getElementById('wordDisplay').innerHTML = `
+                <h3>${correct ? '✅ 正確！' : '❌ 錯誤'}</h3>
+                <p><strong>正確拼字：</strong>${currentWordTest.word}</p>
+                <p><strong>你的拼字：</strong>${userAnswer}</p>
+                <p><strong>中文意思：</strong>${currentWordTest.meaning}</p>
+                <button class="btn" onclick="startSpellingTest()">下一題</button>
+            `;
+        }
+
+        function reviewWords() {
+            const wordsToReview = vocabulary.filter(word => {
+                if (!word.nextReviewDate) return true; // 新單字
+                return new Date(word.nextReviewDate) <= new Date(); // 到期的單字
+            });
+            
+            if (wordsToReview.length === 0) {
+                alert('目前沒有需要複習的單字！');
+                return;
+            }
+            
+            // 按掌握度排序，優先複習掌握度低的
+            wordsToReview.sort((a, b) => (a.mastery || 0) - (b.mastery || 0));
+            
+            currentWordTest = wordsToReview[0];
+            
+            document.getElementById('wordDisplay').innerHTML = `
+                <h3>🔄 智慧複習</h3>
+                <p style="color: #666;">待複習單字：${wordsToReview.length} 個</p>
+                <div style="margin: 20px 0;">
+                    <p style="font-size: 1.5em; color: #667eea; font-weight: bold;">${currentWordTest.word}</p>
+                    <div style="margin: 10px 0;">
+                        <span style="font-size: 0.9em; color: #666;">掌握度：</span>
+                        <div style="width: 100%; height: 10px; background: #e0e0e0; border-radius: 5px; display: inline-block; margin: 0 10px; vertical-align: middle;">
+                            <div style="width: ${currentWordTest.mastery || 0}%; height: 100%; background: #4caf50; border-radius: 5px;"></div>
+                        </div>
+                        <span style="font-size: 0.9em; color: #666;">${currentWordTest.mastery || 0}%</span>
+                    </div>
+                </div>
+                <input type="text" id="reviewAnswer" placeholder="輸入中文意思">
+                <button class="btn" onclick="checkReviewAnswer()">檢查答案</button>
+                <button class="btn" onclick="showReviewAnswer()" style="background: #6c757d;">顯示答案</button>
+            `;
+            
+            document.getElementById('reviewAnswer').focus();
+        }
+
+        function checkReviewAnswer() {
+            const userAnswer = document.getElementById('reviewAnswer').value.trim();
+            const correct = userAnswer === currentWordTest.meaning;
+            
+            if (correct) {
+                currentWordTest.mastery = Math.min(100, (currentWordTest.mastery || 0) + 10);
+                currentWordTest.reviewCount = (currentWordTest.reviewCount || 0) + 1;
+                currentWordTest.nextReviewDate = getNextReviewDate(currentWordTest.reviewCount);
+                playSound('correct');
+            } else {
+                currentWordTest.mastery = Math.max(0, (currentWordTest.mastery || 0) - 5);
+                playSound('error');
+            }
+            
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            updateLearningProgress();
+            
+            document.getElementById('wordDisplay').innerHTML = `
+                <h3>${correct ? '✅ 正確！' : '❌ 錯誤'}</h3>
+                <p><strong>${currentWordTest.word}</strong> = ${currentWordTest.meaning}</p>
+                <p>你的答案：${userAnswer}</p>
+                ${currentWordTest.example ? `<p style="margin-top: 10px; font-style: italic;">"${currentWordTest.example}"</p>` : ''}
+                <button class="btn" onclick="reviewWords()">繼續複習</button>
+            `;
+        }
+
+        function showReviewAnswer() {
+            currentWordTest.mastery = Math.max(0, (currentWordTest.mastery || 0) - 5);
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            updateLearningProgress();
+            
+            document.getElementById('wordDisplay').innerHTML = `
+                <h3>💡 答案揭曉</h3>
+                <p><strong>${currentWordTest.word}</strong> = ${currentWordTest.meaning}</p>
+                ${currentWordTest.example ? `<p style="margin-top: 10px; font-style: italic;">"${currentWordTest.example}"</p>` : ''}
+                <button class="btn" onclick="reviewWords()">繼續複習</button>
+            `;
+        }
+
+        // 錯題本功能
+        function switchErrorTab(tabName) {
+            // 切換標籤頁活動狀態
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 隱藏所有內容
+            document.querySelectorAll('.error-tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // 顯示選中的內容
+            document.getElementById('error' + tabName.charAt(0).toUpperCase() + tabName.slice(1) + 'Tab').style.display = 'block';
+            
+            // 根據標籤頁載入相應內容
+            if (tabName === 'list') {
+                showErrorList();
+            } else if (tabName === 'analysis') {
+                showErrorAnalysis();
+            } else if (tabName === 'review') {
+                updateReviewContent();
+            }
+        }
+
+        function addError() {
+            const error = {
+                id: Date.now(),
+                subject: document.getElementById('errorSubject').value,
+                chapter: document.getElementById('errorChapter').value,
+                question: document.getElementById('errorQuestion').value,
+                myAnswer: document.getElementById('errorMyAnswer').value,
+                correctAnswer: document.getElementById('errorCorrectAnswer').value,
+                solution: document.getElementById('errorSolution').value,
+                reason: document.getElementById('errorReason').value,
+                difficulty: parseInt(document.getElementById('errorDifficulty').value),
+                createDate: new Date().toISOString(),
+                reviewDates: [],
+                reviews: 0,
+                mastered: false,
+                nextReviewDate: getNextReviewDate(0)
+            };
+            
+            if (!error.question || !error.correctAnswer) {
+                alert('請至少填寫題目和正確答案！');
+                return;
+            }
+            
+            errors.push(error);
+            localStorage.setItem('errors', JSON.stringify(errors));
+            
+            alert('錯題已儲存！');
+            clearErrorForm();
+            updateErrorStats();
+        }
+
+        function clearErrorForm() {
+            // 重新顯示完整的新增錯題表單
+            document.getElementById('errorAddTab').innerHTML = `
+                <div class="input-group">
+                    <label>科目：</label>
+                    <select id="errorSubject">
+                        <option value="math">數學</option>
+                        <option value="english">英語</option>
+                        <option value="physics">物理</option>
+                        <option value="chemistry">化學</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>章節/單元：</label>
+                    <input type="text" id="errorChapter" placeholder="例如：二次方程式">
+                </div>
+                
+                <div class="input-group">
+                    <label>題目：</label>
+                    <textarea id="errorQuestion" rows="3" placeholder="輸入題目內容"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>我的答案（錯誤）：</label>
+                    <input type="text" id="errorMyAnswer" placeholder="輸入錯誤答案">
+                </div>
+                
+                <div class="input-group">
+                    <label>正確答案：</label>
+                    <input type="text" id="errorCorrectAnswer" placeholder="輸入正確答案">
+                </div>
+                
+                <div class="input-group">
+                    <label>解題步驟：</label>
+                    <textarea id="errorSolution" rows="3" placeholder="詳細解題過程"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>錯誤原因：</label>
+                    <textarea id="errorReason" rows="2" placeholder="分析錯誤原因"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>難度：</label>
+                    <select id="errorDifficulty">
+                        <option value="1">⭐ 簡單</option>
+                        <option value="2" selected>⭐⭐ 中等</option>
+                        <option value="3">⭐⭐⭐ 困難</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="addError()">儲存錯題</button>
+                <button class="btn btn-secondary" onclick="clearErrorForm()">清除表單</button>
+                <button class="btn" onclick="importFromQuestions()" style="background: #17a2b8;">從題庫匯入</button>
+            `;
+        }
+
+        function getNextReviewDate(reviewCount) {
+            // 艾賓浩斯遺忘曲線：1天、3天、7天、15天、30天
+            const intervals = [1, 3, 7, 15, 30];
+            if (reviewCount >= intervals.length) return null;
+            
+            const date = new Date();
+            date.setDate(date.getDate() + intervals[reviewCount]);
+            return date.toISOString();
+        }
+
+        function updateErrorStats() {
+            const total = errors.length;
+            const reviewed = errors.filter(e => e.reviews > 0).length;
+            const mastered = errors.filter(e => e.mastered).length;
+            
+            document.getElementById('errorTotal').textContent = total;
+            document.getElementById('errorReviewed').textContent = reviewed;
+            document.getElementById('errorMastered').textContent = mastered;
+        }
+
+        function showErrorList() {
+            const content = document.getElementById('errorListContent');
+            
+            if (errors.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #666; margin: 20px 0;">還沒有錯題記錄</p>';
+                return;
+            }
+            
+            let html = '';
+            errors.forEach(error => {
+                const subjectClass = `subject-${error.subject}`;
+                const date = new Date(error.createDate).toLocaleDateString('zh-TW');
+                const difficultyStars = '⭐'.repeat(error.difficulty);
+                
+                html += `
+                    <div class="error-item">
+                        <div class="error-item-header">
+                            <span class="subject-tag ${subjectClass}">${getSubjectName(error.subject)}</span>
+                            <span class="difficulty-stars">${difficultyStars}</span>
+                        </div>
+                        <h4>${error.chapter || '未分類'}</h4>
+                        <p><strong>題目：</strong>${error.question}</p>
+                        <p><strong>正確答案：</strong>${error.correctAnswer}</p>
+                        <p><strong>錯誤原因：</strong>${error.reason || '未填寫'}</p>
+                        <div class="review-schedule">
+                            <div class="review-item ${error.reviews >= 1 ? 'review-completed' : 'review-pending'}">
+                                1天後
+                            </div>
+                            <div class="review-item ${error.reviews >= 2 ? 'review-completed' : 'review-pending'}">
+                                3天後
+                            </div>
+                            <div class="review-item ${error.reviews >= 3 ? 'review-completed' : 'review-pending'}">
+                                7天後
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px; display: flex; gap: 10px;">
+                            <button class="btn" onclick="reviewError(${error.id})" style="flex: 1; padding: 8px; cursor: pointer;">複習</button>
+                            <button class="btn btn-success" onclick="markMastered(${error.id})" style="flex: 1; padding: 8px; cursor: pointer;">已掌握</button>
+                            <button class="btn btn-danger" onclick="deleteError(${error.id})" style="flex: 1; padding: 8px; cursor: pointer;">刪除</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            content.innerHTML = html;
+        }
+
+        function getSubjectName(subject) {
+            const names = {
+                math: '數學',
+                english: '英語',
+                physics: '物理',
+                chemistry: '化學',
+                other: '其他'
+            };
+            return names[subject] || '其他';
+        }
+
+        function reviewError(id) {
+            const error = errors.find(e => e.id === id);
+            if (!error) {
+                alert('找不到該錯題！');
+                return;
+            }
+            
+            // 檢查當前是否在複習頁面
+            const reviewTab = document.getElementById('errorReviewTab');
+            const listTab = document.getElementById('errorListTab');
+            
+            let targetContainer;
+            if (reviewTab && reviewTab.style.display !== 'none') {
+                targetContainer = document.getElementById('reviewContent');
+            } else if (listTab && listTab.style.display !== 'none') {
+                targetContainer = document.getElementById('errorListContent');
+            } else {
+                // 切換到錯題列表頁面
+                switchErrorTab('list');
+                targetContainer = document.getElementById('errorListContent');
+            }
+            
+            // 顯示複習介面
+            targetContainer.innerHTML = `
+                <div class="error-item">
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <h3>📖 複習錯題</h3>
+                        <p><strong>科目：</strong>${getSubjectName(error.subject)} - ${error.chapter || '未分類'}</p>
+                        <p><strong>難度：</strong>${'⭐'.repeat(error.difficulty)}</p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                        <h4>題目：</h4>
+                        <p style="margin: 10px 0; line-height: 1.5;">${error.question}</p>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>請輸入答案：</label>
+                        <input type="text" id="reviewAnswer" placeholder="輸入你的答案" style="margin: 10px 0;" onkeypress="if(event.key==='Enter') checkReviewAnswer(${id})">
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin: 15px 0;">
+                        <button class="btn" onclick="checkReviewAnswer(${id})" style="flex: 1;">提交答案</button>
+                        <button class="btn btn-secondary" onclick="showReviewAnswer(${id})" style="flex: 1;">顯示答案</button>
+                    </div>
+                    
+                    <button class="btn" onclick="goBackToErrorList()" style="background: #6c757d; margin-top: 10px;">返回列表</button>
+                </div>
+            `;
+            
+            // 聚焦到輸入框
+            setTimeout(() => {
+                const answerInput = document.getElementById('reviewAnswer');
+                if (answerInput) {
+                    answerInput.focus();
+                }
+            }, 100);
+        }
+
+        function goBackToErrorList() {
+            // 檢查當前在哪個頁面並返回相應列表
+            const reviewTab = document.getElementById('errorReviewTab');
+            if (reviewTab && reviewTab.style.display !== 'none') {
+                updateReviewContent();
+            } else {
+                showErrorList();
+            }
+        }
+
+        function checkReviewAnswer(id) {
+            const error = errors.find(e => e.id === id);
+            const userAnswerElement = document.getElementById('reviewAnswer');
+            
+            if (!userAnswerElement) {
+                alert('請輸入答案！');
+                return;
+            }
+            
+            const userAnswer = userAnswerElement.value.trim();
+            if (!userAnswer) {
+                alert('請輸入答案！');
+                return;
+            }
+            
+            const isCorrect = userAnswer.toLowerCase() === error.correctAnswer.toLowerCase();
+            
+            if (isCorrect) {
+                error.reviews++;
+                error.reviewDates.push(new Date().toISOString());
+                error.nextReviewDate = getNextReviewDate(error.reviews);
+                
+                if (error.reviews >= 5) {
+                    error.mastered = true;
+                }
+                
+                localStorage.setItem('errors', JSON.stringify(errors));
+                updateErrorStats();
+                playSound('correct');
+                
+                alert('✅ 正確！繼續加油！');
+            } else {
+                playSound('error');
+                alert(`❌ 錯誤！正確答案是：${error.correctAnswer}`);
+            }
+            
+            goBackToErrorList();
+        }
+
+        function showReviewAnswer(id) {
+            const error = errors.find(e => e.id === id);
+            const answerInfo = `正確答案：${error.correctAnswer}\n\n解題步驟：\n${error.solution || '未提供'}`;
+            alert(answerInfo);
+        }
+
+        function markMastered(id) {
+            try {
+                const error = errors.find(e => e.id === id);
+                if (error) {
+                    error.mastered = true;
+                    localStorage.setItem('errors', JSON.stringify(errors));
+                    updateErrorStats();
+                    showErrorList();
+                    alert('已標記為掌握！');
+                } else {
+                    alert('找不到該錯題！');
+                }
+            } catch (error) {
+                console.error('標記掌握時發生錯誤:', error);
+                alert('操作失敗，請重試！');
+            }
+        }
+
+        function deleteError(id) {
+            if (confirm('確定要刪除這個錯題嗎？')) {
+                errors = errors.filter(e => e.id !== id);
+                localStorage.setItem('errors', JSON.stringify(errors));
+                updateErrorStats();
+                showErrorList();
+            }
+        }
+
+        function filterErrors(subject) {
+            // 更新按鈕狀態
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 篩選錯題
+            let filteredErrors = subject === 'all' ? errors : errors.filter(e => e.subject === subject);
+            
+            // 顯示篩選後的錯題
+            const content = document.getElementById('errorListContent');
+            if (filteredErrors.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #666; margin: 20px 0;">沒有相關錯題</p>';
+                return;
+            }
+            
+            // 重新渲染錯題列表（這裡可以重用showErrorList的邏輯）
+            showErrorList();
+        }
+
+        function showErrorAnalysis() {
+            const content = document.getElementById('analysisContent');
+            
+            if (errors.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #666; margin: 20px 0;">還沒有足夠的數據進行分析</p>';
+                return;
+            }
+            
+            // 按科目統計
+            const subjectStats = {};
+            errors.forEach(error => {
+                if (!subjectStats[error.subject]) {
+                    subjectStats[error.subject] = {
+                        total: 0,
+                        mastered: 0,
+                        avgDifficulty: 0
+                    };
+                }
+                subjectStats[error.subject].total++;
+                if (error.mastered) subjectStats[error.subject].mastered++;
+                subjectStats[error.subject].avgDifficulty += error.difficulty;
+            });
+            
+            let html = '<h3>📊 弱點分析報告</h3>';
+            
+            // 科目分析
+            html += '<h4>各科錯題分布</h4>';
+            html += '<div style="margin: 15px 0;">';
+            
+            Object.keys(subjectStats).forEach(subject => {
+                const stats = subjectStats[subject];
+                const masteryRate = Math.round((stats.mastered / stats.total) * 100);
+                const avgDiff = (stats.avgDifficulty / stats.total).toFixed(1);
+                
+                html += `
+                    <div style="background: #f8f9fa; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                        <strong>${getSubjectName(subject)}</strong>
+                        <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                            <span>錯題數：${stats.total}</span>
+                            <span>掌握率：${masteryRate}%</span>
+                            <span>平均難度：${'⭐'.repeat(Math.round(avgDiff))}</span>
+                        </div>
+                        <div class="progress-bar" style="margin-top: 5px;">
+                            <div class="progress-fill" style="width: ${masteryRate}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            // 複習建議
+            html += '<h4>💡 學習建議</h4>';
+            html += '<ul style="padding-left: 20px;">';
+            
+            // 找出最需要加強的科目
+            let weakestSubject = null;
+            let lowestMasteryRate = 100;
+            
+            Object.keys(subjectStats).forEach(subject => {
+                const masteryRate = (subjectStats[subject].mastered / subjectStats[subject].total) * 100;
+                if (masteryRate < lowestMasteryRate) {
+                    lowestMasteryRate = masteryRate;
+                    weakestSubject = subject;
+                }
+            });
+            
+            if (weakestSubject) {
+                html += `<li>建議優先複習<strong>${getSubjectName(weakestSubject)}</strong>，目前掌握率較低</li>`;
+            }
+            
+            // 統計待複習的錯題
+            const overdueErrors = errors.filter(e => {
+                if (e.mastered || !e.nextReviewDate) return false;
+                return new Date(e.nextReviewDate) < new Date();
+            });
+            
+            if (overdueErrors.length > 0) {
+                html += `<li>有 <strong>${overdueErrors.length}</strong> 道錯題需要複習</li>`;
+            }
+            
+            html += '<li>建議每天至少複習 3-5 道錯題，保持記憶</li>';
+            html += '<li>對於高難度題目，可以多做類似題型加強練習</li>';
+            html += '</ul>';
+            
+            content.innerHTML = html;
+        }
+
+        function exportErrors() {
+            if (errors.length === 0) {
+                alert('沒有錯題可以匯出！');
+                return;
+            }
+            
+            let csvContent = '科目,章節,題目,我的答案,正確答案,解題步驟,錯誤原因,難度,建立日期,複習次數\n';
+            
+            errors.forEach(error => {
+                const row = [
+                    getSubjectName(error.subject),
+                    error.chapter || '',
+                    `"${error.question.replace(/"/g, '""')}"`,
+                    error.myAnswer || '',
+                    error.correctAnswer,
+                    `"${(error.solution || '').replace(/"/g, '""')}"`,
+                    `"${(error.reason || '').replace(/"/g, '""')}"`,
+                    error.difficulty,
+                    new Date(error.createDate).toLocaleDateString('zh-TW'),
+                    error.reviews
+                ].join(',');
+                
+                csvContent += row + '\n';
+            });
+            
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', '錯題本_' + new Date().toLocaleDateString('zh-TW') + '.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function clearAllErrors() {
+            if (confirm('確定要清空所有錯題嗎？此操作無法復原！')) {
+                errors = [];
+                localStorage.setItem('errors', JSON.stringify(errors));
+                updateErrorStats();
+                showErrorList();
+            }
+        }
+
+        function updateReviewContent() {
+            const content = document.getElementById('reviewContent');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const todayErrors = errors.filter(e => {
+                if (e.mastered || !e.nextReviewDate) return false;
+                const reviewDate = new Date(e.nextReviewDate);
+                reviewDate.setHours(0, 0, 0, 0);
+                return reviewDate.getTime() === today.getTime();
+            });
+            
+            const overdueErrors = errors.filter(e => {
+                if (e.mastered || !e.nextReviewDate) return false;
+                return new Date(e.nextReviewDate) < today;
+            });
+            
+            if (todayErrors.length === 0 && overdueErrors.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #666; margin: 20px 0;">🎉 今天沒有需要複習的錯題！</p>';
+                return;
+            }
+            
+            let html = '';
+            
+            if (overdueErrors.length > 0) {
+                html += `<h4 style="color: #dc3545;">⚠️ 逾期未複習 (${overdueErrors.length})</h4>`;
+                overdueErrors.forEach(error => {
+                    html += createReviewCard(error);
+                });
+            }
+            
+            if (todayErrors.length > 0) {
+                html += `<h4 style="color: #28a745;">📅 今日複習 (${todayErrors.length})</h4>`;
+                todayErrors.forEach(error => {
+                    html += createReviewCard(error);
+                });
+            }
+            
+            content.innerHTML = html;
+        }
+
+        function createReviewCard(error) {
+            const daysSinceCreated = Math.floor((new Date() - new Date(error.createDate)) / (1000 * 60 * 60 * 24));
+            
+            return `
+                <div class="error-item">
+                    <div class="error-item-header">
+                        <span class="subject-tag subject-${error.subject}">${getSubjectName(error.subject)}</span>
+                        <span style="font-size: 0.85em; color: #666;">建立於 ${daysSinceCreated} 天前</span>
+                    </div>
+                    <p><strong>${error.chapter || '未分類'}</strong></p>
+                    <p style="color: #666; font-size: 0.9em;">已複習 ${error.reviews} 次</p>
+                    <button class="btn" onclick="reviewError(${error.id})" style="margin-top: 10px; width: 100%;">開始複習</button>
+                </div>
+            `;
+        }
+
+        function filterReview(type) {
+            // 更新按鈕狀態
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 根據類型更新內容
+            if (type === 'all' || type === 'today' || type === 'overdue') {
+                updateReviewContent();
+            } else if (type === 'subject') {
+                // 按科目顯示待複習的錯題
+                showReviewBySubject();
+            }
+        }
+
+        function showReviewBySubject() {
+            const content = document.getElementById('reviewContent');
+            const pendingReviews = errors.filter(e => !e.mastered && e.nextReviewDate);
+            
+            if (pendingReviews.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #666; margin: 20px 0;">沒有待複習的錯題</p>';
+                return;
+            }
+            
+            // 按科目分組
+            const bySubject = {};
+            pendingReviews.forEach(error => {
+                if (!bySubject[error.subject]) {
+                    bySubject[error.subject] = [];
+                }
+                bySubject[error.subject].push(error);
+            });
+            
+            let html = '';
+            Object.keys(bySubject).forEach(subject => {
+                html += `<h4>${getSubjectName(subject)} (${bySubject[subject].length})</h4>`;
+                bySubject[subject].forEach(error => {
+                    html += createReviewCard(error);
+                });
+            });
+            
+            content.innerHTML = html;
+        }
+
+        // 音效功能
+        function playSound(type) {
+            if (!document.getElementById('soundEnabled') || !document.getElementById('soundEnabled').checked) return;
+            
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                let frequency, duration;
+                
+                if (type === 'correct') {
+                    // 正確音效：愉快的上升音調
+                    frequency = 800;
+                    duration = 0.3;
+                } else {
+                    // 錯誤音效：低沉的下降音調
+                    frequency = 300;
+                    duration = 0.5;
+                }
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                if (type === 'correct') {
+                    oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.5, audioContext.currentTime + duration);
+                } else {
+                    oscillator.frequency.exponentialRampToValueAtTime(frequency * 0.5, audioContext.currentTime + duration);
+                }
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (error) {
+                console.log('音效播放失敗:', error);
+            }
+        }
+
+        // 顯示工具
+        function showTool(toolName) {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById(toolName).style.display = 'block';
+            
+            // 如果是錯題本，更新統計
+            if (toolName === 'errors') {
+                updateErrorStats();
+            }
+        }
+
+        // 返回主選單
+        function showMain() {
+            document.querySelectorAll('.learning-area').forEach(area => {
+                area.style.display = 'none';
+            });
+            document.getElementById('mainMenu').style.display = 'grid';
+        }
+
+        // 單字記憶功能
+        function addWord() {
+            const word = document.getElementById('newWord').value.trim();
+            const meaning = document.getElementById('wordMeaning').value.trim();
+            const example = document.getElementById('wordExample').value.trim();
+            
+            if (word && meaning) {
+                vocabulary.push({
+                    word, 
+                    meaning, 
+                    example,
+                    learned: false, 
+                    mastery: 0,
+                    addedDate: new Date().toISOString(),
+                    reviewCount: 0,
+                    nextReviewDate: getNextReviewDate(0)
+                });
+                localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                updateWordCount();
+                updateLearningProgress();
+                document.getElementById('newWord').value = '';
+                document.getElementById('wordMeaning').value = '';
+                document.getElementById('wordExample').value = '';
+                alert('單字已新增！');
+            }
+        }
+
+        // 批量匯入單字
+        function importWords() {
+            const importText = document.getElementById('importWords').value.trim();
+            if (!importText) {
+                alert('請輸入要匯入的單字！');
+                return;
+            }
+            
+            const lines = importText.split('\n');
+            let successCount = 0;
+            let errorLines = [];
+            
+            lines.forEach((line, index) => {
+                const trimmedLine = line.trim();
+                if (trimmedLine) {
+                    const parts = trimmedLine.split(',');
+                    if (parts.length >= 2) {
+                        const word = parts[0].trim();
+                        const meaning = parts[1].trim();
+                        const example = parts.length >= 3 ? parts.slice(2).join(',').trim() : ''; // 處理例句中可能有逗號
+                        
+                        if (word && meaning) {
+                            vocabulary.push({
+                                word,
+                                meaning,
+                                example,
+                                learned: false,
+                                addedDate: new Date().toISOString(),
+                                reviewDates: [],
+                                reviewCount: 0,
+                                nextReviewDate: getNextReviewDate(0),
+                                mastery: 0
+                            });
+                            successCount++;
+                        } else {
+                            errorLines.push(index + 1);
+                        }
+                    } else {
+                        errorLines.push(index + 1);
+                    }
+                }
+            });
+            
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            updateWordCount();
+            updateLearningProgress();
+            document.getElementById('importWords').value = '';
+            
+            let message = `成功匯入 ${successCount} 個單字！`;
+            if (errorLines.length > 0) {
+                message += `\n第 ${errorLines.join(', ')} 行格式錯誤，已跳過。`;
+            }
+            message += '\n\n提示：可使用格式「英文,中文,例句」來包含例句。';
+            alert(message);
+        }
+
+        // 處理檔案上傳
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                document.getElementById('importWords').value = content;
+                alert('檔案內容已載入，點擊「匯入單字」按鈕完成匯入！');
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        // 顯示所有單字
+        function showAllWords() {
+            if (vocabulary.length === 0) {
+                document.getElementById('wordDisplay').innerHTML = '<p>還沒有任何單字</p>';
+                return;
+            }
+            
+            // 按主題分組
+            const wordsByTheme = {};
+            const noThemeWords = [];
+            
+            vocabulary.forEach((item, index) => {
+                item.index = index; // 保存索引以便刪除
+                if (item.theme && curriculum108[item.theme]) {
+                    if (!wordsByTheme[item.theme]) {
+                        wordsByTheme[item.theme] = [];
+                    }
+                    wordsByTheme[item.theme].push(item);
+                } else {
+                    noThemeWords.push(item);
+                }
+            });
+            
+            let html = '<h3>所有單字列表：</h3><div style="max-height: 400px; overflow-y: auto;">';
+            
+            // 顯示108課綱分類單字
+            Object.keys(wordsByTheme).forEach(theme => {
+                const themeName = curriculum108[theme].name;
+                html += `<h4 style="color: #1976d2; margin-top: 15px;">📚 ${themeName}</h4>`;
+                
+                wordsByTheme[theme].forEach(item => {
+                    const masteryColor = item.mastery >= 80 ? '#4caf50' : item.mastery >= 50 ? '#ff9800' : '#f44336';
+                    html += `
+                        <div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="flex: 1;">
+                                    <strong>${item.word}</strong> - ${item.meaning}
+                                    ${item.example ? `<div style="color: #666; font-size: 0.9em; margin-top: 5px;">例句：${item.example}</div>` : ''}
+                                    <div style="display: flex; align-items: center; margin-top: 5px;">
+                                        <span style="font-size: 0.85em; color: #666;">掌握度：</span>
+                                        <div style="width: 100px; height: 10px; background: #e0e0e0; border-radius: 5px; margin: 0 10px;">
+                                            <div style="width: ${item.mastery || 0}%; height: 100%; background: ${masteryColor}; border-radius: 5px;"></div>
+                                        </div>
+                                        <span style="font-size: 0.85em; color: ${masteryColor};">${item.mastery || 0}%</span>
+                                    </div>
+                                </div>
+                                <button onclick="deleteWord(${item.index})" style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 3px; font-size: 12px;">刪除</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+            
+            // 顯示自訂單字
+            if (noThemeWords.length > 0) {
+                html += `<h4 style="color: #666; margin-top: 15px;">📝 自訂單字</h4>`;
+                noThemeWords.forEach(item => {
+                    const masteryColor = item.mastery >= 80 ? '#4caf50' : item.mastery >= 50 ? '#ff9800' : '#f44336';
+                    html += `
+                        <div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="flex: 1;">
+                                    <strong>${item.word}</strong> - ${item.meaning}
+                                    ${item.example ? `<div style="color: #666; font-size: 0.9em; margin-top: 5px;">例句：${item.example}</div>` : ''}
+                                    <div style="display: flex; align-items: center; margin-top: 5px;">
+                                        <span style="font-size: 0.85em; color: #666;">掌握度：</span>
+                                        <div style="width: 100px; height: 10px; background: #e0e0e0; border-radius: 5px; margin: 0 10px;">
+                                            <div style="width: ${item.mastery || 0}%; height: 100%; background: ${masteryColor}; border-radius: 5px;"></div>
+                                        </div>
+                                        <span style="font-size: 0.85em; color: ${masteryColor};">${item.mastery || 0}%</span>
+                                    </div>
+                                </div>
+                                <button onclick="deleteWord(${item.index})" style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 3px; font-size: 12px;">刪除</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            html += '</div>';
+            document.getElementById('wordDisplay').innerHTML = html;
+        }
+        
+        // 刪除單字
+        function deleteWord(index) {
+            if (confirm('確定要刪除這個單字嗎？')) {
+                vocabulary.splice(index, 1);
+                localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+                updateWordCount();
+                updateLearningProgress();
+                showAllWords();
+            }
+        }
+
+        // 匯出單字
+        function exportWords() {
+            if (vocabulary.length === 0) {
+                alert('沒有單字可以匯出！');
+                return;
+            }
+            
+            let csvContent = '\ufeff'; // BOM for UTF-8
+            csvContent += '英文單字,中文意思,例句,掌握程度,主題,年級\n';
+            
+            vocabulary.forEach(item => {
+                const example = item.example ? `"${item.example.replace(/"/g, '""')}"` : '';
+                const theme = item.theme ? curriculum108[item.theme]?.name || '' : '';
+                const grade = item.grade ? `${item.grade}年級` : '';
+                
+                csvContent += `${item.word},${item.meaning},${example},${item.mastery || 0}%,${theme},${grade}\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `我的單字庫_${new Date().toLocaleDateString('zh-TW')}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function startWordTest() {
+            if (vocabulary.length === 0) {
+                alert('請先新增一些單字！');
+                return;
+            }
+            
+            const randomWord = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+            currentWordTest = randomWord;
+            
+            document.getElementById('wordDisplay').innerHTML = `
+                <h3>請寫出以下單字的中文意思：</h3>
+                <p style="font-size: 1.5em; color: #667eea; font-weight: bold;">${randomWord.word}</p>
+                <input type="text" id="wordTestAnswer" placeholder="輸入中文意思">
+                <button class="btn" onclick="checkWordAnswer()">檢查答案</button>
+            `;
+            
+            document.getElementById('wordTestAnswer').focus();
+        }
+
+        function checkWordAnswer() {
+            const userAnswer = document.getElementById('wordTestAnswer').value.trim();
+            const correct = userAnswer === currentWordTest.meaning;
+            
+            // 更新學習記錄
+            if (!currentWordTest.learned) {
+                currentWordTest.learned = true;
+            }
+            
+            if (correct) {
+                currentWordTest.mastery = Math.min(100, (currentWordTest.mastery || 0) + 10);
+                playSound('correct');
+            } else {
+                currentWordTest.mastery = Math.max(0, (currentWordTest.mastery || 0) - 5);
+                playSound('error');
+            }
+            
+            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
+            updateLearningProgress();
+            
+            document.getElementById('wordDisplay').innerHTML = `
+                <h3>${correct ? '✅ 正確！' : '❌ 錯誤'}</h3>
+                <p><strong>${currentWordTest.word}</strong> = ${currentWordTest.meaning}</p>
+                <p>你的答案：${userAnswer}</p>
+                ${currentWordTest.example ? `<p style="margin-top: 10px; font-style: italic;">"${currentWordTest.example}"</p>` : ''}
+                <button class="btn" onclick="startWordTest()">下一題</button>
+            `;
+        }
+
+        // 數學練習功能
+        function startMathPractice() {
+            generateMathQuestion();
+            document.getElementById('mathAnswer').style.display = 'block';
+            document.getElementById('submitMath').style.display = 'block';
+            document.getElementById('mathAnswer').focus();
+        }
+
+        function generateMathQuestion() {
+            const level = document.getElementById('mathLevel').value;
+            const type = document.getElementById('mathType').value;
+            
+            let max = level === 'easy' ? 10 : level === 'medium' ? 50 : 100;
+            let operations = type === 'mix' ? ['add', 'sub', 'mul'] : [type];
+            let operation = operations[Math.floor(Math.random() * operations.length)];
+            
+            let a = Math.floor(Math.random() * max) + 1;
+            let b = Math.floor(Math.random() * max) + 1;
+            let answer, symbol;
+            
+            switch(operation) {
+                case 'add':
+                    answer = a + b;
+                    symbol = '+';
+                    break;
+                case 'sub':
+                    if (a < b) [a, b] = [b, a]; // 確保結果為正數
+                    answer = a - b;
+                    symbol = '-';
+                    break;
+                case 'mul':
+                    if (level === 'easy') {
+                        a = Math.floor(Math.random() * 10) + 1;
+                        b = Math.floor(Math.random() * 10) + 1;
+                    }
+                    answer = a * b;
+                    symbol = '×';
+                    break;
+            }
+            
+            currentMathQuestion = {a, b, answer, symbol};
+            document.getElementById('mathQuestion').innerHTML = `
+                <h3>${a} ${symbol} ${b} = ?</h3>
+            `;
+            document.getElementById('mathAnswer').value = '';
+        }
+
+        function checkMathAnswer() {
+            const userAnswer = parseInt(document.getElementById('mathAnswer').value);
+            const correct = userAnswer === currentMathQuestion.answer;
+            
+            mathScore.total++;
+            if (correct) mathScore.correct++;
+            
+            document.getElementById('correctCount').textContent = mathScore.correct;
+            document.getElementById('totalCount').textContent = mathScore.total;
+            
+            document.getElementById('mathQuestion').innerHTML = `
+                <h3>${correct ? '✅ 正確！' : '❌ 錯誤'}</h3>
+                <p>${currentMathQuestion.a} ${currentMathQuestion.symbol} ${currentMathQuestion.b} = ${currentMathQuestion.answer}</p>
+                <button class="btn" onclick="generateMathQuestion(); document.getElementById('mathAnswer').focus();">下一題</button>
+            `;
+        }
+
+        // 計時器功能
+        function startTimer() {
+            if (!timerRunning) {
+                const minutes = parseInt(document.getElementById('timerMinutes').value);
+                timerSeconds = minutes * 60;
+                timerRunning = true;
+                
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        timerComplete();
+                    }
+                }, 1000);
+                
+                document.getElementById('timerStatus').textContent = '專注學習中...';
+            }
+        }
+
+        function pauseTimer() {
+            if (timerRunning) {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                document.getElementById('timerStatus').textContent = '已暫停';
+            } else if (timerSeconds > 0) {
+                startTimer();
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            const minutes = parseInt(document.getElementById('timerMinutes').value);
+            timerSeconds = minutes * 60;
+            updateTimerDisplay();
+            document.getElementById('timerStatus').textContent = '準備開始專注學習！';
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const totalMinutes = parseInt(document.getElementById('timerMinutes').value);
+            const progress = ((totalMinutes * 60 - timerSeconds) / (totalMinutes * 60)) * 100;
+            document.getElementById('timerProgress').style.width = progress + '%';
+        }
+
+        function timerComplete() {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            document.getElementById('timerStatus').innerHTML = '🎉 時間到！休息一下吧！';
+            try {
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('專注時間結束！', {body: '該休息一下了！'});
+                }
+            } catch (error) {
+                console.log('通知失敗:', error);
+            }
+        }
+
+        // 筆記功能
+        function saveNote() {
+            const title = document.getElementById('noteTitle').value.trim();
+            const content = document.getElementById('noteContent').value.trim();
+            
+            if (title && content) {
+                notes.push({
+                    title,
+                    content,
+                    date: new Date().toLocaleString('zh-TW')
+                });
+                localStorage.setItem('notes', JSON.stringify(notes));
+                document.getElementById('noteTitle').value = '';
+                document.getElementById('noteContent').value = '';
+                alert('筆記已儲存！');
+            }
+        }
+
+        function showNotes() {
+            if (notes.length === 0) {
+                document.getElementById('notesResult').innerHTML = '<p>還沒有任何筆記</p>';
+                return;
+            }
+            
+            let html = '<h3>所有筆記：</h3><div style="max-height: 400px; overflow-y: auto;">';
+            notes.forEach((note, index) => {
+                html += `
+                    <div style="border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; background: #fafafa;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                            <h4 style="margin: 0; color: #333;">${note.title}</h4>
+                            <button onclick="deleteNote(${index})" style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 3px; font-size: 12px;">刪除</button>
+                        </div>
+                        <div style="background: white; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                            <p style="margin: 0; white-space: pre-wrap;">${note.content}</p>
+                        </div>
+                        <small style="color: #666;">建立時間：${note.date}</small>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            document.getElementById('notesResult').innerHTML = html;
+        }
+
+        function deleteNote(index) {
+            if (confirm('確定要刪除這個筆記嗎？')) {
+                notes.splice(index, 1);
+                localStorage.setItem('notes', JSON.stringify(notes));
+                showNotes();
+                alert('筆記已刪除！');
+            }
+        }
+
+        function exportNotes() {
+            if (notes.length === 0) {
+                alert('沒有筆記可以匯出！');
+                return;
+            }
+            
+            let txtContent = '我的學習筆記\n';
+            txtContent += '==================\n\n';
+            
+            notes.forEach((note, index) => {
+                txtContent += `${index + 1}. ${note.title}\n`;
+                txtContent += `建立時間：${note.date}\n`;
+                txtContent += '內容：\n';
+                txtContent += note.content + '\n\n';
+                txtContent += '-------------------\n\n';
+            });
+            
+            const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `學習筆記_${new Date().toLocaleDateString('zh-TW')}.txt`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 問答功能
+        function addQuestion() {
+            const question = document.getElementById('newQuestion').value.trim();
+            const answer = document.getElementById('questionAnswer').value.trim();
+            
+            if (question && answer) {
+                questions.push({question, answer});
+                localStorage.setItem('questions', JSON.stringify(questions));
+                document.getElementById('questionCount').textContent = questions.length;
+                document.getElementById('newQuestion').value = '';
+                document.getElementById('questionAnswer').value = '';
+                alert('問題已新增！');
+            }
+        }
+
+        function startQuiz() {
+            if (questions.length === 0) {
+                alert('請先新增一些問題！');
+                return;
+            }
+            
+            const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+            currentQuiz = randomQuestion;
+            
+            document.getElementById('quizDisplay').innerHTML = `
+                <h3>問題：</h3>
+                <p style="font-size: 1.2em; color: #667eea;">${randomQuestion.question}</p>
+                <input type="text" id="quizAnswer" placeholder="輸入答案">
+                <button class="btn" onclick="checkQuizAnswer()">檢查答案</button>
+            `;
+            
+            document.getElementById('quizAnswer').focus();
+        }
+
+        function checkQuizAnswer() {
+            const userAnswer = document.getElementById('quizAnswer').value.trim();
+            const correct = userAnswer.toLowerCase() === currentQuiz.answer.toLowerCase();
+            
+            document.getElementById('quizDisplay').innerHTML = `
+                <h3>${correct ? '✅ 正確！' : '❌ 錯誤'}</h3>
+                <p><strong>問題：</strong>${currentQuiz.question}</p>
+                <p><strong>正確答案：</strong>${currentQuiz.answer}</p>
+                <p><strong>你的答案：</strong>${userAnswer}</p>
+                <button class="btn" onclick="startQuiz()">下一題</button>
+            `;
+        }
+
+        function showAllQuestions() {
+            if (questions.length === 0) {
+                document.getElementById('quizDisplay').innerHTML = '<p>還沒有任何問題</p>';
+                return;
+            }
+            
+            let html = '<h3>所有問題列表：</h3><div style="max-height: 400px; overflow-y: auto;">';
+            questions.forEach((item, index) => {
+                html += `
+                    <div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="flex: 1;">
+                                <p><strong>問題：</strong>${item.question}</p>
+                                <p><strong>答案：</strong>${item.answer}</p>
+                            </div>
+                            <button onclick="deleteQuestion(${index})" style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 3px; font-size: 12px;">刪除</button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            document.getElementById('quizDisplay').innerHTML = html;
+        }
+
+        function deleteQuestion(index) {
+            if (confirm('確定要刪除這個問題嗎？')) {
+                questions.splice(index, 1);
+                localStorage.setItem('questions', JSON.stringify(questions));
+                document.getElementById('questionCount').textContent = questions.length;
+                showAllQuestions();
+            }
+        }
+
+        function exportQuestions() {
+            if (questions.length === 0) {
+                alert('沒有問題可以匯出！');
+                return;
+            }
+            
+            let csvContent = '\ufeff'; // BOM for UTF-8
+            csvContent += '問題,答案,建立日期\n';
+            
+            questions.forEach(item => {
+                const question = `"${item.question.replace(/"/g, '""')}"`;
+                const answer = `"${item.answer.replace(/"/g, '""')}"`;
+                const date = new Date().toLocaleDateString('zh-TW');
+                
+                csvContent += `${question},${answer},${date}\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `問答題庫_${new Date().toLocaleDateString('zh-TW')}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function importFromQuestions() {
+            if (questions.length === 0) {
+                alert('題庫中沒有問題可以匯入！請先在「隨機問答」中新增一些問題。');
+                return;
+            }
+            
+            let html = '<h3>從題庫選擇錯題</h3>';
+            html += '<p style="color: #666; margin-bottom: 15px;">選擇想要加入錯題本的問題：</p>';
+            html += '<div style="max-height: 300px; overflow-y: auto;">';
+            
+            questions.forEach((item, index) => {
+                html += `
+                    <div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px; cursor: pointer;" onclick="selectQuestionForError(${index})">
+                        <p><strong>問題：</strong>${item.question}</p>
+                        <p><strong>答案：</strong>${item.answer}</p>
+                        <button class="btn" style="margin-top: 5px; padding: 5px 15px;">選擇此題</button>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            html += '<button class="btn btn-secondary" onclick="switchErrorTab(\'add\')" style="margin-top: 15px;">返回</button>';
+            
+            document.getElementById('errorAddTab').innerHTML = html;
+        }
+
+        function selectQuestionForError(questionIndex) {
+            const selectedQuestion = questions[questionIndex];
+            
+            // 重新顯示錯題新增表單
+            document.getElementById('errorAddTab').innerHTML = `
+                <div class="input-group">
+                    <label>科目：</label>
+                    <select id="errorSubject">
+                        <option value="math">數學</option>
+                        <option value="english">英語</option>
+                        <option value="physics">物理</option>
+                        <option value="chemistry">化學</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>章節/單元：</label>
+                    <input type="text" id="errorChapter" placeholder="例如：二次方程式">
+                </div>
+                
+                <div class="input-group">
+                    <label>題目：</label>
+                    <textarea id="errorQuestion" rows="3" placeholder="輸入題目內容">${selectedQuestion.question}</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>我的答案（錯誤）：</label>
+                    <input type="text" id="errorMyAnswer" placeholder="輸入錯誤答案">
+                </div>
+                
+                <div class="input-group">
+                    <label>正確答案：</label>
+                    <input type="text" id="errorCorrectAnswer" placeholder="輸入正確答案" value="${selectedQuestion.answer}">
+                </div>
+                
+                <div class="input-group">
+                    <label>解題步驟：</label>
+                    <textarea id="errorSolution" rows="3" placeholder="詳細解題過程"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>錯誤原因：</label>
+                    <textarea id="errorReason" rows="2" placeholder="分析錯誤原因"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>難度：</label>
+                    <select id="errorDifficulty">
+                        <option value="1">⭐ 簡單</option>
+                        <option value="2">⭐⭐ 中等</option>
+                        <option value="3">⭐⭐⭐ 困難</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="addError()">儲存錯題</button>
+                <button class="btn btn-secondary" onclick="clearErrorForm()">清除表單</button>
+                <button class="btn" onclick="importFromQuestions()" style="background: #17a2b8;">從題庫匯入</button>
+            `;
+            
+            alert('已將題目填入表單，請完善其他資訊後儲存！');
+        }
+
+        // 目標功能
+        function addGoal() {
+            const goal = document.getElementById('newGoal').value.trim();
+            
+            if (goal) {
+                goals.push({
+                    goal,
+                    completed: false,
+                    date: new Date().toLocaleDateString('zh-TW')
+                });
+                localStorage.setItem('goals', JSON.stringify(goals));
+                document.getElementById('newGoal').value = '';
+                alert('目標已新增！');
+            }
+        }
+
+        function showGoals() {
+            if (goals.length === 0) {
+                document.getElementById('goalsResult').innerHTML = '<p>還沒有設定任何目標</p>';
+                return;
+            }
+            
+            let html = '<h3>學習目標：</h3>';
+            goals.forEach((goal, index) => {
+                html += `
+                    <div style="border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 5px; ${goal.completed ? 'background: #e8f5e8;' : ''}">
+                        <p style="${goal.completed ? 'text-decoration: line-through;' : ''}">${goal.goal}</p>
+                        <small>設定日期：${goal.date}</small>
+                        <button onclick="toggleGoal(${index})" style="float: right; background: ${goal.completed ? '#28a745' : '#007bff'}; color: white; border: none; padding: 5px 10px; border-radius: 3px;">
+                            ${goal.completed ? '已完成' : '標記完成'}
+                        </button>
+                    </div>
+                `;
+            });
+            document.getElementById('goalsResult').innerHTML = html;
+        }
+
+        function toggleGoal(index) {
+            goals[index].completed = !goals[index].completed;
+            localStorage.setItem('goals', JSON.stringify(goals));
+            showGoals();
+        }
+
+        // 不規則動詞功能
+        function getVerbList(level) {
+            switch(level) {
+                case 'basic':
+                    return irregularVerbs.basic;
+                case 'intermediate':
+                    return irregularVerbs.intermediate;
+                case 'all':
+                    return [...irregularVerbs.basic, ...irregularVerbs.intermediate];
+                default:
+                    return irregularVerbs.basic;
+            }
+        }
+
+        function startIrregularTest() {
+            const level = document.getElementById('irregularLevel').value;
+            const mode = document.getElementById('practiceMode').value;
+            const verbList = getVerbList(level);
+            
+            generateIrregularQuestion(verbList, mode);
+        }
+
+        function generateIrregularQuestion(verbList, mode) {
+            const randomVerb = verbList[Math.floor(Math.random() * verbList.length)];
+            let question, answer, hint;
+            
+            switch(mode) {
+                case 'past':
+                    question = randomVerb.base;
+                    answer = randomVerb.past;
+                    hint = '請寫出過去式';
+                    break;
+                case 'pp':
+                    question = randomVerb.base;
+                    answer = randomVerb.pp;
+                    hint = '請寫出過去分詞';
+                    break;
+                case 'base':
+                    question = randomVerb.past;
+                    answer = randomVerb.base;
+                    hint = '請寫出原形';
+                    break;
+                case 'mixed':
+                    const modes = ['past', 'pp', 'base'];
+                    const randomMode = modes[Math.floor(Math.random() * modes.length)];
+                    return generateIrregularQuestion(verbList, randomMode);
+            }
+            
+            currentIrregularTest = {
+                verb: randomVerb,
+                question,
+                answer,
+                mode
+            };
+            
+            document.getElementById('irregularDisplay').innerHTML = `
+                <div style="text-align: center; margin: 20px 0;">
+                    <h3>${hint}</h3>
+                    <div style="font-size: 2em; color: #667eea; font-weight: bold; margin: 15px 0;">
+                        ${question}
+                    </div>
+                    <p style="color: #666; font-size: 0.9em;">意思：${randomVerb.meaning}</p>
+                    <input type="text" id="irregularAnswer" placeholder="輸入答案" style="font-size: 18px; text-align: center; margin: 10px 0;">
+                    <br>
+                    <button class="btn" onclick="checkIrregularAnswer()">檢查答案</button>
+                    <button class="btn" onclick="showAnswer()" style="background: #6c757d;">顯示答案</button>
+                </div>
+            `;
+            
+            document.getElementById('irregularAnswer').focus();
+        }
+
+        function checkIrregularAnswer() {
+            const userAnswer = document.getElementById('irregularAnswer').value.trim().toLowerCase();
+            const correctAnswer = currentIrregularTest.answer.toLowerCase();
+            const isCorrect = userAnswer === correctAnswer || 
+                             (correctAnswer.includes('/') && correctAnswer.split('/').some(ans => ans.trim() === userAnswer));
+            
+            irregularScore.total++;
+            if (isCorrect) {
+                irregularScore.correct++;
+                playSound('correct');
+            } else {
+                playSound('error');
+            }
+            
+            updateIrregularScore();
+            showIrregularResult(isCorrect);
+        }
+
+        function showAnswer() {
+            irregularScore.total++;
+            playSound('error'); // 顯示答案算錯誤
+            updateIrregularScore();
+            showIrregularResult(false, true);
+        }
+
+        function showIrregularResult(isCorrect, showedAnswer = false) {
+            const verb = currentIrregularTest.verb;
+            const userAnswer = document.getElementById('irregularAnswer').value.trim();
+            
+            let resultIcon = isCorrect ? '✅ 正確！' : '❌ 錯誤';
+            if (showedAnswer) resultIcon = '💡 答案揭曉';
+            
+            document.getElementById('irregularDisplay').innerHTML = `
+                <div style="text-align: center;">
+                    <h3>${resultIcon}</h3>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                        <h4>${verb.meaning}</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 10px 0;">
+                            <div>
+                                <strong>原形</strong><br>
+                                <span style="color: #007bff;">${verb.base}</span>
+                            </div>
+                            <div>
+                                <strong>過去式</strong><br>
+                                <span style="color: #28a745;">${verb.past}</span>
+                            </div>
+                            <div>
+                                <strong>過去分詞</strong><br>
+                                <span style="color: #dc3545;">${verb.pp}</span>
+                            </div>
+                        </div>
+                        ${!isCorrect && !showedAnswer ? `<p style="color: #666;">你的答案：${userAnswer}</p>` : ''}
+                    </div>
+                    <button class="btn" onclick="continueIrregularTest()">下一題</button>
+                    <button class="btn" onclick="startIrregularTest()" style="background: #28a745;">重新開始</button>
+                </div>
+            `;
+        }
+
+        function continueIrregularTest() {
+            const level = document.getElementById('irregularLevel').value;
+            const mode = document.getElementById('practiceMode').value;
+            const verbList = getVerbList(level);
+            generateIrregularQuestion(verbList, mode);
+        }
+
+        function updateIrregularScore() {
+            document.getElementById('irregularCorrect').textContent = irregularScore.correct;
+            document.getElementById('irregularTotal').textContent = irregularScore.total;
+            const rate = irregularScore.total > 0 ? Math.round((irregularScore.correct / irregularScore.total) * 100) : 0;
+            document.getElementById('irregularRate').textContent = rate + '%';
+        }
+
+        function showVerbList() {
+            const level = document.getElementById('irregularLevel').value;
+            const verbList = getVerbList(level);
+            
+            let html = `<h3>📚 ${level === 'basic' ? '基礎11個' : level === 'intermediate' ? '進階39個' : '全部50個'}不規則動詞</h3>`;
+            html += '<div style="max-height: 400px; overflow-y: auto;">';
+            
+            // 根據型態分組
+            const aaaVerbs = verbList.filter(v => v.base === v.past && v.past === v.pp);
+            const abbVerbs = verbList.filter(v => v.base !== v.past && v.past === v.pp);
+            const abcVerbs = verbList.filter(v => v.base !== v.past && v.past !== v.pp && v.base !== v.pp);
+            
+            if (aaaVerbs.length > 0) {
+                html += '<h4 style="color: #007bff;">AAA型（三態相同）</h4>';
+                aaaVerbs.forEach(verb => {
+                    html += `<div style="border: 1px solid #ddd; padding: 8px; margin: 5px 0; border-radius: 5px;">
+                        <strong>${verb.base}</strong> - ${verb.past} - ${verb.pp} <span style="color: #666;">(${verb.meaning})</span>
+                    </div>`;
+                });
+            }
+            
+            if (abbVerbs.length > 0) {
+                html += '<h4 style="color: #28a745;">ABB型（過去式=過去分詞）</h4>';
+                abbVerbs.forEach(verb => {
+                    html += `<div style="border: 1px solid #ddd; padding: 8px; margin: 5px 0; border-radius: 5px;">
+                        <strong>${verb.base}</strong> - ${verb.past} - ${verb.pp} <span style="color: #666;">(${verb.meaning})</span>
+                    </div>`;
+                });
+            }
+            
+            if (abcVerbs.length > 0) {
+                html += '<h4 style="color: #dc3545;">ABC型（三態皆不同）</h4>';
+                abcVerbs.forEach(verb => {
+                    html += `<div style="border: 1px solid #ddd; padding: 8px; margin: 5px 0; border-radius: 5px;">
+                        <strong>${verb.base}</strong> - ${verb.past} - ${verb.pp} <span style="color: #666;">(${verb.meaning})</span>
+                    </div>`;
+                });
+            }
+            
+            html += '</div>';
+            html += `<p style="margin-top: 15px; color: #666; font-size: 0.9em;">
+                💡 學習技巧：先掌握型態分組，AAA型最容易，ABC型需要多練習！
+            </p>`;
+            
+            document.getElementById('irregularDisplay').innerHTML = html;
+        }
+
+        // 初始化
+        updateWordCount();
+        document.getElementById('questionCount').textContent = questions.length;
+        updateLearningProgress(); // 初始化學習進度
+        
+        // 添加全域錯誤處理
+        window.addEventListener('error', function(e) {
+            console.error('發生錯誤:', e.error);
+        });
+        
+        // 測試函數是否正常定義
+        console.log('應用已初始化');
+        console.log('單字數量:', vocabulary.length);
+        console.log('問題數量:', questions.length);
+        console.log('錯題數量:', errors.length);
+        console.log('筆記數量:', notes.length);
+        
+        // 請求通知權限
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+        
+        // 初始化計時器顯示
+        resetTimer();
+        
+        // 初始化錯題統計
+        updateErrorStats();
+        
+        // 鍵盤事件
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const activeElement = document.activeElement;
+                if (activeElement.id === 'mathAnswer') {
+                    checkMathAnswer();
+                } else if (activeElement.id === 'irregularAnswer') {
+                    checkIrregularAnswer();
+                } else if (activeElement.id === 'reviewAnswer') {
+                    // 從activeElement找到對應的錯題ID
+                    const errorItem = activeElement.closest('.error-item');
+                    if (errorItem) {
+                        const buttons = errorItem.getElementsByTagName('button');
+                        for (let btn of buttons) {
+                            if (btn.textContent === '提交答案') {
+                                btn.click();
+                                break;
+                            }
+                        }
+                    }
+                } else if (activeElement.id === 'wordTestAnswer') {
+                    checkWordAnswer();
+                } else if (activeElement.id === 'exampleAnswer') {
+                    checkExampleAnswer();
+                } else if (activeElement.id === 'spellingAnswer') {
+                    checkSpellingAnswer();
+                } else if (activeElement.id === 'quizAnswer') {
+                    checkQuizAnswer();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
