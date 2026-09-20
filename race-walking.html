@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 競走步態智慧判斷與矯正系統 (Race Walking Analyzer)</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text); padding: 16px; display: flex; flex-direction: column; align-items: center; }
+    header { text-align: center; margin-bottom: 16px; width: 100%; max-width: 1000px; }
+    h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 6px; }
+    p.subtitle { font-size: 0.85rem; color: var(--text-muted); }
+
+    .main-container { display: flex; flex-direction: column; width: 100%; max-width: 1000px; gap: 16px; }
+    @media(min-width: 768px) {
+      .main-container { flex-direction: row; align-items: flex-start; }
+    }
+
+    .video-panel { flex: 1.5; background: var(--card-bg); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; align-items: center; }
+    .viewport { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; cursor: crosshair; }
+    video { width: 100%; height: 100%; object-fit: contain; }
+    canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+
+    .hud-badge {
+      position: absolute; top: 12px; left: 12px; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 0.9rem;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2);
+    }
+    .hud-badge.violation { background: rgba(239, 68, 68, 0.85); color: #fff; animation: blink 0.5s infinite alternate; }
+    @keyframes blink { from { opacity: 0.7; } to { opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .hud-badge.violation { animation: none; } }
+
+    .hud-target {
+      position: absolute; bottom: 12px; left: 12px; padding: 5px 10px; border-radius: 6px; font-size: 0.78rem;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted);
+    }
+    .hud-target.locked { color: var(--accent); border-color: rgba(56,189,248,0.6); }
+    .hud-clock {
+      position: absolute; bottom: 12px; right: 12px; padding: 5px 10px; border-radius: 6px; font-size: 0.78rem;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2);
+      color: var(--text-muted); font-variant-numeric: tabular-nums;
+    }
+
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; margin-top: 12px; justify-content: center; }
+    button, label.btn-upload {
+      background: #334155; color: #fff; border: 1px solid #475569; padding: 8px 14px; border-radius: 6px;
+      font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    button:hover, label.btn-upload:hover { background: #475569; }
+    button.active { background: var(--accent); color: #0f172a; border-color: var(--accent); font-weight: bold; }
+    button:focus-visible, label.btn-upload:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .prog-wrap { width: 100%; margin-top: 10px; }
+    .prog-track { width: 100%; height: 6px; background: #0f172a; border-radius: 3px; overflow: hidden; }
+    .prog-bar { height: 100%; width: 0; background: var(--accent); transition: width 0.3s linear; }
+    .prog-row { display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      margin-top: 6px; font-size: 0.75rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .chk { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+    .chk input { accent-color: var(--accent); }
+
+    .perf { width: 100%; margin-top: 10px; display: flex; flex-direction: column; gap: 6px;
+      border-top: 1px solid #334155; padding-top: 10px; }
+    .perf-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .perf-label { font-size: 0.72rem; color: var(--text-muted); width: 68px; flex: none; }
+    button.mini { padding: 4px 10px; font-size: 0.72rem; border-radius: 5px; }
+
+    .dashboard-panel { flex: 1; display: flex; flex-direction: column; gap: 12px; width: 100%; }
+    .card { background: var(--card-bg); border-radius: 12px; padding: 14px; border: 1px solid #334155; }
+    .card h2 { font-size: 1rem; color: #cbd5e1; margin-bottom: 10px; border-bottom: 1px solid #334155; padding-bottom: 6px; }
+
+    .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .metric-box { background: #0f172a; padding: 10px; border-radius: 8px; text-align: center; }
+    .metric-title { font-size: 0.75rem; color: var(--text-muted); }
+    .metric-value { font-size: 1.3rem; font-weight: bold; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .metric-value.sm { font-size: 1.05rem; }
+
+    .tuner { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; }
+    .tuner label { font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between; }
+    .tuner label b { color: var(--text); font-variant-numeric: tabular-nums; }
+    input[type=range] { width: 100%; accent-color: var(--accent); }
+
+    .violation-log { display: flex; flex-direction: column; gap: 6px; max-height: 140px; overflow-y: auto; font-size: 0.8rem; }
+    .log-item { padding: 6px 8px; border-radius: 4px; display: flex; justify-content: space-between; gap: 8px; background: #0f172a; }
+    .log-item.bent-knee { border-left: 3px solid var(--danger); }
+    .log-item.loss-contact { border-left: 3px solid var(--warning); }
+    .log-item.info { border-left: 3px solid var(--accent); }
+
+    .coach-box { background: #0c4a6e; border: 1px solid #0284c7; border-radius: 8px; padding: 10px; font-size: 0.85rem; line-height: 1.4; }
+    .rules-ref { font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; margin-top: 6px; }
+  </style>
+
+  <script>
+    // ESM 靜態 import 失敗時整個 module 會被中止，這裡提供逾時提示
+    window.__rwBooted = false;
+    setTimeout(function () {
+      var b = document.getElementById("hudBadge");
+      if (!window.__rwBooted && b && b.innerText.indexOf("初始化") >= 0) {
+        b.innerText = "無法載入 MediaPipe（請確認網路連線）";
+      }
+    }, 12000);
+  </script>
+
+  <script type="module">
+    window.__rwBooted = true;
+    import {
+      PoseLandmarker,
+      FilesetResolver,
+      DrawingUtils
+    } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
+
+    // ── 效能設定 ──────────────────────────────────────────────
+    let numPoses = 1;          // 同時偵測人數（1 最快）
+    let detectRate = 20;       // 每秒偵測次數（影片模式以「影片時間」計）
+    let inputWidth = 640;      // 送進模型的影像寬度（0 = 原生）
+    const work = document.createElement("canvas");
+    const workCtx = work.getContext("2d", { willReadFrequently: false });
+
+    let poseLandmarker = null;
+    let isWebcam = false;
+    let audioCtx = null;
+    let loopRunning = false;
+    let lastTs = -1;
+
+    const video = document.getElementById("videoElement");
+    const canvas = document.getElementById("canvasElement");
+    const ctx = canvas.getContext("2d");
+    const drawingUtils = new DrawingUtils(ctx);
+    const viewport = document.getElementById("viewport");
+
+    const btnWebcam = document.getElementById("btnWebcam");
+    const btnPlay = document.getElementById("btnPlay");
+    const btnStep = document.getElementById("btnStep");
+    const btnUnlock = document.getElementById("btnUnlock");
+    const fileInput = document.getElementById("fileInput");
+    const hudBadge = document.getElementById("hudBadge");
+    const hudTarget = document.getElementById("hudTarget");
+    const hudClock = document.getElementById("hudClock");
+    const leftKneeAngleEl = document.getElementById("leftKneeAngle");
+    const rightKneeAngleEl = document.getElementById("rightKneeAngle");
+    const bentKneeCountEl = document.getElementById("bentKneeCount");
+    const flightCountEl = document.getElementById("flightCount");
+    const durationEl = document.getElementById("duration");
+    const stepCountEl = document.getElementById("stepCount");
+    const recentEl = document.getElementById("recent");
+    const rateEl = document.getElementById("rate");
+    const adviceTextEl = document.getElementById("adviceText");
+    const logListEl = document.getElementById("logList");
+    const progWrap = document.getElementById("progWrap");
+    const progBar = document.getElementById("progBar");
+    const progText = document.getElementById("progText");
+    const loopChk = document.getElementById("loopChk");
+    const kneeThEl = document.getElementById("kneeTh");
+    const kneeThVal = document.getElementById("kneeThVal");
+    const footTolEl = document.getElementById("footTol");
+    const footTolVal = document.getElementById("footTolVal");
+
+    let KNEE_TH = 175;
+    let FOOT_TOL = 0.025;
+
+    // ── 判定狀態（僅針對鎖定的選手） ──────────────────────────
+    let bentKneeViolations = 0, flightViolations = 0, stepCount = 0;
+    const groundBuf = [];
+    let groundY = 0.9;
+    const dirBuf = [];
+    let flightFrames = 0, flightLatched = false;
+    const legState = { L: { contact: false, flagged: false, low: 0 }, R: { contact: false, flagged: false, low: 0 } };
+
+    // ── 連續監測統計 ─────────────────────────────────────────
+    let sessionStart = 0, sessionElapsed = 0, lastTick = 0;
+    const eventTimes = { bent: [], flight: [] };
+
+    // ── 目標鎖定 ─────────────────────────────────────────────
+    let lockedAt = null;      // 上一次鎖定對象的髖中心 {x,y}
+    let lockedVel = { x: 0, y: 0 };
+    let lockedBox = null;     // 上一次的骨架外框
+    let lockedIndex = -1;     // 本幀對應的 pose 索引
+    let missFrames = 0;
+    let lockedLabel = 0;      // 鎖定當下配發的編號，之後固定不變
+
+    function playBeep(freq = 440, duration = 0.1) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn("Audio warning skipped", e);
+      }
+    }
+
+    async function initMediaPipe() {
+      hudBadge.innerText = "載入 AI 模型中...";
+      try {
+        const vision = await FilesetResolver.forVisionTasks(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
+        );
+        const opts = (delegate) => ({
+          baseOptions: {
+            modelAssetPath: "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
+            delegate
+          },
+          runningMode: "VIDEO",
+          numPoses
+        });
+        try {
+          poseLandmarker = await PoseLandmarker.createFromOptions(vision, opts("GPU"));
+        } catch (gpuErr) {
+          console.warn("GPU delegate unavailable, falling back to CPU", gpuErr);
+          poseLandmarker = await PoseLandmarker.createFromOptions(vision, opts("CPU"));
+        }
+        hudBadge.innerText = "系統就緒 (請選擇相機或影片)";
+      } catch (err) {
+        hudBadge.innerText = "模型載入失敗（請檢查網路連線）";
+        console.error(err);
+      }
+    }
+    initMediaPipe();
+
+    function calculateAngle(a, b, c) {
+      const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
+      let angle = Math.abs((radians * 180.0) / Math.PI);
+      if (angle > 180.0) angle = 360 - angle;
+      return angle;
+    }
+
+    function resetGait() {                 // 換人／歸零時清掉步態狀態
+      groundBuf.length = 0; dirBuf.length = 0; groundY = 0.9;
+      flightFrames = 0; flightLatched = false;
+      legState.L = { contact: false, flagged: false, low: 0 };
+      legState.R = { contact: false, flagged: false, low: 0 };
+    }
+
+    function resetAll() {
+      bentKneeViolations = 0; flightViolations = 0; stepCount = 0;
+      bentKneeCountEl.innerText = "0"; flightCountEl.innerText = "0"; stepCountEl.innerText = "0";
+      eventTimes.bent.length = 0; eventTimes.flight.length = 0;
+      sessionElapsed = 0; sessionStart = performance.now();
+      lastTs = -1;
+      resetGait(); hintShown = false;
+      logListEl.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 8px;">尚無違規事件</div>';
+      updateStats();
+    }
+
+    function startLoop() {
+      if (loopRunning) return;
+      loopRunning = true;
+      sessionStart = performance.now();
+      lastTick = sessionStart;
+      requestAnimationFrame(renderLoop);
+    }
+
+    btnWebcam.addEventListener("click", async () => {
+      if (!poseLandmarker) return;
+      video.removeAttribute("src");
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } }
+        });
+        video.srcObject = stream;
+        isWebcam = true;
+        btnWebcam.classList.add("active");
+        btnPlay.disabled = true; btnStep.disabled = true;
+        hudBadge.className = "hud-badge";
+        hudBadge.innerText = "即時鏡頭監測中";
+        unlockTarget(false);
+        resetAll();
+        video.onloadeddata = startLoop;
+        await video.play();
+      } catch (err) {
+        alert("無法開啟相機: " + err.message);
+      }
+    });
+
+    fileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+      }
+      isWebcam = false;
+      btnWebcam.classList.remove("active");
+      btnPlay.disabled = false; btnStep.disabled = false;
+      video.src = URL.createObjectURL(file);
+      video.loop = loopChk.checked;
+      video.playbackRate = currentRate;
+      hudBadge.className = "hud-badge";
+      hudBadge.innerText = "影片分析中";
+      unlockTarget(false);
+      resetAll();
+      video.onloadeddata = startLoop;
+      video.play();
+    });
+
+    let currentRate = 1.0;
+    document.querySelectorAll(".speed-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".speed-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentRate = parseFloat(btn.dataset.speed);
+        video.playbackRate = currentRate;
+      });
+    });
+    btnPlay.addEventListener("click", () => {
+      if (isWebcam || !video.src) return;
+      if (video.paused) { video.play(); btnPlay.innerText = "⏸ 暫停"; }
+      else { video.pause(); btnPlay.innerText = "▶ 播放"; }
+    });
+    btnStep.addEventListener("click", () => {
+      if (isWebcam || !video.src) return;
+      video.pause(); btnPlay.innerText = "▶ 播放";
+      video.currentTime = Math.min(video.duration || 1e9, video.currentTime + 1 / 30);
+    });
+    btnUnlock.addEventListener("click", () => unlockTarget(true));
+
+    // ── 效能設定 ──────────────────────────────────────────────
+    async function applyPoses(n) {
+      numPoses = n;
+      if (!poseLandmarker) return;
+      try { await poseLandmarker.setOptions({ numPoses: n }); }
+      catch (e) { console.warn("setOptions(numPoses) failed", e); }
+      unlockTarget(false);
+    }
+    document.querySelectorAll("[data-poses]").forEach(b => b.addEventListener("click", () => {
+      document.querySelectorAll("[data-poses]").forEach(x => x.classList.remove("active"));
+      b.classList.add("active"); applyPoses(+b.dataset.poses);
+    }));
+    document.querySelectorAll("[data-rate]").forEach(b => b.addEventListener("click", () => {
+      document.querySelectorAll("[data-rate]").forEach(x => x.classList.remove("active"));
+      b.classList.add("active"); detectRate = +b.dataset.rate;
+    }));
+    document.querySelectorAll("[data-res]").forEach(b => b.addEventListener("click", () => {
+      document.querySelectorAll("[data-res]").forEach(x => x.classList.remove("active"));
+      b.classList.add("active"); inputWidth = +b.dataset.res;
+    }));
+    loopChk.addEventListener("change", () => { video.loop = loopChk.checked; });
+
+    video.addEventListener("ended", () => {
+      const mins = sessionElapsed / 60000;
+      const rate = stepCount ? (bentKneeViolations / stepCount * 100).toFixed(1) : "0.0";
+      adviceTextEl.innerHTML =
+        `<strong>分析完成。</strong>共判讀 ${stepCount} 步，屈膝違規 ${bentKneeViolations} 次（${rate}% 的步伐）、` +
+        `騰空違規 ${flightViolations} 次，耗時 ${fmtDur(sessionElapsed)}。` +
+        (bentKneeViolations + flightViolations === 0
+          ? " 全程未偵測到違規。" : " 可用逐格模式回看事件紀錄中的時間點。");
+      addLog("分析完成", `${stepCount} 步 / 屈膝 ${bentKneeViolations} / 騰空 ${flightViolations}`, "info");
+      btnPlay.innerText = "▶ 播放";
+    });
+    document.getElementById("btnReset").addEventListener("click", resetAll);
+    kneeThEl.addEventListener("input", () => { KNEE_TH = +kneeThEl.value; kneeThVal.innerText = KNEE_TH + "°"; });
+    footTolEl.addEventListener("input", () => { FOOT_TOL = +footTolEl.value / 1000; footTolVal.innerText = (footTolEl.value / 10).toFixed(1) + "%"; });
+
+    // ── 點選畫面鎖定選手 ──────────────────────────────────────
+    let pendingClick = null;
+    viewport.addEventListener("click", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      if (!canvas.width || !canvas.height) return;
+      const scale = Math.min(rect.width / canvas.width, rect.height / canvas.height);
+      const dispW = canvas.width * scale, dispH = canvas.height * scale;
+      const ox = (rect.width - dispW) / 2, oy = (rect.height - dispH) / 2;
+      const nx = (e.clientX - rect.left - ox) / dispW;
+      const ny = (e.clientY - rect.top - oy) / dispH;
+      if (nx < 0 || nx > 1 || ny < 0 || ny > 1) return;
+      pendingClick = { x: nx, y: ny };
+    });
+
+    function unlockTarget(announce) {
+      lockedAt = null; lockedIndex = -1; missFrames = 0; lockedBox = null; lockedVel = { x: 0, y: 0 };
+      resetGait();
+      leftKneeAngleEl.innerText = "--°"; rightKneeAngleEl.innerText = "--°";
+      hudTarget.className = "hud-target";
+      hudTarget.innerText = "未鎖定 — 點選畫面中的選手";
+      if (announce) addLog("目標解除", "請點選要判讀的選手", "info");
+    }
+    unlockTarget(false);
+
+    function centroid(lm) {
+      return { x: (lm[23].x + lm[24].x) / 2, y: (lm[23].y + lm[24].y) / 2 };
+    }
+    function bbox(lm) {
+      let x0 = 1, y0 = 1, x1 = 0, y1 = 0;
+      for (const p of lm) {
+        if (p.visibility !== undefined && p.visibility < 0.35) continue;
+        if (p.x < x0) x0 = p.x; if (p.x > x1) x1 = p.x;
+        if (p.y < y0) y0 = p.y; if (p.y > y1) y1 = p.y;
+      }
+      if (x1 <= x0 || y1 <= y0) return null;
+      return { x0, y0, x1, y1, w: x1 - x0, h: y1 - y0, cx: (x0 + x1) / 2, cy: (y0 + y1) / 2 };
+    }
+    function iou(a, b) {
+      if (!a || !b) return 0;
+      const ix = Math.max(0, Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0));
+      const iy = Math.max(0, Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0));
+      const inter = ix * iy;
+      const uni = a.w * a.h + b.w * b.h - inter;
+      return uni > 0 ? inter / uni : 0;
+    }
+
+    function stamp() {
+      return isWebcam ? new Date().toLocaleTimeString().split(" ")[0]
+                      : video.currentTime.toFixed(2) + "s";
+    }
+
+    function fmtDur(ms) {
+      const s = Math.floor(ms / 1000);
+      return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+    }
+
+    function updateStats() {
+      const now = performance.now();
+      durationEl.innerText = fmtDur(sessionElapsed);
+      hudClock.innerText = "監測 " + fmtDur(sessionElapsed) +
+                           (fpsEma ? " · " + Math.round(fpsEma) + " fps" : "");
+      if (!isWebcam && video.duration) {
+        const pct = (video.currentTime / video.duration) * 100;
+        progBar.style.width = pct.toFixed(1) + "%";
+        progText.innerText = "分析進度 " + pct.toFixed(0) + "%　" +
+                             video.currentTime.toFixed(1) + " / " + video.duration.toFixed(1) + "s";
+        progWrap.hidden = false;
+      } else {
+        progWrap.hidden = true;
+      }
+      stepCountEl.innerText = stepCount;
+      const cut = now - 60000;
+      const rb = eventTimes.bent.filter(t => t > cut).length;
+      const rf = eventTimes.flight.filter(t => t > cut).length;
+      recentEl.innerText = rb + " / " + rf;
+      const mins = sessionElapsed / 60000;
+      if (mins > 0.1) {
+        rateEl.innerText = (bentKneeViolations / mins).toFixed(1) + " / " + (flightViolations / mins).toFixed(1);
+      } else {
+        rateEl.innerText = "-- / --";
+      }
+      // 違規率高到不合常理時，多半是拍攝角度造成 2D 角度低估
+      if (stepCount > 25 && bentKneeViolations / stepCount > 0.35 && !hintShown) {
+        hintShown = true;
+        adviceTextEl.innerHTML =
+          "<strong>違規率偏高，請先檢查拍攝角度。</strong>目前 " + stepCount + " 步中有 " +
+          bentKneeViolations + " 步被判屈膝（" + (bentKneeViolations / stepCount * 100).toFixed(0) +
+          "%）。實際比賽中這個比例極罕見，通常代表影片不是正側面拍攝——" +
+          "斜角會讓 2D 投影的膝角系統性偏低。建議把「屈膝判定門檻」降到 <b>168–172°</b> 再比較相對差異，" +
+          "絕對角度僅在正側面、鏡頭與髖同高時才具參考價值。";
+      }
+      // 長時間監測：只保留近 10 分鐘的事件時間戳
+      const keep = now - 600000;
+      eventTimes.bent = eventTimes.bent.filter(t => t > keep);
+      eventTimes.flight = eventTimes.flight.filter(t => t > keep);
+    }
+
+    let lastStatsUpdate = 0, hintShown = false;
+    let lastDetectWall = 0, lastDetectVid = -1, fpsEma = 0;
+
+    function renderLoop() {
+      requestAnimationFrame(renderLoop);
+      if (!poseLandmarker || video.readyState < 2) return;
+
+      const nowPerf = performance.now();
+      const active = !video.paused && !video.ended;
+      if (active) sessionElapsed += Math.min(200, nowPerf - lastTick);
+      lastTick = nowPerf;
+      if (nowPerf - lastStatsUpdate > 400) { updateStats(); lastStatsUpdate = nowPerf; }
+      if (!active && !pendingClick) return;
+
+      // ── 偵測節流 ────────────────────────────────────────────
+      // 相機：以「實際時間」節流。影片：以「影片時間」節流，
+      // 所以放慢播放速度只會拉長運算時間，不會重複偵測同一幀。
+      if (!pendingClick) {
+        if (isWebcam) {
+          if (nowPerf - lastDetectWall < 1000 / detectRate) return;
+        } else {
+          const vt = video.currentTime;
+          if (vt >= lastDetectVid && vt - lastDetectVid < 1 / detectRate) return;
+          if (vt < lastDetectVid) lastDetectVid = -1;   // 使用者拖動進度
+        }
+      }
+      const dt = nowPerf - lastDetectWall;
+      if (dt > 0 && dt < 2000) fpsEma = fpsEma ? fpsEma * 0.85 + (1000 / dt) * 0.15 : 1000 / dt;
+      lastDetectWall = nowPerf;
+      lastDetectVid = video.currentTime;
+
+      // 疊圖畫布上限 960px 寬，降低繪製成本
+      const vw = video.videoWidth, vh = video.videoHeight;
+      if (!vw || !vh) return;
+      const ow = Math.min(960, vw), oh = Math.round(ow * vh / vw);
+      if (canvas.width !== ow || canvas.height !== oh) { canvas.width = ow; canvas.height = oh; }
+
+      // 送進模型前先降解析度（姿態座標為正規化值，不需換算）
+      let source = video;
+      if (inputWidth && vw > inputWidth) {
+        const iw = inputWidth, ih = Math.round(iw * vh / vw);
+        if (work.width !== iw || work.height !== ih) { work.width = iw; work.height = ih; }
+        workCtx.drawImage(video, 0, 0, iw, ih);
+        source = work;
+      }
+
+      let ts = isWebcam ? nowPerf : video.currentTime * 1000;
+      if (ts <= lastTs) {
+        if (isWebcam) return;
+        ts = lastTs + 1;
+      }
+      lastTs = ts;
+
+      let results;
+      try {
+        results = poseLandmarker.detectForVideo(source, ts);
+      } catch (err) {
+        console.warn("detectForVideo skipped", err);
+        return;
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const poses = results.landmarks || [];
+      if (poses.length === 0) {
+        pendingClick = null;
+        hudBadge.className = "hud-badge";
+        hudBadge.innerText = "未偵測到人體";
+        return;
+      }
+
+      // ── 目標選取與追蹤 ──────────────────────────────────────
+      const cents = poses.map(centroid);
+      const boxes = poses.map(bbox);
+
+      if (pendingClick) {
+        // 點到誰就鎖誰：優先取「外框包含點擊位置」的人，多人重疊時取框最小的；
+        // 都沒命中才退而求其次找最近的外框。
+        let best = -1, bestArea = 1e9;
+        boxes.forEach((b, i) => {
+          if (!b) return;
+          const pad = 0.02;
+          if (pendingClick.x >= b.x0 - pad && pendingClick.x <= b.x1 + pad &&
+              pendingClick.y >= b.y0 - pad && pendingClick.y <= b.y1 + pad) {
+            const area = b.w * b.h;
+            if (area < bestArea) { bestArea = area; best = i; }
+          }
+        });
+        if (best < 0) {
+          let bestD = 1e9;
+          boxes.forEach((b, i) => {
+            if (!b) return;
+            const dx = Math.max(b.x0 - pendingClick.x, 0, pendingClick.x - b.x1);
+            const dy = Math.max(b.y0 - pendingClick.y, 0, pendingClick.y - b.y1);
+            const d = Math.hypot(dx, dy);
+            if (d < bestD) { bestD = d; best = i; }
+          });
+          if (bestD > 0.2) best = -1;
+        }
+        if (best >= 0) {
+          lockedIndex = best; lockedAt = cents[best]; lockedBox = boxes[best];
+          lockedVel = { x: 0, y: 0 }; missFrames = 0;
+          lockedLabel = (lockedLabel % 9) + 1;        // 固定編號，不隨偵測順序跳動
+          resetGait();
+          hudTarget.className = "hud-target locked";
+          addLog("已鎖定選手", "#" + lockedLabel, "info");
+        } else {
+          addLog("未選到人", "請點在選手身上", "info");
+        }
+        pendingClick = null;
+      } else if (lockedAt) {
+        // 以「位置預測 + 外框重疊 + 體型相近」綜合評分延續追蹤，
+        // 單純比髖中心距離在選手交錯時會跳到旁邊的人。
+        const pred = { x: lockedAt.x + lockedVel.x, y: lockedAt.y + lockedVel.y };
+        const refH = lockedBox ? lockedBox.h : 0.5;
+        let best = -1, bestScore = 1e9, second = 1e9;
+        cents.forEach((c, i) => {
+          const b = boxes[i];
+          const dist = Math.hypot(c.x - pred.x, c.y - pred.y) / Math.max(0.15, refH);
+          const overlap = 1 - iou(lockedBox, b);
+          const sizeDiff = b && lockedBox ? Math.abs(b.h - lockedBox.h) / Math.max(0.05, lockedBox.h) : 1;
+          const score = dist * 1.0 + overlap * 0.8 + sizeDiff * 0.5;
+          if (score < bestScore) { second = bestScore; bestScore = score; best = i; }
+          else if (score < second) { second = score; }
+        });
+        // 兩個人分數太接近時視為分不清，寧可暫時不判讀也不要鎖錯人
+        const ambiguous = poses.length > 1 && (second - bestScore) < 0.18;
+        if (best >= 0 && bestScore < 1.6 && !ambiguous) {
+          lockedIndex = best; missFrames = 0;
+          const c = cents[best];
+          lockedVel = { x: (c.x - lockedAt.x) * 0.6 + lockedVel.x * 0.4,
+                        y: (c.y - lockedAt.y) * 0.6 + lockedVel.y * 0.4 };
+          lockedAt = c;
+          lockedBox = boxes[best] || lockedBox;
+        } else {
+          lockedIndex = -1; missFrames++;
+          lockedAt = { x: lockedAt.x + lockedVel.x, y: lockedAt.y + lockedVel.y };   // 靠預測撐過遮擋
+          if (missFrames > Math.max(20, detectRate)) {
+            unlockTarget(false);
+            hudTarget.innerText = "追蹤目標遺失 — 請重新點選";
+          }
+        }
+      } else if (poses.length === 1) {
+        lockedIndex = 0; lockedAt = cents[0]; lockedBox = boxes[0]; lockedLabel = 1;
+        hudTarget.className = "hud-target locked";
+      }
+
+      // ── 繪製所有人：鎖定者高亮，其餘灰階 ────────────────────
+      let isBentKnee = false, isFlight = false;
+
+      // 未鎖定者畫成灰色骨架並標「點我」，鎖定者以外框 + 編號明確標示
+      poses.forEach((lm, i) => {
+        if (i === lockedIndex) return;
+        drawingUtils.drawConnectors(lm, PoseLandmarker.POSE_CONNECTIONS, { color: "#475569", lineWidth: 2 });
+        const b = boxes[i];
+        if (!b) return;
+        ctx.save();
+        ctx.strokeStyle = "rgba(100,116,139,0.6)";
+        ctx.lineWidth = 2; ctx.setLineDash([5, 5]);
+        ctx.strokeRect(b.x0 * canvas.width, b.y0 * canvas.height, b.w * canvas.width, b.h * canvas.height);
+        ctx.restore();
+      });
+
+      if (lockedIndex >= 0 && boxes[lockedIndex]) {
+        const b = boxes[lockedIndex];
+        const fs = Math.max(13, Math.round(canvas.height * 0.034));
+        ctx.save();
+        ctx.strokeStyle = "#38bdf8"; ctx.lineWidth = 3;
+        ctx.strokeRect(b.x0 * canvas.width, b.y0 * canvas.height, b.w * canvas.width, b.h * canvas.height);
+        const tx = b.x0 * canvas.width, ty = b.y0 * canvas.height;
+        ctx.fillStyle = "#38bdf8";
+        ctx.fillRect(tx, Math.max(0, ty - fs * 1.35), fs * 3.6, fs * 1.35);
+        ctx.fillStyle = "#0f172a";
+        ctx.font = `bold ${fs}px -apple-system, sans-serif`;
+        ctx.textBaseline = "middle";
+        ctx.fillText("🎯 #" + lockedLabel, tx + fs * 0.3, Math.max(fs * 0.7, ty - fs * 0.67));
+        ctx.restore();
+      }
+
+      if (lockedIndex < 0) {
+        hudBadge.className = "hud-badge";
+        hudBadge.innerText = poses.length + " 人在畫面中 — 點選要判讀的選手";
+        return;
+      }
+
+      // ── 以下僅針對鎖定的選手判讀 ────────────────────────────
+      const lm = poses[lockedIndex];
+      const leftHip = lm[23], leftKnee = lm[25], leftAnkle = lm[27], leftHeel = lm[29], leftToe = lm[31];
+      const rightHip = lm[24], rightKnee = lm[26], rightAnkle = lm[28], rightHeel = lm[30], rightToe = lm[32];
+
+      const leftAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
+      const rightAngle = calculateAngle(rightHip, rightKnee, rightAnkle);
+      leftKneeAngleEl.innerText = Math.round(leftAngle) + "°";
+      rightKneeAngleEl.innerText = Math.round(rightAngle) + "°";
+      hudTarget.className = "hud-target locked";
+      hudTarget.innerText = "🎯 鎖定選手 #" + lockedLabel + "（共 " + poses.length + " 人）";
+
+      // ── 觸地判定：改以「選手自身」為參考座標 ────────────────
+      // 用畫面絕對高度當地面線，遇到轉播鏡頭平移／推拉就會整條漂掉，
+      // 造成大量假騰空。改成量測「足部低於髖部多少個軀幹長」，
+      // 支撐腳的這個值會接近固定（＝腿長），完全不受鏡頭運動影響。
+      const hipYm = (leftHip.y + rightHip.y) / 2;
+      const shYm = (lm[11].y + lm[12].y) / 2;
+      let scale = Math.abs(hipYm - shYm);
+      if (!(scale > 0.02)) scale = 0.15;                    // 軀幹長（正規化單位）
+      const footY = { L: Math.max(leftHeel.y, leftToe.y), R: Math.max(rightHeel.y, rightToe.y) };
+      const drop = { L: (footY.L - hipYm) / scale, R: (footY.R - hipYm) / scale };
+
+      groundBuf.push(Math.max(drop.L, drop.R));             // 支撐腳的伸展量
+      const win = Math.max(40, Math.round(detectRate * 2.5));
+      while (groundBuf.length > win) groundBuf.shift();
+      const sorted = [...groundBuf].sort((a, b) => a - b);
+      const reachMax = sorted[Math.floor(sorted.length * 0.93)];
+      const tolN = FOOT_TOL / 0.15;                         // 容差換算成軀幹長單位
+      const contact = { L: (reachMax - drop.L) < tolN, R: (reachMax - drop.R) < tolN };
+      groundY = hipYm + reachMax * scale;                   // 供畫面繪製
+
+      // 行進方向：足尖領先足跟
+      dirBuf.push(((leftToe.x - leftHeel.x) + (rightToe.x - rightHeel.x)) / 2);
+      if (dirBuf.length > 45) dirBuf.shift();
+      const fd = dirBuf.reduce((a, b) => a + b, 0) / dirBuf.length;
+      const dir = Math.abs(fd) > 0.004 ? Math.sign(fd) : 0;
+
+      // 規則 B：騰空判定
+      const feetSeen = Math.min(leftHeel.visibility ?? 1, rightHeel.visibility ?? 1,
+                                leftToe.visibility ?? 1, rightToe.visibility ?? 1) > 0.5;
+      if (!contact.L && !contact.R && feetSeen) {
+        flightFrames++;
+        isFlight = flightFrames >= 2;
+        if (isFlight && !flightLatched) {
+          flightLatched = true;
+          flightViolations++;
+          flightCountEl.innerText = flightViolations;
+          eventTimes.flight.push(performance.now());
+          playBeep(350, 0.15);
+          const gap = ((reachMax - Math.max(drop.L, drop.R)) * 100).toFixed(0);
+          addLog("騰空違規 (~)", `#${lockedLabel} 雙腳同時離地 ${gap}% 軀幹長`, "loss-contact");
+          adviceTextEl.innerText = "建議：壓低重心，減少向上彈跳；透過骨盆的前後左右旋轉來擴大步幅，勿用力往後推蹬。";
+        }
+      } else {
+        flightFrames = 0; flightLatched = false;
+      }
+
+      // 規則 A：屈膝判定（初著地 → 通過垂直線）
+      const hipX = (leftHip.x + rightHip.x) / 2;
+      const vis = (...ps) => Math.min(...ps.map(p => p.visibility ?? 1));
+      const legs = {
+        L: { rel: leftAnkle.x - hipX, ang: leftAngle, contact: contact.L, name: "左",
+             seen: vis(leftHip, leftKnee, leftAnkle) > 0.5 },
+        R: { rel: rightAnkle.x - hipX, ang: rightAngle, contact: contact.R, name: "右",
+             seen: vis(rightHip, rightKnee, rightAnkle) > 0.5 }
+      };
+      for (const k of ["L", "R"]) {
+        const st = legState[k], p = legs[k];
+        if (p.contact && !st.contact) { st.contact = true; st.flagged = false; st.low = 0; stepCount++; }
+        else if (!p.contact && st.contact) { st.contact = false; st.low = 0; }
+
+        // 視窗內仍需踝在髖之前，門檻改以軀幹長為單位
+        const ahead = st.contact && p.seen && dir !== 0 &&
+                      Math.sign(p.rel) === dir && Math.abs(p.rel) > scale * 0.15;
+        // 連續兩次偵測都低於門檻才記錄，避免單幀雜訊誤判
+        if (ahead && p.ang < KNEE_TH) st.low = (st.low || 0) + 1; else st.low = 0;
+        if (ahead && st.low >= 2) {
+          isBentKnee = true;
+          if (!st.flagged) {
+            st.flagged = true;
+            bentKneeViolations++;
+            bentKneeCountEl.innerText = bentKneeViolations;
+            eventTimes.bent.push(performance.now());
+            playBeep(650, 0.12);
+            addLog("屈膝違規 (>)", `#${lockedLabel} ${p.name}腿支撐期 ${Math.round(p.ang)}°`, "bent-knee");
+            adviceTextEl.innerText = "建議：前腳著地瞬間應主動伸直膝關節，並收緊股四頭肌，避免以彎曲膝蓋著地緩衝。";
+          }
+        }
+      }
+
+      drawingUtils.drawConnectors(lm, PoseLandmarker.POSE_CONNECTIONS, {
+        color: (isBentKnee || isFlight) ? "#ef4444" : "#22c55e",
+        lineWidth: 4
+      });
+      drawingUtils.drawLandmarks(lm, { color: "#38bdf8", radius: 4 });
+
+      // 地面基準線視覺化
+      ctx.save();
+      ctx.strokeStyle = "rgba(148,163,184,0.55)";
+      ctx.setLineDash([8, 8]); ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, groundY * canvas.height);
+      ctx.lineTo(canvas.width, groundY * canvas.height); ctx.stroke();
+      ctx.restore();
+
+      if (isBentKnee) {
+        hudBadge.className = "hud-badge violation";
+        hudBadge.innerText = "⚠️ 屈膝違規 (Bent Knee >)";
+      } else if (isFlight) {
+        hudBadge.className = "hud-badge violation";
+        hudBadge.innerText = "⚠️ 騰空違規 (Loss of Contact ~)";
+      } else {
+        hudBadge.className = "hud-badge";
+        hudBadge.innerText = (isWebcam ? "即時鏡頭監測中" : "影片分析中") + " (步態正常)";
+      }
+    }
+
+    function addLog(type, detail, cssClass) {
+      if (logListEl.children.length === 1 && !logListEl.firstElementChild.classList.contains("log-item")) {
+        logListEl.innerHTML = "";
+      }
+      const item = document.createElement("div");
+      item.className = `log-item ${cssClass}`;
+      item.innerHTML = `<span><strong>${type}</strong> ${detail}</span><span style="color:var(--text-muted)">${stamp()}</span>`;
+      logListEl.prepend(item);
+      while (logListEl.children.length > 80) logListEl.lastElementChild.remove();
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <h1>AI 競走步態智慧判斷與矯正系統</h1>
+    <p class="subtitle">依據世界田徑總會（World Athletics Rule 54）技術標準設計</p>
+  </header>
+
+  <div class="main-container">
+    <div class="video-panel">
+      <div class="viewport" id="viewport">
+        <video id="videoElement" playsinline muted></video>
+        <canvas id="canvasElement"></canvas>
+        <div id="hudBadge" class="hud-badge">系統初始化中...</div>
+        <div id="hudTarget" class="hud-target">未鎖定 — 點選畫面中的選手</div>
+        <div id="hudClock" class="hud-clock">監測 00:00</div>
+      </div>
+
+      <div class="controls">
+        <button id="btnWebcam">📷 開啟相機即時測</button>
+        <label class="btn-upload">
+          📁 上傳側拍影片
+          <input type="file" id="fileInput" accept="video/*" style="display:none;">
+        </label>
+        <button id="btnPlay" disabled>⏸ 暫停</button>
+        <button id="btnStep" disabled>⏭ 下一幀</button>
+        <button class="speed-btn active" data-speed="1.0">1.0x</button>
+        <button class="speed-btn" data-speed="0.5">0.5x</button>
+        <button class="speed-btn" data-speed="0.25">0.25x</button>
+        <button id="btnUnlock">🎯 解除鎖定</button>
+        <button id="btnReset">↺ 計數歸零</button>
+      </div>
+
+      <div id="progWrap" class="prog-wrap" hidden>
+        <div class="prog-track"><div id="progBar" class="prog-bar"></div></div>
+        <div class="prog-row">
+          <span id="progText">分析進度 0%</span>
+          <label class="chk"><input type="checkbox" id="loopChk"> 循環播放</label>
+        </div>
+      </div>
+
+      <div class="perf">
+        <div class="perf-row">
+          <span class="perf-label">偵測人數</span>
+          <button class="mini active" data-poses="1">1 人</button>
+          <button class="mini" data-poses="3">3 人</button>
+          <button class="mini" data-poses="5">5 人</button>
+        </div>
+        <div class="perf-row">
+          <span class="perf-label">偵測頻率</span>
+          <button class="mini" data-rate="12">省電 12</button>
+          <button class="mini active" data-rate="20">平衡 20</button>
+          <button class="mini" data-rate="30">精準 30</button>
+        </div>
+        <div class="perf-row">
+          <span class="perf-label">運算解析度</span>
+          <button class="mini" data-res="480">480p</button>
+          <button class="mini active" data-res="640">640p</button>
+          <button class="mini" data-res="0">原生</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-panel">
+      <div class="card">
+        <h2>即時關節角度與違規累計</h2>
+        <div class="metric-grid">
+          <div class="metric-box">
+            <div class="metric-title">左膝夾角 (目標 ≥175°)</div>
+            <div id="leftKneeAngle" class="metric-value">--°</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-title">右膝夾角 (目標 ≥175°)</div>
+            <div id="rightKneeAngle" class="metric-value">--°</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-title">屈膝違規 (Bent Knee >)</div>
+            <div id="bentKneeCount" class="metric-value" style="color:var(--danger)">0</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-title">騰空違規 (Contact ~)</div>
+            <div id="flightCount" class="metric-value" style="color:var(--warning)">0</div>
+          </div>
+        </div>
+        <div class="tuner">
+          <label for="kneeTh">屈膝判定門檻 <b id="kneeThVal">175°</b></label>
+          <input type="range" id="kneeTh" min="165" max="180" step="1" value="175">
+        </div>
+        <div class="tuner">
+          <label for="footTol">觸地容差（以軀幹長為單位） <b id="footTolVal">2.5%</b></label>
+          <input type="range" id="footTol" min="5" max="60" step="1" value="25">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>連續監測統計</h2>
+        <div class="metric-grid">
+          <div class="metric-box">
+            <div class="metric-title">監測時長</div>
+            <div id="duration" class="metric-value sm">00:00</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-title">已判讀步數</div>
+            <div id="stepCount" class="metric-value sm">0</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-title">近 60 秒 屈膝 / 騰空</div>
+            <div id="recent" class="metric-value sm">0 / 0</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-title">每分鐘違規 屈膝 / 騰空</div>
+            <div id="rate" class="metric-value sm">-- / --</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>智能動作矯正教練 (Auto-Coach)</h2>
+        <div class="coach-box" id="adviceText">
+          請從側面視角錄製或拍攝運動員。畫面中有多位選手時，點選其中一位即可鎖定判讀；著地瞬間請注意支撐膝伸直，並以骨盆旋轉取代腳掌強力向上推蹬。
+        </div>
+        <div class="rules-ref">
+          📌 <strong>World Athletics Rule 54 競技準則</strong>：<br>
+          • <strong>屈膝 (&gt;)</strong>：支撐腿自初著地至垂直位置必須保持完全打直。<br>
+          • <strong>騰空 (~)</strong>：前腳落地前，後腳不得離開地面（人眼不可見中斷）。
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>違規事件紀錄</h2>
+        <div class="violation-log" id="logList">
+          <div style="color: var(--text-muted); text-align: center; padding: 8px;">尚無違規事件</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
