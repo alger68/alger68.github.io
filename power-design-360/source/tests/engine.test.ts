@@ -9,7 +9,7 @@ test('480 W sample conserves power and returns independent reference results', (
   close(m.outputW, 480); close(m.inputW, 499.7917534360683);
   close(m.efficiency, 96.04); close(m.totalLossW, 19.7917534360683);
   close(m.outputW + m.pfcLossW + m.dcLossW, m.inputW);
-  close(m.frKhz, 101.47348548431327, .0001);
+  close(m.frKhz!, 101.47348548431327, .0001);
   close(m.requiredCapUf, 340.1360544217687);
   close(m.effectiveCapUf, 264); close(m.holdMs, 15.5232);
   assert.equal(checks.find(c => c.id === 'hold-up')?.status, 'fail');

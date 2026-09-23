@@ -37,4 +37,4 @@ export async function calculateRequest(request: Request): Promise<Response> {
     return reply({error: '無法解析輸入資料，請使用有效 JSON。'}, 400);
   }
 }
-export const health = () => Response.json({status:'ok',engine:ENGINE_VERSION,model:'half-bridge-llc-fha',storage:'stateless'}, {headers:{'Cache-Control':'no-store'}});
+export const health = () => Response.json({status:'ok',engine:ENGINE_VERSION,models:['half-bridge-llc-fha','hwllc-energy-envelope'],hwllcGainModel:'pending',storage:'stateless'}, {headers:{'Cache-Control':'no-store'}});
