@@ -1,0 +1,30 @@
+'use client';
+import {useState} from 'react';
+import {Download,ExternalLink} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {downloadText} from '@/lib/power/report';
+import {coreSource,capSource} from '@/lib/power/component-catalog';
+import type {Candidate,Synthesis} from '@/lib/power/synthesis';
+const f=(n:number,d=2)=>n.toLocaleString('en-US',{maximumFractionDigits:d});
+export function DesignEvaluation({c,result:r}:{c:Candidate;result:Synthesis}){
+ const [output,setOutput]=useState('all'),[load,setLoad]=useState('all');
+ const rows=c.envelope.cases.filter(x=>(output==='all'||String(x.outputV)===output)&&(load==='all'||String(x.loadPercent)===load));
+ const csv=()=>downloadText('hwllc-operating-envelope.csv','\ufeff'+[
+  '模型,輸出V,輸出A,負載%,母線V,母線條件,頻率kHz,初級RMS_A,次級RMS_A,次級峰值A,Bpk_T,Im正峰A,Im負峰A,有效容量需求uF,ESR上限mOhm,控制模式',
+  ...c.envelope.cases.map(x=>[r.version,x.outputV,x.outputA,x.loadPercent,x.busV,x.busLabel,x.fsKhz,x.primaryRmsA,x.secondaryRmsA,x.secondaryPeakA,x.bPeakT,x.imagPosA,x.imagNegA,x.outputMinUf,x.esrMaxMohm,x.modeLimited?'需模式驗證':'連續脈衝假設，非ZVS判定'].join(',')),
+ ].join('\n'),'text/csv;charset=utf-8');
+ return <>
+ <section className="panel envelope-panel"><div className="panel-heading spread"><div><div className="eyebrow">OPERATING ENVELOPE</div><h2>跨工況檢查</h2><p>{r.requirements.additionalOutputs.length+1} 個輸出檔位 × 3 個母線條件 × 5 個負載，共 {c.envelope.cases.length} 個模型工況。</p></div><Button variant="outline" onClick={csv}><Download size={15}/>下載工況 CSV</Button></div>
+ <p className={`envelope-note ${c.envelope.modeLimited?'attention':''}`}>{c.envelope.modeLimited?`${c.envelope.modeLimited} 個工況的負磁化電流消失，需要不同的控制時序／模式驗證；不能宣告全部輸出檔位已可運作。`:'列出的工況在目前解析包絡內；仍需確認控制器模式、ZVS 與實際損耗。'}</p>
+ <div className="envelope-metrics"><div><span>全範圍頻率</span><strong>{f(c.fsMinKhz,1)}–{f(c.fsMaxKhz,1)} <small>kHz</small></strong></div><div><span>最差初／次級 RMS</span><strong>{f(c.primaryRmsA)} / {f(c.secondaryRmsA)} <small>A</small></strong></div><div><span>最大次級峰值</span><strong>{f(c.secondaryPeakA)} <small>A</small></strong></div><div><span>最大磁通密度</span><strong>{f(c.bPeakT,3)} <small>T</small></strong></div></div>
+ <div className="case-filters"><label>輸出檔位<select aria-label="工況輸出檔位" value={output} onChange={e=>setOutput(e.target.value)}><option value="all">全部檔位</option>{[...new Set(c.envelope.cases.map(x=>x.outputV))].map(v=><option key={v} value={v}>{v} V</option>)}</select></label><label>負載<select aria-label="工況負載" value={load} onChange={e=>setLoad(e.target.value)}><option value="all">全部負載</option>{[10,25,50,75,100].map(v=><option key={v} value={v}>{v}%</option>)}</select></label><span>顯示 {rows.length} 個工況</span></div>
+ <div className="case-table"><table><thead><tr><th>輸出／負載</th><th>母線</th><th>頻率</th><th>初／次級 RMS</th><th>Bpk</th><th>Im 負峰</th><th>模型狀態</th></tr></thead><tbody>{rows.map(x=><tr key={x.id}><th scope="row">{x.outputV} V · {f(x.outputA)} A<small>{x.loadPercent}% 額定負載</small></th><td>{f(x.busV,0)} V<small>{x.busLabel}</small></td><td>{f(x.fsKhz,1)} kHz</td><td>{f(x.primaryRmsA)} / {f(x.secondaryRmsA)} A</td><td>{f(x.bPeakT,3)} T</td><td>{f(x.imagNegA)} A</td><td><span className={x.modeLimited?'case-pending':'case-model'}>{x.modeLimited?'需模式驗證':'解析包絡內'}</span></td></tr>)}</tbody></table></div>
+ <details className="design-details"><summary>模型假設、PFC 工況與未覆蓋項目</summary><p>固定硬體、固定理想 LS 脈寬，忽略死區與寄生；D = N·Vo/Vbus，fs = (1−D)/Ton，ΔIm = N·Vo·Ton/Lp，Im 平均 = Io/N。這是連續脈衝應力篩選，不是 RRW11011 的閉迴路或 burst 模擬。</p><ul>{c.pfcLine.map(x=><li key={x.vac}>{x.vac} VAC 滿載：每相 Ipk {f(x.peakA)} A、Irms {f(x.rmsA)} A、線峰值瞬間 {f(x.crestFrequencyKhz,1)} kHz。電網過零附近及相位切換另驗。</li>)}</ul><p>未覆蓋：{c.envelope.uncovered.join('、')}。</p></details>
+ </section>
+ <section className="panel envelope-panel"><div className="panel-heading spread"><div><div className="eyebrow">COMPONENT SELECTION</div><h2>輸出電容料號與並聯組合</h2><p>由容量、耐壓、ESR、漣波與尺寸自動篩選。料庫：8 顆 Panasonic ZU，資料版次 2025-09-01。</p></div><a className="source-inline" href={capSource} target="_blank" rel="noreferrer">原廠規格 <ExternalLink size={14}/></a></div>
+ {c.outputParts.reason?<p className="envelope-note attention">{c.outputParts.reason}</p>:<div className="parts-grid">{c.outputParts.options.map((b,i)=><article className={`part-card ${i===0?'recommended':''}`} key={b.part.mpn}><span className="candidate-kicker">{i===0?'建議組合':`備選 ${i}`}</span><h3>{b.count} 顆並聯</h3><a href={b.part.url} target="_blank" rel="noreferrer">{b.part.mpn} <ExternalLink size={13}/></a><p>每顆 {b.part.capUf} µF / {b.part.voltageV} V</p><dl><div><dt>合計／負容差後</dt><dd>{b.nominalUf} / {f(b.effectiveUf,0)} µF</dd></div><div><dt>ESR 篩選值／上限</dt><dd>{f(b.designEsrMohm)} / {f(c.outputEsrMaxMohm)} mΩ</dd></div><div><dt>可用漣波／需求</dt><dd>{f(b.usableRippleA)} / {f(c.outputRippleRatingA)} A</dd></div><div><dt>決定顆數的條件</dt><dd>{b.limiting.join('、')}</dd></div><div><dt>每顆最大 L×W×H</dt><dd>{Object.values(b.part.dimensions).join(' × ')} mm</dd></div></dl></article>)}</div>}
+ <details className="design-details"><summary>選料條件與溫度／壽命限制</summary><ul>{c.outputParts.conditions.map(s=><li key={s}>{s}</li>)}</ul></details>
+ </section>
+ <section className="panel envelope-panel"><div className="panel-heading"><div><div className="eyebrow">PHYSICAL BOUNDARIES</div><h2>空間與散熱預算</h2><p>尺寸與損耗是篩選條件，完整佈局與實測溫升仍待驗證。</p></div></div><div className="physical-grid"><div><h3>磁件實際組件尺寸</h3><p>變壓器 {Object.values(c.coreDimensions).join(' × ')} mm<br/>每顆 PFC {Object.values(c.pfcDimensions).join(' × ')} mm</p><p>{r.requirements.space?`可用空間 ${Object.values(r.requirements.space).join(' × ')} mm；磁件底面合計佔 ${f(c.magneticFootprintMm2/(r.requirements.space.lengthMm*r.requirements.space.widthMm)*100,1)}%。`:'尚未指定可用空間；沒有宣告放得進機構。'}</p><p>含骨架組件；面積足夠不代表能完成排列，母線電容、散熱器、焊墊與絕緣間距未納入。</p><a href={coreSource} target="_blank" rel="noreferrer">TDK 組件尺寸來源</a></div><div><h3>散熱需要達到的能力</h3><p>目標損耗 {f(r.thermal.lossBudgetW)} W<br/>有效熱阻需求 ≤ {f(r.thermal.maxThetaCPerW)} °C/W</p><p>{r.requirements.coolingBudgetW!==null?`已設定散熱預算 ${r.requirements.coolingBudgetW} W；最低效率需求 ${f(r.thermal.minimumEfficiency!)}%，預算餘裕 ${f(r.thermal.coolingMarginW!)} W。`:'尚未指定已知散熱能力；只回推需求，不估算未知熱阻。'}</p><p>效率是設計目標。半導體損耗、磁芯損耗與實際熱路徑尚未建立，不能由此判定機殼溫度通過。</p></div></div></section>
+ </>;
+}

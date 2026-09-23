@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { designSnapshotSchema } from './requirements.ts';
 
-export const ENGINE_VERSION = '0.4.0';
+export const ENGINE_VERSION = '0.5.0';
 const number = (min: number, max: number) => z.number({invalid_type_error:'請輸入有效數值'}).finite('請輸入有限數值').min(min,`不得小於 ${min}`).max(max,`不得大於 ${max}`);
 const unknownNumber = (min: number, max: number) => number(min,max).nullable().default(null);
 export const specSchema = z.object({

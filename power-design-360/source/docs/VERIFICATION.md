@@ -1,4 +1,16 @@
-# Verification — v0.4.0
+# Verification — v0.5.0
+
+2026-09-23: TypeScript validation and all 40 automated tests passed. Added independent waveform integration, legacy requirement defaults, low-voltage/high-current sizing and mode limitations, geometry/cooling rejection, actual capacitor-bank capacity/ESR/frequency-adjusted ripple, no-catalog-match handling, and maximum 105-case project round-trip.
+
+Browser preview verified the seven-output preset, repair of a blank output voltage, 5 W cooling rejection, 32 mm component-height rejection, generation with 190 × 85 × 40 mm / 15 W boundaries, 105-case matrix, filtering to 5 V at 100% load, explicit mode-limit warnings, real capacitor-bank details, and project creation with the full summary surviving reload. Desktop component-specification screenshot inspected. An actual mobile device has not been tested.
+
+Browser download-event capture timed out, but the actual downloaded files synchronized successfully and were inspected. CSV contains all 105 rows, 16 columns, seven output voltages and 39 mode-limited rows even while the UI shows a filtered subset. Exported JSON passes projectSchema and preserves all six extra ratings, space/cooling limits, the 13,197-character complete summary and EEHZU1J151P × 21 bank. The event-capture issue is isolated to the browser test tooling; downloaded bytes are verified.
+
+Fresh-context review found one Important preset issue: lower-voltage outputs incorrectly inherited the main output current ceiling. Reproduced 48 V / 2 A yielding 5 V / 2 A; corrected to 5 V / 3 A and 20 V / 4.8 A within the 96 W budget. The regression failed before the fix and passed afterward, with the full 40-test suite green. Browser verification confirmed the corrected rows, ETD39 candidate and 21-capacitor bank. No Critical or deferred Minor findings.
+
+This model is a continuous-pulse, fixed ideal LS-width analytical scenario. It is not an RRW11011 behavioral model, complete production BOM, layout, temperature, ZVS, lifetime or certification validation. The eight-part output capacitor catalog is explicitly bounded by published test conditions and software margins.
+
+## Earlier v0.4.0 verification
 
 2026-09-23: TypeScript validation passed. All 30 automated tests passed, including requirements-only synthesis/API, invalid PD power, output-capacitor charge independently integrated from a half-sine waveform, hold-endpoint current/ESR ratings, automatic efficiency-budget rounding, project provenance and existing v0.1–v0.3 coverage.
 

@@ -47,7 +47,7 @@ test('output capacitor charge and RMS follow a half-sine pulse, independently in
 test('synthesis API accepts requirements only and returns CORS-safe versioned candidates',async()=>{
  const request=(body:unknown)=>new Request('https://example.test/api/synthesize',{method:'POST',headers:{'Content-Type':'application/json',Origin:'https://alger68.github.io'},body:JSON.stringify(body)});
  const response=await synthesizeRequest(request(req));assert.equal(response.status,200);assert.equal(response.headers.get('Access-Control-Allow-Origin'),'https://alger68.github.io');
- const data=await response.json() as ReturnType<typeof synthesize>;assert.equal(data.version,'seed-1.0');assert.ok(data.candidates[0].lpUh>0);
+ const data=await response.json() as ReturnType<typeof synthesize>;assert.equal(data.version,'seed-2.0');assert.ok(data.candidates[0].lpUh>0);
  assert.equal((await synthesizeRequest(request({...req,outputA:0}))).status,422);
  assert.equal((await synthesizeRequest(request({...req,hwLrUh:20}))).status,422);
 });

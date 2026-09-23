@@ -45,5 +45,7 @@ export const sources = [
   {id:'S26',org:'TDK',title:'ETD34/17/11 磁芯與骨架',version:'2022-10',role:'Ae、Amin、窗口與磁芯體積候選資料',url:'https://www.tdk-electronics.tdk.com/inf/80/db/fer/etd_34_17_11.pdf',note:'第 2、4 頁；磁芯尺寸資料不能取代損耗、溫升及絕緣驗證。'},
   {id:'S27',org:'TDK',title:'ETD39/20/13 磁芯與骨架',version:'2022-10',role:'Ae、Amin、窗口與磁芯體積候選資料',url:'https://www.tdk-electronics.tdk.com/inf/80/db/fer/etd_39_20_13.pdf',note:'第 2、4 頁；材料體積不等於磁件或整機外形體積。'},
   {id:'S28',org:'TDK',title:'ETD44/22/15 磁芯與骨架',version:'2022-10',role:'Ae、Amin、窗口與磁芯體積候選資料',url:'https://www.tdk-electronics.tdk.com/inf/80/db/fer/etd_44_22_15.pdf',note:'第 2、4 頁；氣隙、漏感與繞線工法仍需製造驗證。'},
+  {id:'S29',org:'TDK',title:'Ferrites and Accessories Selector Guide',version:'3/23',role:'ETD 磁件含骨架的水平安裝尺寸',url:'https://www.tdk-electronics.tdk.com/download/531570/3cb8062a488c6f9dda068ae6ba31a953/pdf-selectorguide.pdf',note:'第 16 頁；ETD34／39／44 高度為 35／38／41 mm。外形篩選不代表完成佈局與絕緣間距。'},
+  {id:'S30',org:'Panasonic',title:'ZU Series 導電高分子混合鋁電解電容',version:'2025-09-01',role:'8 個實際輸出電容料號與並聯選型',url:'https://industrial.panasonic.com/cdbs/www-data/pdf/RDD0000/ast-ind-156944.pdf',note:'第 1–2 頁；ESR 為 20°C／100 kHz，採較低的 135°C 漣波額定並作頻率修正。未查庫存、價格或完整壽命。'},
 ];
 export const limitations = '逐步設計提供公開非對稱半橋模型的元件初估候選；沒有宣告效率、熱或 ZVS 已驗證。HWLLC 模式提供能量預算、控制器範圍檢查，以及確認分割電容接法後的理想 LC 時間尺度；完整增益與 ZVS 模型尚未建立。一般 LLC 模式的 FHA 僅適用半橋、中心抽頭全波整流，Ns 指半個次級繞組。未計寄生、非線性磁性、閉迴路與動態效應。解析符合不代表安規或量產放行。';

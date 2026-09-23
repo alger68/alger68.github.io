@@ -1,6 +1,6 @@
 {
   "name": "power-design-360",
-  "version": "0.2.0",
+  "version": "0.5.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
