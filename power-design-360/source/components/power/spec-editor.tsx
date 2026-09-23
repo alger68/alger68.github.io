@@ -22,10 +22,11 @@ export function SpecEditor({spec,onChange,issues}:{spec:Spec;onChange:SpecChange
   {key:'busV',label:'本工況母線電壓',unit:'V'},{key:'busMinV',label:'保持終止母線電壓',unit:'V'},
   {key:'holdMs',label:'保持時間需求',unit:'ms'},{key:'bulkUf',label:'母線標稱電容量',unit:'µF'},
   {key:'capTolerance',label:'電容量負容差',unit:'%',hint:'能量足夠仍需驗證低母線下的輸出調節與 VCC。'}]},
- {title:hw?'HWLLC 諧振槽記錄':'LLC 諧振槽',sub:hw?'待電路圖確認接法；目前只記錄，不推導增益':'半橋 · 中心抽頭全波整流 · FHA',icon:Waves,fields:[
+ {title:hw?'HWLLC 諧振槽與時間尺度':'LLC 諧振槽',sub:hw?'確認分割電容接法後提供 LC 估算；不推導增益':'半橋 · 中心抽頭全波整流 · FHA',icon:Waves,fields:[
   ...(hw?[
     {key:'hwLrUh',label:'HWLLC Lr',unit:'µH',optional:true},{key:'hwLmUh',label:'HWLLC Lm',unit:'µH',optional:true},
     {key:'hwCr1Nf',label:'HWLLC Cr1',unit:'nF',optional:true},{key:'hwCr2Nf',label:'HWLLC Cr2',unit:'nF',optional:true},
+    {key:'hwLowSideOnUs',label:'低側導通時間 Ton,LS',unit:'µs',optional:true,hint:'填入同一工況的量測或設計值，僅比較 LC 半週期；未知留白。'},
     {key:'hwPrimaryTurns',label:'HWLLC Np',unit:'turns',optional:true},
     {key:'hwSecondaryTurns',label:'HWLLC Ns',unit:'turns',optional:true,hint:'實際次級繞組；不沿用中心抽頭半繞組定義。'},
   ] as Field[]:[
@@ -51,7 +52,8 @@ export function SpecEditor({spec,onChange,issues}:{spec:Spec;onChange:SpecChange
   <Choice id="topology" label="DC/DC 拓樸" value={spec.topology} onValue={v=>onChange('topology',v as Spec['topology'])} items={[["hwllc","HWLLC · RRW11011 平台"],["llc-center-tapped","一般 LLC · 中心抽頭全波"]]}/>
   <Choice id="rectifier" label="AC 整流級" value={spec.rectifier} onValue={v=>onChange('rectifier',v as Spec['rectifier'])} items={[["tea2209","主動全橋 · TEA2209T"],["diode","二極體橋式整流"]]}/>
   <Choice id="outputInterface" label="輸出介面" value={spec.outputInterface} onValue={v=>onChange('outputInterface',v as Spec['outputInterface'])} items={[["usb-pd","單埠 USB PD EPR"],["dc","專用 DC／整機功率預算"]]}/>
+  {hw&&<Choice id="hwCapConnection" label="Cr1／Cr2 接法確認" value={spec.hwCapConnection} onValue={v=>onChange('hwCapConnection',v as Spec['hwCapConnection'])} items={[["unknown","待確認／其他接法"],["split-bus","已確認：母線分割電容中點接諧振支路"]]}/>}
   {active&&<Choice id="bridgeCompPol" label="TEA2209T COMP_POL 接法" value={spec.bridgeCompPol} onValue={v=>onChange('bridgeCompPol',v as Spec['bridgeCompPol'])} items={[["unknown","待確認"],["gnd","接 GND · COMP 低電位停用"],["vcc","接 VCC · COMP 高電位停用"]]}/>}
- </div><p className="panel-footnote">切換拓樸保留各自的諧振槽欄位，兩者互不換算。預設值是示範，請依實機修改。</p></section>
+ </div><p className="panel-footnote">切換拓樸保留各自的諧振槽欄位，兩者互不換算。預設值是示範，請依實機修改。{hw&&' 分割接法：Cr1 接母線正端與中點，Cr2 接中點與母線負端；中點連接 Lr 支路。假設母線交流阻抗可忽略，Cac = Cr1 + Cr2。'}</p></section>
  <div className="spec-grid">{groups.map(g=><section className="panel" key={g.title}><div className="panel-heading"><div className="icon-tile"><g.icon size={20}/></div><div><h2>{g.title}</h2><p>{g.sub}</p></div></div><div className="field-grid">{g.fields.map(f=><div className="field" key={f.key}><label htmlFor={f.key}>{f.label}</label><div className="input-unit"><Input id={f.key} type="number" step="any" value={Number.isNaN(spec[f.key])?'':spec[f.key]??''} placeholder={f.optional?'待提供':''} onChange={e=>onChange(f.key,e.target.value===''?(f.optional?null:NaN):Number(e.target.value))} aria-invalid={!!issues[f.key]} aria-describedby={issues[f.key]?`${f.key}-error`:undefined}/><span>{f.unit}</span></div>{issues[f.key]?<p id={`${f.key}-error`} className="field-error">{issues[f.key]}</p>:f.hint&&<p className="field-hint">{f.hint}</p>}</div>)}</div></section>)}</div></>;
 }

@@ -40,5 +40,10 @@ export const sources = [
   {id:'S21',org:'Renesas',title:'RRW40120 半橋驅動器',version:'Rev.0.04 · 2026-03-04',role:'高／低側閘極驅動、UVLO 與互鎖',url:'https://www.renesas.com/en/document/dst/rrw40120-datasheet',note:'第 6 頁建議：VCC、VB−VS 為 10～18 V；VS 上限 600 V。'},
   {id:'S22',org:'Renesas',title:'RRW43110 SR 控制器',version:'Rev.0.03 · 2026-03-05',role:'HWLLC 半波次級同步整流',url:'https://www.renesas.com/en/document/dst/rrw43110-datasheet',note:'支援至 300 kHz；第 6 頁 VD 建議上限 135 V，絕對最大值 145 V。'},
   {id:'S23',org:'Renesas',title:'RRW30120 PD／次級控制器',version:'Rev.01.00 · 2026-03-04',role:'USB PD EPR、次級調節、光耦回授與 VBUS 控制',url:'https://www.renesas.com/en/document/dst/rrw30120-datasheet',note:'EPR 至 48 V。單埠 240 W 上限與整機總功率應分開設計；需核對韌體與 PDO。'},
+  {id:'S24',org:'Infineon',title:'XDPS2201 Hybrid Flyback Design Guide',version:'V1.0 · 2021-03-01',role:'非對稱半橋一階選值參考',url:'https://www.infineon.com/assets/row/public/documents/24/42/infineon-design-guide-hybrid-flyback-converter-design-xdps2201-applicationnotes-en.pdf',note:'第 7–8、18–23 頁；只借用公開功率級初估方法，不套用其 IC 設定，也不等同 RRW11011 已驗證模型。'},
+  {id:'S25',org:'Texas Instruments',title:'UCC28063 兩相臨界導通 PFC',version:'Rev.C · 2024-07',role:'PFC 電感及電流選值參考',url:'https://www.ti.com/lit/ds/symlink/ucc28063.pdf',note:'第 15–16、29 頁；使用兩相均流的理想三角電流關係，控制器設定需依實際 IC 處理。'},
+  {id:'S26',org:'TDK',title:'ETD34/17/11 磁芯與骨架',version:'2022-10',role:'Ae、Amin、窗口與磁芯體積候選資料',url:'https://www.tdk-electronics.tdk.com/inf/80/db/fer/etd_34_17_11.pdf',note:'第 2、4 頁；磁芯尺寸資料不能取代損耗、溫升及絕緣驗證。'},
+  {id:'S27',org:'TDK',title:'ETD39/20/13 磁芯與骨架',version:'2022-10',role:'Ae、Amin、窗口與磁芯體積候選資料',url:'https://www.tdk-electronics.tdk.com/inf/80/db/fer/etd_39_20_13.pdf',note:'第 2、4 頁；材料體積不等於磁件或整機外形體積。'},
+  {id:'S28',org:'TDK',title:'ETD44/22/15 磁芯與骨架',version:'2022-10',role:'Ae、Amin、窗口與磁芯體積候選資料',url:'https://www.tdk-electronics.tdk.com/inf/80/db/fer/etd_44_22_15.pdf',note:'第 2、4 頁；氣隙、漏感與繞線工法仍需製造驗證。'},
 ];
-export const limitations = 'HWLLC 模式提供能量預算與控制器範圍檢查；增益、諧振及 ZVS 模型尚未建立。一般 LLC 模式的 FHA 僅適用半橋、中心抽頭全波整流，Ns 指半個次級繞組。未計寄生、非線性磁性、閉迴路與動態效應。解析符合不代表安規或量產放行。';
+export const limitations = '逐步設計提供公開非對稱半橋模型的元件初估候選；沒有宣告效率、熱或 ZVS 已驗證。HWLLC 模式提供能量預算、控制器範圍檢查，以及確認分割電容接法後的理想 LC 時間尺度；完整增益與 ZVS 模型尚未建立。一般 LLC 模式的 FHA 僅適用半橋、中心抽頭全波整流，Ns 指半個次級繞組。未計寄生、非線性磁性、閉迴路與動態效應。解析符合不代表安規或量產放行。';

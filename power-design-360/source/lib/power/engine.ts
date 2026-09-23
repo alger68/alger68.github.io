@@ -21,6 +21,16 @@ export function calculate(input: Spec): Result {
   const holdMs = effectiveCapUf * 1e-6 * (s.busV ** 2 - s.busMinV ** 2) / (2 * busW) * 1000;
   let frKhz:number|null=null, fpKhz:number|null=null, k:number|null=null, ratio:number|null=null, rac:number|null=null, q:number|null=null, gainTarget:number|null=null, gainHold:number|null=null;
   let curves:Result['curves']=[];
+  let hwCapSumNf:number|null=null, hwCapRatio:number|null=null, hwTankFrKhz:number|null=null, hwTankHalfUs:number|null=null, hwOnHalfRatio:number|null=null;
+  if(hw && s.hwCapConnection==='split-bus' && s.hwLrUh!==null && s.hwCr1Nf!==null && s.hwCr2Nf!==null) {
+    // Stiff bus: both rails are AC ground. Incremental C at the midpoint is C1+C2.
+    // Isolated LC timing diagnostic only; Lm, rectifier states and parasitics are excluded.
+    hwCapSumNf=s.hwCr1Nf+s.hwCr2Nf;
+    hwCapRatio=s.hwCr1Nf/s.hwCr2Nf;
+    hwTankHalfUs=Math.PI*Math.sqrt(s.hwLrUh*1e-6*hwCapSumNf*1e-9)*1e6;
+    hwTankFrKhz=500/hwTankHalfUs;
+    hwOnHalfRatio=s.hwLowSideOnUs===null?null:s.hwLowSideOnUs/hwTankHalfUs;
+  }
   if(!hw) {
   const lr = s.lrUh * 1e-6, cr = s.crNf * 1e-9, lm = s.lmUh * 1e-6;
   frKhz = 1 / (2 * Math.PI * Math.sqrt(lr * cr)) / 1000;
@@ -41,9 +51,9 @@ export function calculate(input: Spec): Result {
   const check = (id: string, title: string, pass: boolean | null, detail: string): Check => ({id, title, status: pass === null ? 'pending' : pass ? 'pass' : 'fail', detail});
   const checks: Check[] = [
     check('boost-headroom', 'Boost 母線高於最高輸入峰值', s.busV > Math.SQRT2 * s.vacMax, `輸入峰值 ${(Math.SQRT2 * s.vacMax).toFixed(1)} V；母線 ${s.busV} V。尚未包含控制餘裕與漣波。`),
-    check('efficiency', '效率預算達到專案目標', efficiency >= s.targetEfficiency, `假設級間效率相乘 ${efficiency.toFixed(2)}%；目標 ${s.targetEfficiency}%。此為預算，不是量測。`),
+    check('efficiency', '效率預算達到專案目標', efficiency + 1e-9 >= s.targetEfficiency, `假設級間效率相乘 ${efficiency.toFixed(2)}%；目標 ${s.targetEfficiency}%。此為預算，不是量測。`),
     check('hold-up', '電容能量滿足保持時間預算', holdMs >= s.holdMs, `在指定 ${s.busV} → ${s.busMinV} V 工況，含 −${s.capTolerance}% 容差的能量可供 ${holdMs.toFixed(2)} ms；需求 ${s.holdMs} ms。未驗證低母線調節，未計 ESR、老化與額外控制損耗。`),
-    check('resonance-range', hw?'HWLLC 諧振與增益模型':'諧振點位於控制頻率範圍', frKhz===null?null:frKhz >= s.fsMinKhz && frKhz <= s.fsMaxKhz, frKhz===null?'待實際 Cr1／Cr2 接法、磁性參數、控制時序與模型驗證；本模式不產生一般 LLC FHA 曲線。':`fr = ${frKhz.toFixed(2)} kHz；控制範圍 ${s.fsMinKhz}–${s.fsMaxKhz} kHz。範圍涵蓋不代表 ZVS 成立。`),
+    check('resonance-range', hw?'HWLLC 增益與 ZVS 模型':'諧振點位於控制頻率範圍', frKhz===null?null:frKhz >= s.fsMinKhz && frKhz <= s.fsMaxKhz, frKhz===null?(hwTankFrKhz===null?'待接法、LC 參數及控制時序；不產生一般 LLC FHA 曲線。':`LC 固有頻率估算 ${hwTankFrKhz.toFixed(2)} kHz；僅為理想支路時間尺度，不能判定增益、頻率可行性或 ZVS。`):`fr = ${frKhz.toFixed(2)} kHz；控制範圍 ${s.fsMinKhz}–${s.fsMaxKhz} kHz。範圍涵蓋不代表 ZVS 成立。`),
     check('case-temperature', '機殼集總熱模型符合溫度目標', caseC === null ? null : caseC <= s.caseLimitC, caseC === null ? '尚未填入經驗證的整機有效熱阻；需依結構、風速與安裝方式取得。' : `估計 ${caseC.toFixed(1)} °C；目標 ≤${s.caseLimitC} °C。假設全部損耗經此熱路徑；不代表接面溫度。`),
   ];
   if(s.rectifier==='tea2209')checks.push(check('bridge-budget','主動橋導通損耗未超過前級預算',bridgeConductionW===null?null:bridgeConductionW<=pfcLossW,bridgeConductionW===null?'請填入四顆相同 MOSFET 在實際閘壓／熱態下的 RDS(on)。':`低線導通估計 ${bridgeConductionW.toFixed(2)} W，為整流＋PFC 預算 ${pfcLossW.toFixed(2)} W 的一部分；未含 IC、閘極與體二極體損耗，不再加計總損耗。`));
@@ -58,5 +68,5 @@ export function calculate(input: Spec): Result {
     );
   }
   if(s.outputInterface==='usb-pd')checks.push(check('pd-envelope','單埠 USB PD EPR 額定上限',s.outputV<=48&&s.outputA<=5&&outputW<=240,`目前 ${s.outputV} V × ${s.outputA} A = ${outputW} W；單埠上限 48 V／5 A／240 W（USB-IF）。仍需確認 PDO／APDO、EPR 線材與協定；不代表合規。`));
-  return {version: ENGINE_VERSION, fingerprint: fingerprint(s), metrics: {outputW, inputW, busW, efficiency, inputLowA, inputHighA: inputW / (s.vacMax * s.powerFactor), pfcLossW, dcLossW, totalLossW, boostDuty: s.busV > Math.SQRT2 * s.vacMin ? 1 - Math.SQRT2 * s.vacMin / s.busV : null, requiredCapUf, effectiveCapUf, holdMs, frKhz, fpKhz, k, q, ratio, rac, gainTarget, gainHold, caseC, bridgeConductionW}, curves, checks};
+  return {version: ENGINE_VERSION, fingerprint: fingerprint(s), metrics: {outputW, inputW, busW, efficiency, inputLowA, inputHighA: inputW / (s.vacMax * s.powerFactor), pfcLossW, dcLossW, totalLossW, boostDuty: s.busV > Math.SQRT2 * s.vacMin ? 1 - Math.SQRT2 * s.vacMin / s.busV : null, requiredCapUf, effectiveCapUf, holdMs, frKhz, fpKhz, k, q, ratio, rac, gainTarget, gainHold, caseC, bridgeConductionW, hwCapSumNf,hwCapRatio,hwTankFrKhz,hwTankHalfUs,hwOnHalfRatio}, curves, checks};
 }

@@ -1,6 +1,7 @@
 import { z } from 'zod';
+import { designSnapshotSchema } from './requirements.ts';
 
-export const ENGINE_VERSION = '0.2.0';
+export const ENGINE_VERSION = '0.4.0';
 const number = (min: number, max: number) => z.number({invalid_type_error:'請輸入有效數值'}).finite('請輸入有限數值').min(min,`不得小於 ${min}`).max(max,`不得大於 ${max}`);
 const unknownNumber = (min: number, max: number) => number(min,max).nullable().default(null);
 export const specSchema = z.object({
@@ -9,6 +10,8 @@ export const specSchema = z.object({
   outputInterface: z.enum(['dc','usb-pd']).default('dc'),
   bridgeCompPol: z.enum(['unknown','gnd','vcc']).default('unknown'),
   bridgeRdsOnMohm: unknownNumber(0.01,10000),
+  hwCapConnection: z.enum(['unknown','split-bus']).default('unknown'),
+  hwLowSideOnUs: unknownNumber(0.001,1000),
   hwLrUh: unknownNumber(0.01,10000), hwLmUh: unknownNumber(0.01,100000),
   hwCr1Nf: unknownNumber(0.01,100000), hwCr2Nf: unknownNumber(0.01,100000),
   hwPrimaryTurns: number(1,1000).int().nullable().default(null),
@@ -21,7 +24,7 @@ export const specSchema = z.object({
   busV: number(100, 1000), busMinV: number(40, 999),
   pfcEfficiency: number(70, 99.99), dcEfficiency: number(70, 99.99),
   targetEfficiency: number(50, 99.99), powerFactor: number(0.5, 1),
-  holdMs: number(0.1, 1000), bulkUf: number(1, 100000), capTolerance: number(0, 50),
+  holdMs: number(0, 1000), bulkUf: number(1, 100000), capTolerance: number(0, 50),
   lrUh: number(0.1, 10000), crNf: number(0.1, 100000), lmUh: number(0.1, 100000),
   primaryTurns: number(1, 1000).int(), secondaryTurns: number(1, 1000).int(),
   fsMinKhz: number(1, 2000), fsMaxKhz: number(1, 2000),
@@ -54,6 +57,7 @@ export const projectSchema = z.object({
   format: z.enum(['power-design-360/v1','power-design-360/v2']), id: z.string().min(1).max(100),
   name: z.string().min(1).max(80), description: z.string().max(1000),
   spec: specSchema, evidence: z.record(z.string().max(100), evidenceSchema),
+  design: designSnapshotSchema.optional(),
   updatedAt: z.string().datetime(),
 }).strict().transform(p=>({...p,format:'power-design-360/v2' as const}));
 export type Project = z.infer<typeof projectSchema>;
@@ -69,7 +73,7 @@ export function newProject(name?: string, topology: Spec['topology'] = 'llc-cent
 export type Check = {id: string; title: string; status: 'pass' | 'fail' | 'pending'; detail: string};
 export type Result = {
   version: string; fingerprint: string;
-  metrics: {outputW: number; inputW: number; busW: number; efficiency: number; inputLowA: number; inputHighA: number; pfcLossW: number; dcLossW: number; totalLossW: number; boostDuty: number | null; requiredCapUf: number; effectiveCapUf: number; holdMs: number; frKhz: number|null; fpKhz: number|null; k: number|null; q: number|null; ratio: number|null; rac: number|null; gainTarget: number|null; gainHold: number|null; caseC: number | null; bridgeConductionW: number|null};
+  metrics: {outputW: number; inputW: number; busW: number; efficiency: number; inputLowA: number; inputHighA: number; pfcLossW: number; dcLossW: number; totalLossW: number; boostDuty: number | null; requiredCapUf: number; effectiveCapUf: number; holdMs: number; frKhz: number|null; fpKhz: number|null; k: number|null; q: number|null; ratio: number|null; rac: number|null; gainTarget: number|null; gainHold: number|null; caseC: number | null; bridgeConductionW: number|null; hwCapSumNf:number|null; hwCapRatio:number|null; hwTankFrKhz:number|null; hwTankHalfUs:number|null; hwOnHalfRatio:number|null};
   curves: {frequency: number; low: number; half: number; full: number}[];
   checks: Check[];
 };
