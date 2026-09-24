@@ -189,6 +189,7 @@
     let lockedIndex = -1;     // 本幀對應的 pose 索引
     let missFrames = 0;
     let lockedLabel = 0;      // 鎖定當下配發的編號，之後固定不變
+    let autoLockBlocked = false;  // 使用者按過「解除鎖定」後，暫停自動鎖定
 
     function playBeep(freq = 440, duration = 0.1) {
       try {
@@ -296,7 +297,7 @@
         btnPlay.disabled = true; btnStep.disabled = true;
         hudBadge.className = "hud-badge";
         hudBadge.innerText = "即時鏡頭監測中";
-        unlockTarget(false);
+        unlockTarget(false); autoLockBlocked = false;
         resetAll();
         video.onloadeddata = startLoop;
         await video.play();
@@ -320,7 +321,7 @@
       video.playbackRate = currentRate;
       hudBadge.className = "hud-badge";
       hudBadge.innerText = "影片分析中";
-      unlockTarget(false);
+      unlockTarget(false); autoLockBlocked = false;
       resetAll();
       video.onloadeddata = startLoop;
       video.play();
@@ -405,7 +406,7 @@
       leftKnee2dEl.innerText = "2D 投影 --°"; rightKnee2dEl.innerText = "2D 投影 --°";
       hudTarget.className = "hud-target";
       hudTarget.innerText = "未鎖定 — 點選畫面中的選手";
-      if (announce) addLog("目標解除", "請點選要判讀的選手", "info");
+      if (announce) { autoLockBlocked = true; addLog("目標解除", "請點選要判讀的選手", "info"); }
     }
     unlockTarget(false);
 
@@ -584,6 +585,7 @@
           lockedIndex = best; lockedAt = cents[best]; lockedBox = boxes[best];
           lockedVel = { x: 0, y: 0 }; missFrames = 0;
           lockedLabel = (lockedLabel % 9) + 1;        // 固定編號，不隨偵測順序跳動
+          autoLockBlocked = false;
           resetGait();
           hudTarget.className = "hud-target locked";
           addLog("已鎖定選手", "#" + lockedLabel, "info");
@@ -623,7 +625,9 @@
             hudTarget.innerText = "追蹤目標遺失 — 請重新點選";
           }
         }
-      } else if (poses.length === 1) {
+      } else if (poses.length === 1 && !autoLockBlocked) {
+        // 只有一人時自動鎖定，但使用者主動解除後就不再自動接手，
+        // 否則「解除鎖定」在單人模式下會被下一幀立刻覆蓋，看起來像沒作用。
         lockedIndex = 0; lockedAt = cents[0]; lockedBox = boxes[0]; lockedLabel = 1;
         hudTarget.className = "hud-target locked";
       }
