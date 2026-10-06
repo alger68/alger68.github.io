@@ -1,0 +1,9 @@
+const test=require('node:test');const assert=require('node:assert/strict');const M=require('../market.js');
+const source=(rows)=>({url:'https://openapi.twse.com.tw/v1/test',label:'官方來源',fetchedAt:'2026-10-06T00:00:00Z',rows});
+const fixture={datasets:{twsePrice:source([{Date:'1151005',Code:'2609',Name:'陽明',ClosingPrice:'58.70',OpeningPrice:'59.50',HighestPrice:'59.60',LowestPrice:'58.70',TradeVolume:'13578075',Change:'-1'}]),twseRevenue:source([{'公司代號':'2609','資料年月':'11508','營業收入-當月營收':'21611483','營業收入-去年同月增減(%)':'56.17078318','出表日期':'1150917'}])}};
+test('normalizes dated official prices and revenue thousands to hundred millions',()=>{const f=M.extract(fixture,{exchange:'TWSE',ticker:'2609',asset:'個股'});assert.equal(f.quote.date,'2026-10-05');assert.equal(f.quote.close,58.7);assert.equal(f.revenue.period,'2026-08');assert.equal(f.revenue.amountYi,216.11483)});
+test('unknown company never borrows another company data',()=>assert.equal(M.extract(fixture,{exchange:'TWSE',ticker:'2395',asset:'個股'}).quote,null));
+test('missing price and invalid dates are not fabricated',()=>{const f=structuredClone(fixture);f.datasets.twsePrice.rows[0].ClosingPrice='--';assert.equal(M.extract(f,{exchange:'TWSE',ticker:'2609',asset:'個股'}).quote,null);assert.equal(M.date('1150230'),null)});
+test('ETF does not inherit company revenue or EPS',()=>{assert.equal(M.extract(fixture,{exchange:'TWSE',ticker:'2609',asset:'ETF'}).revenue,null)});
+test('snapshots older than saved data never replace newer prices',()=>{const prev={quote:{date:'2026-10-06',close:60}},next={quote:{date:'2026-10-05',close:58.7}};assert.equal(M.merge(prev,next).quote.close,60)});
+test('failed module retains old data while successful module updates',()=>{const p={quote:{date:'2026-10-05',close:58.7},revenue:{period:'2026-07',amountYi:2}};const n={quote:null,revenue:{period:'2026-08',amountYi:3}};const r=M.merge(p,n);assert.equal(r.quote.close,58.7);assert.equal(r.revenue.amountYi,3)});
