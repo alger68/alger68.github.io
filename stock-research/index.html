@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="把公司品質、價格與研究條件分開判讀。七法研究工作台，含本機公司目錄、證據筆記與假設估值。">
+<title>選股研究工作台 · v2.0</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231b2750'/%3E%3Cpath d='M8 22V15M16 22V8M24 22V12' stroke='%23bcf36b' stroke-width='4'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css?v=2.0.0"><script defer src="directory.js?v=20261005"></script><script defer src="engine.js?v=2.0.0"></script><script defer src="app.js?v=2.0.0"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳至研究內容</a>
+<aside class="sidebar">
+ <div class="brand"><span class="brand-icon">研</span><div>選股研究室<small>RESEARCH WORKSPACE</small></div></div>
+ <div class="nav-label">工作空間</div>
+ <nav aria-label="主要導覽"><button class="nav active" data-view="workspace"><span>▦</span>研究工作台</button><button class="nav" data-view="methods"><span>◈</span>七法與適用性</button><button class="nav" data-view="feasibility"><span>☷</span>可行性與進度</button></nav>
+ <div class="side-note"><b>好公司 ≠ 好價格</b><p>先確認證據，再決定要等待什麼。</p><span class="line"></span><small>資料缺口與風險分開呈現<br>方法數量不等於勝率</small></div>
+ <div class="sidebar-foot"><span>v2.0 · GitHub 版</span><a href="https://mm-stock-analysis.ifluit.chatgpt.site" target="_blank" rel="noopener noreferrer">開啟原研究後端 ↗</a></div>
+</aside>
+<main id="main" tabindex="-1">
+ <header class="topbar"><div><span class="eyebrow">研究 / 判讀 / 確認</span><h1 id="page-title">研究工作台</h1></div><div class="top-actions"><span class="tag neutral">本機資料</span><button class="button" data-action="export">匯出我的研究</button></div></header>
+ <div class="notice"><strong>前端實作版</strong><span>可搜尋公司、記錄證據及試算；即時行情、自動研究與 Notion 尚未接入。個人筆記只存此瀏覽器。</span></div>
+ <section id="view-root" aria-label="工作內容"></section>
+ <footer>選股判斷規格 v2.0 · 2026-10-06 · <a href="README.md">使用與資料說明</a> · <a href="https://github.com/alger68/alger68.github.io/tree/main/stock-research" target="_blank" rel="noopener noreferrer">GitHub 原始碼</a></footer>
+</main>
+<div id="toast" role="status" aria-live="polite"></div>
+<noscript>請啟用 JavaScript 以使用研究工作台。這個版本不需要登入。</noscript>
+</body></html>

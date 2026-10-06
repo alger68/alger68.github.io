@@ -1,0 +1,15 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const E = require('../engine.js');
+test('missing and blank inputs never become zero-valued prices',()=>{assert.equal(E.price('',18),null);assert.equal(E.price(null,18),null);assert.equal(E.price(-2,18),null);assert.equal(E.price(10,18),180)});
+test('RR requires ordered positive prices and a complete basis',()=>{assert.equal(E.rr(100,92,116,true),2);assert.equal(E.rr(100,100,116,true),null);assert.equal(E.rr(100,92,116,false),null);assert.equal(E.rr(100,-2,116,true),null)});
+test('missing evidence cannot produce a candidate',()=>assert.equal(E.classify({gates:{identity:true,core:null,thesis:true,valuation:true,trigger:true}}),'資料不足'));
+test('unknown trigger is not an unmet trigger',()=>{const r={gates:{identity:true,core:true,thesis:true,valuation:true,trigger:null}};assert.equal(E.classify(r),'資料不足');r.gates.trigger=false;assert.equal(E.classify(r),'等待條件')});
+test('known risk remains visible despite missing core data',()=>assert.equal(E.classify({risk:true,gates:{identity:true,core:null}}),'風險升高'));
+test('all gates must pass for qualified status',()=>assert.equal(E.classify({gates:{identity:true,core:true,thesis:true,valuation:true,trigger:true}}),'條件符合'));
+test('pause and removal override research states',()=>{assert.equal(E.classify({paused:true,risk:true}),'已暫停');assert.equal(E.classify({removed:true,risk:true}),'已移除')});
+test('changing methods invalidates confirmation',()=>{let r={revision:1,reportVersion:1,confirmedKey:'1:1',config:{mode:'auto',selected:[]}};const n=E.changeConfig(r,{mode:'manual',selected:['MM']});assert.equal(n.confirmedKey,null);assert.equal(n.revision,2);assert.equal(r.revision,1)});
+test('manual method selection must not be empty',()=>assert.throws(()=>E.changeConfig({revision:1},{mode:'manual',selected:[]})));
+test('ETF automatic method selection excludes company EPS frameworks',()=>assert.deepEqual(E.methodsFor('ETF','long'),['MM','MARKS','MANUS']));
+test('full width and Taiwan variant names normalize',()=>{assert.equal(E.normalize('２３９５'),'2395');assert.equal(E.normalize(' 臺 積 電 '),'台積電')});
+test('name search resolves directory without asking for ticker',()=>assert.equal(E.search([{name:'研華',ticker:'2395',fullName:'研華股份有限公司',english:'Advantech'}],'研華')[0].ticker,'2395'));
