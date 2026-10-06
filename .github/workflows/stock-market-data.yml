@@ -1,0 +1,52 @@
+name: Stock market data and Pages
+on:
+  push:
+    paths:
+      - 'stock-research/**'
+      - '.github/workflows/stock-market-data.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '20 23 * * *'
+    - cron: '20 6 * * 1-5'
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: stock-market-data
+  cancel-in-progress: false
+jobs:
+  collect-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify research calculations
+        run: node --test stock-research/tests/*.cjs
+      - name: Fetch official public market data
+        run: node stock-research/scripts/collect-market.mjs
+      - name: Save public data snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stock-research/data/market.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: refresh official stock market snapshot"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload existing website and new market data
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+      - name: Publish Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
