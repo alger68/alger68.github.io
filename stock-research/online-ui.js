@@ -1,5 +1,4 @@
 'use strict';
-let marketSnapshot=null,marketRequest=null;
 const M=window.StockMarket;
 function factsCount(f){return ['quote','revenue','valuation','income'].filter(k=>f?.[k]).length;}
 function marketOverview(r){
@@ -12,12 +11,9 @@ function marketOverview(r){
 function onlineMethods(r){const f=r.market;if(!f)return '';const selected=methods(r);const facts=f.revenue?`${f.revenue.period} 營收 ${fmt(f.revenue.amountYi)} 億元，年增 ${fmt(f.revenue.yoy)}%。`:'月營收尚未取得。';return `<div class="info"><b>已取得的資料如何用在分析？</b>${selected.includes('MM')?`<p>MM 框架：${facts}尚需驗證產業需求、價格與公司受惠傳導。</p>`:''}${selected.includes('MARKS')?`<p>Marks 框架：${f.valuation?`歷史 PE ${fmt(f.valuation.pe)} 倍、PB ${fmt(f.valuation.pb)} 倍。`:'估值資料尚未取得。'}單靠倍數不能判便宜或昂貴，風險立場仍待評估。</p>`:''}${selected.includes('MANUS')?`<p>MANUS：已整理 ${factsCount(f)} 類官方資料；核心論點、獨立反證與前瞻估值仍須補齊。</p>`:''}<p class="fine">以上是系統整理，不是作者個股建議；股癌／曼報原文未取得時保持留白。</p></div>`;}
 async function onlineUpdate(id,force=false){
  const r=local.find(x=>x.id===id);if(!r||r.demo||r.removed||r.paused||busy)return;
- busy=true;progress=10;progressText='正在上網讀取最近成功取得的官方資料…';render();
+ busy=true;progress=10;progressText='正在下載這家公司的小型資料檔（保留來源日期）…';render();
  try{
-  if(!marketSnapshot||force){
-   if(!marketRequest)marketRequest=(async()=>{const response=await fetch('data/market.json?t='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(20000)});if(!response.ok)throw new Error('網站資料讀取失敗 HTTP '+response.status);const payload=await response.json();if(payload.schemaVersion!==1||!payload.datasets)throw new Error('官方資料格式不符');return payload;})();
-   try{marketSnapshot=await marketRequest;}finally{marketRequest=null;}
-  }
+  const marketSnapshot=await window.MarketLoader.company(r,force);
   progress=65;progressText='已下載，正在核對市場、代號、資料日期及金額單位…';render();
   const found=M.extract(marketSnapshot,r);if(!factsCount(found))throw new Error(r.exchange==='TPEX'?'本次上櫃來源未取得此股有效資料，保留前版並稍後重試。':'官方快照尚無此標的資料，保留前版；請查看來源或稍後重試。');
   if(r.removed||r.paused)return;

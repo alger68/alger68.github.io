@@ -24,15 +24,13 @@ let running=false,lastSnapshot=null,lastFetched=null;
 async function check(manual=false){
  if(running)return;running=true;button.disabled=true;checked.textContent='正在檢查網站已發布的快照…';
  try{
-  const response=await fetch('data/market.json?t='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(20000)});
-  if(!response.ok)throw Error('HTTP '+response.status);
-  const payload=await response.json(),s=describe(payload,Date.now(),lastFetched);
+  const payload=await window.MarketLoader.status(true),s=describe(payload,Date.now(),lastFetched);
   message.textContent='資料最近擷取：'+fmt(s.fetchedAt)+'（台灣） · '+s.sourceCount+' 組來源'+(s.oldestFetchedAt!==s.fetchedAt?'；最舊來源 '+fmt(s.oldestFetchedAt):'')+'。此為公開快照，財報與 Nova 成交各有自己的時間。';
   checked.textContent='本頁檢查時間：'+fmt(s.checkedAt)+'（台灣）'+(s.unchanged?' · 尚無較新的來源擷取紀錄。':' · 已讀取目前發布版本。')+(s.errorCount?' 本次 '+s.errorCount+' 組來源更新失敗，保留原日期。':'')+(s.overdue?' 已超過預定時段一小時仍未見新擷取；需查核排程，重新整理不會產生新資料。':'');
   panel.dataset.state=s.errorCount||s.overdue?'warning':'ready';
   const changed=lastSnapshot!==null&&lastSnapshot!==payload.checkedAt;
-  lastSnapshot=payload.checkedAt;lastFetched=s.fetchedAt;marketSnapshot=payload;
-  const r=current();if((manual||changed)&&mode==='mine'&&r&&!busy)await onlineUpdate(r.id);
+  lastSnapshot=payload.checkedAt;lastFetched=s.fetchedAt;
+  const r=current();if(mode==='mine'&&r&&!busy&&(manual||changed||r.market?.checkedAt!==payload.checkedAt))await onlineUpdate(r.id,true);
  }catch(e){panel.dataset.state='warning';checked.textContent='本頁檢查失敗：'+fmt(Date.now())+'（台灣） · '+e.message+'。保留先前資料及原日期。';}
  finally{running=false;button.disabled=false;}
 }

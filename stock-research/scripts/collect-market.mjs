@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import {writeShards} from './split-market.mjs';
 const target=new URL('../data/market.json',import.meta.url);
 let previous={datasets:{}};try{previous=JSON.parse(await fs.readFile(target,'utf8'))}catch{}
 const sources={
@@ -19,5 +20,6 @@ for(const [key,[url,label]] of Object.entries(sources)){
  catch(e){out.errors.push({key,url,message:e.message,checkedAt:now});console.log(key,'FAILED',e.message);}
 }
 await fs.mkdir(new URL('../data/',import.meta.url),{recursive:true});await fs.writeFile(target,JSON.stringify(out));
+await writeShards(out);
 console.log('Successful sources',successes,'out of',Object.keys(sources).length);
 if(!successes)process.exitCode=1;
