@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="把公司品質、價格與研究條件分開判讀。七法研究工作台，含本機公司目錄、證據筆記與假設估值。">
-<title>選股研究工作台 · v2.1</title>
+<title>選股研究工作台 · v2.2</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231b2750'/%3E%3Cpath d='M8 22V15M16 22V8M24 22V12' stroke='%23bcf36b' stroke-width='4'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css?v=2.1.0"><script defer src="directory.js?v=20261005"></script><script defer src="engine.js?v=2.1.0"></script><script defer src="market.js?v=2.1.1"></script><script defer src="online-ui.js?v=2.1.0"></script><script defer src="app.js?v=2.1.0"></script>
+<link rel="stylesheet" href="style.css?v=2.2.0"><script defer src="directory.js?v=20261005"></script><script defer src="engine.js?v=2.2.0"></script><script defer src="market.js?v=2.2.0"></script><script defer src="online-ui.js?v=2.2.0"></script><script defer src="app.js?v=2.2.0"></script><script defer src="update-status.js?v=2.2.0"></script>
 </head>
 <body>
 <a class="skip" href="#main">跳至研究內容</a>
@@ -14,13 +14,18 @@
  <div class="nav-label">工作空間</div>
  <nav aria-label="主要導覽"><button class="nav active" data-view="workspace"><span>▦</span>研究工作台</button><button class="nav" data-view="methods"><span>◈</span>七法與適用性</button><button class="nav" data-view="feasibility"><span>☷</span>可行性與進度</button></nav>
  <div class="side-note"><b>好公司 ≠ 好價格</b><p>先確認證據，再決定要等待什麼。</p><span class="line"></span><small>資料缺口與風險分開呈現<br>方法數量不等於勝率</small></div>
- <div class="sidebar-foot"><span>v2.1 · GitHub 版</span><a href="https://mm-stock-analysis.ifluit.chatgpt.site" target="_blank" rel="noopener noreferrer">開啟原研究後端 ↗</a></div>
+ <div class="sidebar-foot"><span>v2.2 · GitHub 版</span><a href="https://mm-stock-analysis.ifluit.chatgpt.site" target="_blank" rel="noopener noreferrer">開啟原研究後端 ↗</a></div>
 </aside>
 <main id="main" tabindex="-1">
  <header class="topbar"><div><span class="eyebrow">研究 / 判讀 / 確認</span><h1 id="page-title">研究工作台</h1></div><div class="top-actions"><span class="tag neutral">本機資料</span><button class="button" data-action="export">匯出我的研究</button></div></header>
  <div class="notice"><strong>官方資料已接入</strong><span>新增公司自動上網讀取盤後行情、月營收與可用財報。可手動更新；非盤中即時報價。個人筆記只存本機，Notion 尚未接入。</span></div>
+ <section id="auto-update-status" class="auto-update" aria-label="自動更新狀態">
+  <div><strong>自動更新排程已設定</strong><p>台灣時間：每天 07:20、週一至週五 14:20。背景抓取後自動部署，關閉網頁也會執行。</p>
+  <p id="auto-update-message" role="status">正在確認最近資料…</p><small>頁面開啟時每 5 分鐘檢查新快照；排程可能延遲。按鈕讀取已發布資料，不會立即啟動交易所抓取。</small></div>
+  <button id="check-market-now" class="button primary" type="button">檢查最新資料</button>
+ </section>
  <section id="view-root" aria-label="工作內容"></section>
- <footer>選股判斷規格 v2.1 · 2026-10-06 · <a href="README.md">使用與資料說明</a> · <a href="https://github.com/alger68/alger68.github.io/tree/main/stock-research" target="_blank" rel="noopener noreferrer">GitHub 原始碼</a></footer>
+ <footer>選股判斷規格 v2.2 · 2026-10-07 · <a href="README.md">使用與資料說明</a> · <a href="https://github.com/alger68/alger68.github.io/tree/main/stock-research" target="_blank" rel="noopener noreferrer">GitHub 原始碼</a></footer>
 </main>
 <div id="toast" role="status" aria-live="polite"></div>
 <noscript>請啟用 JavaScript 以使用研究工作台。這個版本不需要登入。</noscript>
