@@ -53,12 +53,35 @@ class EmptyMarketProvider:
         return {'enabled': False, 'provider': 'public_empty', 'connected': False}
 
 
+class IndustryEnrichedMarketProvider:
+    def __init__(self, provider, directory):
+        self.provider = provider
+        self.directory = directory
+
+    @property
+    def checked_at(self):
+        return getattr(self.provider, 'checked_at', None)
+
+    def status(self):
+        return self.provider.status() if hasattr(self.provider, 'status') else {'enabled': True, 'provider': 'market', 'connected': True}
+
+    def rows(self):
+        lookup = self.directory.industry_map()
+        out = []
+        for row in self.provider.rows() or []:
+            key = (str(row.get('exchange') or '').upper(), str(row.get('ticker') or ''))
+            meta = lookup.get(key) or {}
+            out.append({**row, 'industry_code': meta.get('industry_code'), 'sector': meta.get('industry') or row.get('sector') or '其他'})
+        return out
+
+
 def configure_app(app, http=None, nova_provider=None):
     client = http or JsonHttpClient()
     official = {'TWSE': TwseProvider(client), 'TPEX': TpexProvider(client)}
     nova = nova_provider or TaishinNovaProvider.from_env()
     legacy_private = TaishinFugleProvider.from_env()
     private = nova if nova.enabled else legacy_private
+    directory = DirectoryService(client)
 
     def provider_for_exchange(exchange):
         ex = str(exchange).upper()
@@ -67,10 +90,10 @@ def configure_app(app, http=None, nova_provider=None):
         return CompositeCompanyProvider(official[ex], private)
 
     app.state.stock_service = StockService(provider_for_exchange)
-    app.state.directory_service = DirectoryService(client)
+    app.state.directory_service = directory
     app.state.history_provider = TwseHistoryProvider()
     app.state.financial_provider = SummaryFinancialProvider(provider_for_exchange)
-    app.state.news_provider = PublicNewsProvider()
-    app.state.market_provider = nova if nova.enabled else EmptyMarketProvider()
+    app.state.news_provider = PublicNewsProvider(client)
+    app.state.market_provider = IndustryEnrichedMarketProvider(nova, directory) if nova.enabled else EmptyMarketProvider()
     app.state.private_provider = nova
     return app
