@@ -14,3 +14,9 @@ test('missing fields render as null rather than zero',()=>{
  assert.equal(m.quote.price,null);
  assert.equal(m.quick.eps,null);
 });
+
+test('public snapshot fallback is always warning tone',()=>{
+ const m=D.build({identity:{exchange:'TWSE',ticker:'2395'},price:{price:718,quote_date:'2026-10-13',checked_at:'2026-10-14T17:29:00+08:00',freshness:'snapshot',label:'公開快照',source:'TWSE'},source_confidence:.5,warnings:['fallback']},null);
+ assert.equal(m.quote.tone,'warning');
+ assert.match(m.quote.message,/公開快照/);
+});
