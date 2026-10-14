@@ -77,3 +77,17 @@ def test_tpex_history_status_becomes_ready_after_rows_are_parsed():
     assert s['status']=='ready'
     assert s['last_count']==1
     assert s['last_error'] is None
+
+
+def test_tpex_history_uses_official_column_position_when_volume_header_has_markup_or_variant():
+    from app.providers.history_tpex import TpexHistoryProvider
+    def fetch(url, params):
+        return {
+            'fields':['日 期','成交量<br>仟股','成交仟元','開盤','最高','最低','收盤','漲跌','筆數'],
+            'data':[
+                ['115/10/14','12,345','9,999,999','1020','1030','994','1020','5','1234'],
+            ],
+        }
+    p=TpexHistoryProvider(fetch_json=fetch,today=lambda:date(2026,10,15))
+    rows=p.history('TPEX','6488','1m')
+    assert rows[0]['volume']==12345000.0
