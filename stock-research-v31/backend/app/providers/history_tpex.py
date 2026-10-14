@@ -67,8 +67,15 @@ class TpexHistoryProvider:
         h=cls._num(first('最高','最高價','High'))
         l=cls._num(first('最低','最低價','Low'))
         c=cls._num(first('收盤','收盤價','Close'))
-        v=cls._num(first('成交仟股','成交量(仟股)','TradingShares','成交股數'))
-        if '成交仟股' in mapping or '成交量(仟股)' in mapping:
+        v=cls._num(first('成交仟股','成交量(仟股)','成交量仟股','TradingShares','成交股數'))
+        volume_is_thousand=('成交仟股' in mapping or '成交量(仟股)' in mapping or '成交量仟股' in mapping)
+        # TPEx tradingStock has a stable official column order:
+        # 日期, 成交仟股, 成交仟元, 開盤, 最高, 最低, 收盤, 漲跌, 筆數.
+        # Some JSON variants decorate the volume header (HTML/spacing), so use
+        # column 2 as a guarded fallback once the OHLC/date row is recognized.
+        if v is None and len(row)>1 and len(fields or [])>=7:
+            v=cls._num(row[1]); volume_is_thousand=True
+        if volume_is_thousand:
             v=None if v is None else v*1000.0
         if not day or None in (o,h,l,c): return None
         return {'date':day,'open':o,'high':h,'low':l,'close':c,'volume':v}
