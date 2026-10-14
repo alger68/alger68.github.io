@@ -24,6 +24,7 @@
 | 15.4B | Complete in code/tests | 2026-10-14 | `fa315788c12a7a5b5ffdb6eb143adc8f77e23392` | `20261014-2337_stage-15-4b-history-news-watchlist.md` |
 | 15.4B1 | Complete in code/tests — live TPEx validation complete | 2026-10-15 | `9eefc342f8bdc0c0586b388bdbf7507b65b4df7f` | `20261014-2355_stage-15-4b1-tpex-audit.md` |
 | 15.4B2 | Complete in code/tests — Mac recheck recommended | 2026-10-15 | `a456d56a46865d68d29d70c95bb1779380da84a6` | `20261015-0640_stage-15-4b2-tpex-live-audit-fixes.md` |
+| 15.4C | Complete in code/tests — live 3332 validation pending | 2026-10-15 | `1c3db11492614e558e3e304d7cd5318469aa35b7` | `20261015-0750_stage-15-4c-tpex-price-news-quality.md` |
 
 ## Current Next Stage
-Launch BUILD 15.4B2 on the user's Apple Silicon Mac and re-run `Check_TPEx.command`. Confirm 6488 history volume is non-null and a 06:xx premarket quote from the prior trading day no longer shows a stale warning. After that, proceed to Stage 15.4C verified cash-flow / FCF source work. PR #4 remains Draft until external validation is complete.
+Launch BUILD 15.4C on the user's Apple Silicon Mac and run `Check_TPEx.command`. Confirm `/api/stocks/3332/summary?exchange=TPEX` returns a non-null price with source `TPEx` or `TPEx History Fallback`. Then proceed to Stage 15.4D verified MOPS/XBRL balance-sheet and cash-flow integration for OCF / CapEx / FCF. PR #4 remains Draft until external validation succeeds.
