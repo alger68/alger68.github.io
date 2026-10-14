@@ -70,7 +70,10 @@ def configure_app(app, http=None, nova_provider=None):
         return CompositeCompanyProvider(official[ex], private)
     app.state.stock_service = StockService(provider_for_exchange)
     app.state.directory_service = directory
-    app.state.history_provider = CompositeHistoryProvider(TwseHistoryProvider(), TpexHistoryProvider())
+    twse_history=TwseHistoryProvider()
+    tpex_history=TpexHistoryProvider()
+    app.state.history_provider = CompositeHistoryProvider(twse_history, tpex_history)
+    app.state.history_tpex_provider = tpex_history
     app.state.financial_provider = SummaryFinancialProvider(provider_for_exchange)
     app.state.news_provider = CompositeNewsProvider(PublicNewsProvider(client), RecentNewsProvider(), directory)
     public_market = IndustryEnrichedMarketProvider(PublicMarketProvider(client), directory)
