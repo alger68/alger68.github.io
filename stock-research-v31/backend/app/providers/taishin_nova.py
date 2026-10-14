@@ -24,6 +24,7 @@ class TaishinNovaProvider:
         self._stock = None
         self.enabled = all([self._user_id, self._password, self._cert_path, self._cert_password])
         self.checked_at = None
+        self.last_error = None
 
     @classmethod
     def from_env(cls, sdk_factory=None):
@@ -39,7 +40,12 @@ class TaishinNovaProvider:
         return f'<TaishinNovaProvider enabled={self.enabled} connected={self._stock is not None}>'
 
     def status(self):
-        return {'enabled': self.enabled, 'provider': 'taishin_nova', 'connected': self._stock is not None}
+        return {
+            'enabled': self.enabled,
+            'provider': 'taishin_nova',
+            'connected': self._stock is not None,
+            'error': self.last_error,
+        }
 
     def _connect(self):
         if self._stock is not None:
@@ -58,11 +64,17 @@ class TaishinNovaProvider:
         sdk.init_realtime(accounts[0])
         self._sdk = sdk
         self._stock = sdk.marketdata.rest_client.stock
+        self.last_error = None
         return self._stock
+
+    def _safe_error(self, exc):
+        self.last_error = f'{exc.__class__.__name__}'
+        return f'taishin_nova_error:{self.last_error}'
 
     def quote(self, ticker):
         now = datetime.now(timezone.utc)
         if not self.enabled:
+            self.last_error = 'private_provider_disabled'
             return ProviderResult(source_name='Taishin Nova', fetched_at=now, data=None, error='private_provider_disabled')
         try:
             raw = self._connect().intraday.quote(symbol=str(ticker))
@@ -78,17 +90,19 @@ class TaishinNovaProvider:
                 'Exchange': raw.get('exchange'),
                 'Market': raw.get('market'),
             }
+            self.last_error = None
             return ProviderResult(source_name='Taishin Nova', fetched_at=now, scope_hint='single_day', data=data)
         except Exception as exc:
             return ProviderResult(
                 source_name='Taishin Nova',
                 fetched_at=now,
                 data=None,
-                error=f'taishin_nova_error:{exc.__class__.__name__}',
+                error=self._safe_error(exc),
             )
 
     def rows(self):
         if not self.enabled:
+            self.last_error = 'private_provider_disabled'
             return []
         try:
             stock = self._connect()
@@ -111,7 +125,9 @@ class TaishinNovaProvider:
                         'sector': item.get('industry') or '其他',
                     })
             self.checked_at = datetime.now(timezone.utc).isoformat()
+            self.last_error = None
             return rows
-        except Exception:
+        except Exception as exc:
             self.checked_at = datetime.now(timezone.utc).isoformat()
+            self._safe_error(exc)
             return []
