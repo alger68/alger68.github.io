@@ -18,6 +18,7 @@ mkdir -p logs
     '/api/health' \
     '/api/stocks/search?q=6488' \
     '/api/stocks/6488/summary?exchange=TPEX' \
+    '/api/stocks/3332/summary?exchange=TPEX' \
     '/api/stocks/6488/history?exchange=TPEX&range=1m' \
     '/api/stocks/6488/technicals?exchange=TPEX' \
     '/api/stocks/6488/financials?exchange=TPEX' \
