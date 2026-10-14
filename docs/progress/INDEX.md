@@ -14,6 +14,7 @@
 | 10 | Complete | 2026-10-14 | `d34d7142fa6b1142e25b8cb4cc8847f8ba40caad` | `20261014-2310_stage-10-news-events.md` |
 | 11 | Complete | 2026-10-14 | `fded84961e032f7d900bbcd3f9dfb73c90fb254e` | `20261014-2340_stage-11-watchlist-market.md` |
 | 12 | Complete | 2026-10-14 | `77b3e5092a493af66b84aee88471ee5ed845e69c` | `20261014-2355_stage-12-private-provider.md` |
+| 13 | Complete | 2026-10-14 | `7661acd98a5c9be07c6af731dd5d4b7ef40c6e11` | `20261014-2359_stage-13-online-fallback.md` |
 
 ## Current Next Stage
-Stage 13 — Free Online Mode + Snapshot Fallback.
+Stage 14 — Mac Installer / Launcher Hardening.
