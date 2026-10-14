@@ -2,6 +2,17 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+if [ -x .venv/bin/python ]; then
+  PYTHON_BIN=.venv/bin/python
+elif command -v python3.12 >/dev/null 2>&1; then
+  PYTHON_BIN=python3.12
+elif command -v python3 >/dev/null 2>&1; then
+  PYTHON_BIN=python3
+else
+  echo "找不到 Python；請先執行 install.command。"
+  exit 1
+fi
+
 read -r -p "台新登入身分證字號：" TAISHIN_ID_INPUT
 read -r -s -p "台新登入密碼：" TAISHIN_PASSWORD_INPUT; echo
 read -r -p "台新 .pfx 憑證完整路徑：" TAISHIN_CERT_PATH_INPUT
@@ -16,7 +27,7 @@ TAISHIN_ID_INPUT="$TAISHIN_ID_INPUT" \
 TAISHIN_PASSWORD_INPUT="$TAISHIN_PASSWORD_INPUT" \
 TAISHIN_CERT_PATH_INPUT="$TAISHIN_CERT_PATH_INPUT" \
 TAISHIN_CERT_PASSWORD_INPUT="$TAISHIN_CERT_PASSWORD_INPUT" \
-python3 - <<'PY'
+"$PYTHON_BIN" - <<'PY'
 import os
 from pathlib import Path
 
