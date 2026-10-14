@@ -24,6 +24,7 @@
   addWatchlist:item=>json('/api/watchlist',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(item)}),
   deleteWatchlist:(t,e='TWSE')=>json(`/api/watchlist/${encodeURIComponent(t)}?exchange=${encodeURIComponent(e)}`,{method:'DELETE'}),
   market:()=>json('/api/market/overview'),
+  sourceHealth:()=>json('/api/status/sources'),
   refresh:(t,e='TWSE')=>json(`/api/stocks/${encodeURIComponent(t)}/refresh?exchange=${encodeURIComponent(e)}`,{method:'POST'})
  };
 })(window);
