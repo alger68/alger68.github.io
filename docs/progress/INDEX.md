@@ -18,6 +18,7 @@
 | 14 | Complete | 2026-10-14 | `b0ae95542d832980bf9ff79800f2c3d3ade52bb2` | `20261014-2359_stage-14-mac-launcher.md` |
 | 15 | Partial — external validation pending | 2026-10-14 | `e9b0f28a058e20b08da10db1ccac171b112261f9` | `20261014-2359_stage-15-release-verification.md` |
 | 15.1 | Partial — live Nova validation pending | 2026-10-14 | `604d5b950735928f2921ddf276e1f3c119dcc533` | `20261014-2146_stage-15-1-taishin-nova-watchlist.md` |
+| 15.2 | Complete in code/tests | 2026-10-14 | `8f324152dc76262e6fec4c85bd053f5cacd6b7e5` | `20261014-2158_stage-15-2-official-announcements-industry-heatmap.md` |
 
 ## Current Next Stage
-Run live Taishin Nova validation on the user's Apple Silicon Mac: install the official Mac ARM64 SDK wheel locally, configure credentials/certificate through `Configure_Taishin.command`, then verify 2395 uses `Taishin Nova`, market breadth is populated, and watchlist add/remove works. Keep PR #4 Draft until this succeeds.
+External validation on the user's Apple Silicon Mac: verify Taishin Nova login/quote + market breadth, confirm ⑥ loads same-day TWSE/TPEx official重大訊息 when present, and confirm ⑨ groups rows into named industries. PR #4 remains Draft until external validation succeeds.
