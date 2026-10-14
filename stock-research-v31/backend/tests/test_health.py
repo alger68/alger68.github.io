@@ -6,7 +6,7 @@ def test_health_returns_version_mode_and_build():
     client = TestClient(app)
     r = client.get('/api/health')
     assert r.status_code == 200
-    assert r.json() == {'status': 'ok', 'mode': 'local', 'version': '3.1', 'build': '15.4B2'}
+    assert r.json() == {'status': 'ok', 'mode': 'local', 'version': '3.1', 'build': '15.4C'}
 
 
 def test_config_mode_matches_health():
