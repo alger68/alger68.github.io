@@ -9,6 +9,7 @@
 | 05 | Complete | 2026-10-14 | `bdf7d78253a8cd2296f52984e3dbee1130267915` | `20261014-2055_stage-05-summary-refresh-api.md` |
 | 06 | Complete | 2026-10-14 | `66ae6c7e119ee33b02b58a6a593db2c05e8c79a3` | `20261014-2120_stage-06-history-technicals.md` |
 | 07 | Complete | 2026-10-14 | `f641befb05bc413e6c0e1b9866d4fcebf50cfd3c` | `20261014-2145_stage-07-financial-statements.md` |
+| 08 | Complete | 2026-10-14 | `214c9bb0cb61730ddda061576f5934dff6b9a45d` | `20261014-2210_stage-08-scoring-valuation-decision.md` |
 
 ## Current Next Stage
-Stage 08 — Scoring + Valuation + Rule-first Decision.
+Stage 09 — Full 1–10 Dashboard Frontend.
