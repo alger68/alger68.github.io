@@ -12,7 +12,7 @@ def test_configure_app_wires_runtime_services_without_network():
     assert hasattr(app.state,'financial_provider')
     assert hasattr(app.state,'news_provider')
     assert hasattr(app.state,'market_provider')
-    assert app.state.history_provider.history('TWSE','2395','1y') == []
+    assert app.state.history_provider.history('TPEX','1240','1y') == []
 
 def test_main_app_is_bootstrapped_for_direct_uvicorn_start():
     from app.main import app
