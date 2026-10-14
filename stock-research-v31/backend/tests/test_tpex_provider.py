@@ -71,3 +71,22 @@ def test_tpex_na_valuation_is_missing_not_zero():
     data=StockService(lambda ex:p, now=lambda: datetime(2026,10,14,15,0)).summary('TPEX','6488')
     assert data['valuation']['pe'] is None
     assert data['valuation']['yield']==0.0
+
+
+def test_tpex_missing_daily_close_falls_back_to_latest_history_close():
+    from app.bootstrap import CompositeCompanyProvider
+    from app.models.provider import ProviderResult
+    class Official:
+        def quote(self,t):
+            return ProviderResult(source_name='TPEx',fetched_at=datetime.now(timezone.utc),data={'SecuritiesCompanyCode':t,'Date':'1151014','Close':'--'},error=None)
+        def revenue(self,t): return ProviderResult(source_name='TPEx',fetched_at=datetime.now(timezone.utc),data=None,error='not_found')
+        def valuation(self,t): return ProviderResult(source_name='TPEx',fetched_at=datetime.now(timezone.utc),data=None,error='not_found')
+        def financial_summary(self,t): return ProviderResult(source_name='TPEx',fetched_at=datetime.now(timezone.utc),data=None,error='not_found')
+    class History:
+        def history(self,e,t,r):
+            return [{'date':'2026-10-13','open':88.0,'high':90.0,'low':87.0,'close':89.5,'volume':123000.0}]
+    p=CompositeCompanyProvider(Official(),history=History(),exchange='TPEX')
+    q=p.quote('3332')
+    assert q.source_name=='TPEx History Fallback'
+    assert q.data['Close']==89.5
+    assert q.data['Date']=='1151013'
