@@ -1,0 +1,4 @@
+const test=require('node:test');const assert=require('node:assert/strict');const V=require('../valuation.js');
+test('PE price multiplies valid positive inputs',()=>assert.equal(V.pePrice(10,20),200));
+test('nonpositive EPS or PE returns null',()=>{assert.equal(V.pePrice(0,20),null);assert.equal(V.pePrice(10,0),null)});
+test('range preserves assumptions and computes upside',()=>{const base=V.scenario({eps:10,pe:20,label:'Base',sourceType:'internal_sensitivity',forecastPeriod:'2027'});const r=V.range({bear:V.scenario({eps:9,pe:16,label:'Bear',sourceType:'internal_sensitivity',forecastPeriod:'2027'}),base,bull:V.scenario({eps:11,pe:24,label:'Bull',sourceType:'internal_sensitivity',forecastPeriod:'2027'}),currentPrice:250});assert.equal(r.base.price,200);assert.equal(r.base.upsidePct,-20);assert.equal(r.base.sourceType,'internal_sensitivity')});
