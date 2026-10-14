@@ -19,6 +19,7 @@
 | 15 | Partial — external validation pending | 2026-10-14 | `e9b0f28a058e20b08da10db1ccac171b112261f9` | `20261014-2359_stage-15-release-verification.md` |
 | 15.1 | Partial — live Nova validation pending | 2026-10-14 | `604d5b950735928f2921ddf276e1f3c119dcc533` | `20261014-2146_stage-15-1-taishin-nova-watchlist.md` |
 | 15.2 | Complete in code/tests | 2026-10-14 | `8f324152dc76262e6fec4c85bd053f5cacd6b7e5` | `20261014-2158_stage-15-2-official-announcements-industry-heatmap.md` |
+| 15.3 | Complete in code/tests | 2026-10-14 | `ce764c7475ec0e9a7adf654d33a93c53b362d567` | `20261014-2215_stage-15-3-runtime-build-port-diagnostics.md` |
 
 ## Current Next Stage
-External validation on the user's Apple Silicon Mac: verify Taishin Nova login/quote + market breadth, confirm ⑥ loads same-day TWSE/TPEx official重大訊息 when present, and confirm ⑨ groups rows into named industries. PR #4 remains Draft until external validation succeeds.
+Launch Stage 15.3 on the user's Apple Silicon Mac and confirm the UI badge reads `BUILD 15.3`. If data remains missing, run `Diagnose.command` and inspect the generated non-secret health/market/watchlist/news/summary diagnostics before making any further fixes. PR #4 remains Draft until this external validation succeeds.
