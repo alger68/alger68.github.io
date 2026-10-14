@@ -12,14 +12,13 @@ def test_configure_app_wires_runtime_services_without_network():
     assert hasattr(app.state,'financial_provider')
     assert hasattr(app.state,'news_provider')
     assert hasattr(app.state,'market_provider')
-    assert app.state.history_provider.history('TPEX','1240','1y') == []
+    assert app.state.history_provider.__class__.__name__ == 'CompositeHistoryProvider'
 
 def test_main_app_is_bootstrapped_for_direct_uvicorn_start():
     from app.main import app
     assert hasattr(app.state,'stock_service')
     assert hasattr(app.state,'history_provider')
     assert hasattr(app.state,'financial_provider')
-
 
 def test_nova_market_rows_are_enriched_with_official_industry_name():
     from app.bootstrap import configure_app
@@ -44,3 +43,12 @@ def test_nova_market_rows_are_enriched_with_official_industry_name():
     rows=app.state.market_provider.rows()
     assert rows[0]['sector']=='電腦及週邊設備業'
     assert rows[0]['industry_code']=='25'
+
+
+def test_configure_app_uses_composite_history_and_news_after_154b():
+    from app.bootstrap import configure_app
+    from app.providers.history_tpex import CompositeHistoryProvider
+    from app.providers.news_recent import CompositeNewsProvider
+    app=FastAPI(); configure_app(app,http=FakeHttp())
+    assert isinstance(app.state.history_provider, CompositeHistoryProvider)
+    assert isinstance(app.state.news_provider, CompositeNewsProvider)
