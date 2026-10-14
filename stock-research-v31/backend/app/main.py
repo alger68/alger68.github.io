@@ -8,6 +8,8 @@ from .api.technicals import router as technicals_router
 from .api.financials import router as financials_router
 from .api.decision import router as decision_router
 from .api.news import router as news_router
+from .api.watchlist import router as watchlist_router
+from .api.market import router as market_router
 
 app = FastAPI(title='StockMaster AI', version=settings.version)
 app.include_router(stocks_router)
@@ -15,6 +17,8 @@ app.include_router(technicals_router)
 app.include_router(financials_router)
 app.include_router(decision_router)
 app.include_router(news_router)
+app.include_router(watchlist_router)
+app.include_router(market_router)
 FRONTEND = Path(__file__).resolve().parents[2] / 'frontend'
 
 @app.get('/api/health')
