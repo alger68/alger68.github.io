@@ -9,8 +9,8 @@ test('watchlist has add remove and click-to-load interactions',()=>{assert.ok(HT
 test('market panel surfaces Taishin Nova provider status',()=>{assert.ok(DASH.includes("ps.provider==='taishin_nova'"));assert.ok(DASH.includes('等待登入/行情連線'));});
 
 test('frontend assets are cache-busted and build id is visible',()=>{
- assert.ok(HTML.includes('BUILD 15.4B1'));
- for(const asset of ['app.css?v=15.4B1','runtime.js?v=15.4B1','dashboard.js?v=15.4B1']) assert.ok(HTML.includes(asset),asset);
+ assert.ok(HTML.includes('BUILD 15.4B2'));
+ for(const asset of ['app.css?v=15.4B2','runtime.js?v=15.4B2','dashboard.js?v=15.4B2']) assert.ok(HTML.includes(asset),asset);
 });
 
 test('dashboard includes source health and enriched watchlist fields',()=>{
@@ -20,9 +20,9 @@ test('dashboard includes source health and enriched watchlist fields',()=>{
  for(const text of ['change_pct','sector']) assert.ok(DASH.includes(text),text);
 });
 
-test('15.4B1 shows PE decision in watchlist and new build id',()=>{
+test('15.4B2 shows PE decision in watchlist and new build id',()=>{
  assert.ok(DASH.includes('x.pe'));
  assert.ok(DASH.includes('x.decision'));
- assert.ok(HTML.includes('BUILD 15.4B1'));
- for(const asset of ['app.css?v=15.4B1','dashboard.js?v=15.4B1']) assert.ok(HTML.includes(asset),asset);
+ assert.ok(HTML.includes('BUILD 15.4B2'));
+ for(const asset of ['app.css?v=15.4B2','dashboard.js?v=15.4B2']) assert.ok(HTML.includes(asset),asset);
 });
