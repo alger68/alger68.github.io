@@ -20,6 +20,7 @@
 | 15.1 | Partial — live Nova validation pending | 2026-10-14 | `604d5b950735928f2921ddf276e1f3c119dcc533` | `20261014-2146_stage-15-1-taishin-nova-watchlist.md` |
 | 15.2 | Complete in code/tests | 2026-10-14 | `8f324152dc76262e6fec4c85bd053f5cacd6b7e5` | `20261014-2158_stage-15-2-official-announcements-industry-heatmap.md` |
 | 15.3 | Complete in code/tests | 2026-10-14 | `ce764c7475ec0e9a7adf654d33a93c53b362d567` | `20261014-2215_stage-15-3-runtime-build-port-diagnostics.md` |
+| 15.4A | Complete in code/tests | 2026-10-14 | `645e95f566c7fdcfc643a4a3742f4debf6ca3615` | `20261014-2315_stage-15-4A-public-fallback-source-health.md` |
 
 ## Current Next Stage
-Launch Stage 15.3 on the user's Apple Silicon Mac and confirm the UI badge reads `BUILD 15.3`. If data remains missing, run `Diagnose.command` and inspect the generated non-secret health/market/watchlist/news/summary diagnostics before making any further fixes. PR #4 remains Draft until this external validation succeeds.
+Validate BUILD 15.4A on the user's Mac: public market overview and enriched watchlist must work even without Nova. Then proceed to Stage 15.4B for cash flow/FCF, recent news, TPEx history, and richer watchlist decision fields. PR #4 remains Draft until external validation succeeds.
