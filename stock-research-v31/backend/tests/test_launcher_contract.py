@@ -28,7 +28,7 @@ def test_launcher_avoids_old_stockmaster_port_collision():
 
 
 def test_launcher_verifies_exact_build_before_opening_browser():
-    assert 'EXPECTED_BUILD="15.3"' in LAUNCH
+    assert 'EXPECTED_BUILD="15.4A"' in LAUNCH
     assert '/api/health' in LAUNCH
     assert 'health_build' in LAUNCH
     assert "'build': settings.build" in MAIN
