@@ -18,5 +18,6 @@ function extract(snapshot,target){
  return result;
 }
 function merge(prev,next){const out={...prev,...next};for(const key of ['quote','revenue','income','valuation']){const old=prev?.[key],n=next?.[key];if(!n||(old&&(old.date||old.period)>(n.date||n.period)))out[key]=old||null;}return out;}
-const M={num,date,period,extract,merge};if(typeof module!=='undefined')module.exports=M;else root.StockMarket=M;
+function toCanonical(extracted,target){if(!root.Canonical||typeof root.Canonical.bundle!=='function')throw new Error('Canonical module not loaded');return root.Canonical.bundle(extracted,target);}
+const M={num,date,period,extract,merge,toCanonical};if(typeof module!=='undefined')module.exports=M;else root.StockMarket=M;
 })(globalThis);
