@@ -9,8 +9,9 @@ def service(request: Request):
     return s
 
 @router.get('/stocks/search')
-def search(q: str=''):
-    return {'query':q,'results':[]}
+def search(request: Request, q: str=''):
+    directory=getattr(request.app.state,'directory_service',None)
+    return {'query':q,'results':directory.search(q) if directory else []}
 
 @router.get('/stocks/{ticker}/summary')
 def summary(ticker: str, request: Request, exchange: str='TWSE'):
