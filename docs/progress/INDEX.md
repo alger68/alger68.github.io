@@ -11,6 +11,7 @@
 | 07 | Complete | 2026-10-14 | `f641befb05bc413e6c0e1b9866d4fcebf50cfd3c` | `20261014-2145_stage-07-financial-statements.md` |
 | 08 | Complete | 2026-10-14 | `214c9bb0cb61730ddda061576f5934dff6b9a45d` | `20261014-2210_stage-08-scoring-valuation-decision.md` |
 | 09 | Complete | 2026-10-14 | `d1ceb38e43dbda2ec504b35f3d7c774b816d884f` | `20261014-2245_stage-09-dashboard.md` |
+| 10 | Complete | 2026-10-14 | `d34d7142fa6b1142e25b8cb4cc8847f8ba40caad` | `20261014-2310_stage-10-news-events.md` |
 
 ## Current Next Stage
-Stage 10 — News / Events Aggregation.
+Stage 11 — Watchlist + Market Overview.
