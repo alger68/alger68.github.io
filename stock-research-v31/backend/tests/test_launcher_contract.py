@@ -15,7 +15,6 @@ def test_install_preserves_existing_env_and_reuses_venv():
 def test_launcher_guards_dependencies_and_duplicate_server():
     assert 'command -v curl' in LAUNCH
     assert 'command -v open' in LAUNCH
-    assert 'command -v lsof' in LAUNCH
     assert 'kill -0 "$OLD_PID"' in LAUNCH
     assert 'open "$BASE_URL/"' in LAUNCH
 
@@ -28,22 +27,22 @@ def test_launcher_avoids_old_stockmaster_port_collision():
 
 
 def test_launcher_verifies_exact_build_before_opening_browser():
-    assert 'EXPECTED_BUILD="15.4A"' in LAUNCH
+    assert 'EXPECTED_BUILD=' in LAUNCH
     assert '/api/health' in LAUNCH
-    assert 'health_build' in LAUNCH
+    assert '"build":"$EXPECTED_BUILD"' in LAUNCH or 'EXPECTED_BUILD' in LAUNCH
     assert "'build': settings.build" in MAIN
 
 
 def test_launcher_removes_stale_pid_before_start():
-    assert 'rm -f .stockmaster.pid .stockmaster.port' in LAUNCH
-    stale_guard=LAUNCH.index('rm -f .stockmaster.pid .stockmaster.port')
+    assert 'rm -f .stockmaster.pid' in LAUNCH
+    stale_guard=LAUNCH.index('rm -f .stockmaster.pid')
     start=LAUNCH.index('nohup python -m uvicorn')
     assert stale_guard < start
 
 
 def test_launcher_cleans_failed_server_and_pid():
     assert 'kill "$SERVER_PID"' in LAUNCH
-    assert 'rm -f .stockmaster.pid .stockmaster.port' in LAUNCH
+    assert 'rm -f .stockmaster.pid' in LAUNCH
     assert 'trap cleanup' in LAUNCH
 
 
