@@ -5,5 +5,6 @@ import os
 class Settings:
     mode: str = os.getenv('STOCKMASTER_MODE', 'local')
     version: str = '3.1'
+    build: str = '15.3'
 
 settings = Settings()
