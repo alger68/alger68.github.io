@@ -25,7 +25,7 @@ def _status(request: Request):
           'detail':tpex_history_status,
       },
     }
-    required=[sources['public_market'],sources['official_announcements'],sources['recent_news'],sources['income_statement'],sources['history_twse'],sources['history_tpex']]
+    required=[sources['public_market'],sources['official_announcements'],sources['recent_news'],sources['income_statement'],sources['cashflow'],sources['history_twse'],sources['history_tpex']]
     overall='ready' if all(x['status']=='ready' for x in required) else 'partial'
     return {'overall':overall,'sources':sources}
 
