@@ -12,6 +12,7 @@
 | 08 | Complete | 2026-10-14 | `214c9bb0cb61730ddda061576f5934dff6b9a45d` | `20261014-2210_stage-08-scoring-valuation-decision.md` |
 | 09 | Complete | 2026-10-14 | `d1ceb38e43dbda2ec504b35f3d7c774b816d884f` | `20261014-2245_stage-09-dashboard.md` |
 | 10 | Complete | 2026-10-14 | `d34d7142fa6b1142e25b8cb4cc8847f8ba40caad` | `20261014-2310_stage-10-news-events.md` |
+| 11 | Complete | 2026-10-14 | `fded84961e032f7d900bbcd3f9dfb73c90fb254e` | `20261014-2340_stage-11-watchlist-market.md` |
 
 ## Current Next Stage
-Stage 11 — Watchlist + Market Overview.
+Stage 12 — Private Local Taishin/Fugle Provider.
