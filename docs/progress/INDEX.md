@@ -22,7 +22,8 @@
 | 15.3 | Complete in code/tests | 2026-10-14 | `ce764c7475ec0e9a7adf654d33a93c53b362d567` | `20261014-2215_stage-15-3-runtime-build-port-diagnostics.md` |
 | 15.4A | Complete in code/tests | 2026-10-14 | `645e95f566c7fdcfc643a4a3742f4debf6ca3615` | `20261014-2315_stage-15-4A-public-fallback-source-health.md` |
 | 15.4B | Complete in code/tests | 2026-10-14 | `fa315788c12a7a5b5ffdb6eb143adc8f77e23392` | `20261014-2337_stage-15-4b-history-news-watchlist.md` |
-| 15.4B1 | Complete in code/tests — live TPEx validation pending | 2026-10-14 | `9eefc342f8bdc0c0586b388bdbf7507b65b4df7f` | `20261014-2355_stage-15-4b1-tpex-audit.md` |
+| 15.4B1 | Complete in code/tests — live TPEx validation complete | 2026-10-15 | `9eefc342f8bdc0c0586b388bdbf7507b65b4df7f` | `20261014-2355_stage-15-4b1-tpex-audit.md` |
+| 15.4B2 | Complete in code/tests — Mac recheck recommended | 2026-10-15 | `a456d56a46865d68d29d70c95bb1779380da84a6` | `20261015-0640_stage-15-4b2-tpex-live-audit-fixes.md` |
 
 ## Current Next Stage
-Launch BUILD 15.4B1 on the user's Apple Silicon Mac and run `Check_TPEx.command`. Confirm 6488 has TPEX identity, non-empty 1M history, technical indicators, financial/news responses, and `history_tpex` changes from `configured` to `ready`. If any section is empty, fix that exact TPEx upstream contract before Stage 15.4C cash-flow work. PR #4 remains Draft until this external validation succeeds.
+Launch BUILD 15.4B2 on the user's Apple Silicon Mac and re-run `Check_TPEx.command`. Confirm 6488 history volume is non-null and a 06:xx premarket quote from the prior trading day no longer shows a stale warning. After that, proceed to Stage 15.4C verified cash-flow / FCF source work. PR #4 remains Draft until external validation is complete.
