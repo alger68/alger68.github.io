@@ -31,4 +31,4 @@ else
   echo "StockMaster 舊/新本機服務已清理。"
 fi
 
-echo "接下來請雙擊 StockMaster.command 啟動 BUILD 15.3。"
+echo "接下來請雙擊 StockMaster.command 啟動 BUILD 15.4A。"
