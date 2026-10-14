@@ -1,5 +1,6 @@
 from pathlib import Path
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from .config import settings
@@ -12,6 +13,13 @@ from .api.watchlist import router as watchlist_router
 from .api.market import router as market_router
 
 app = FastAPI(title='StockMaster AI', version=settings.version)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['https://alger68.github.io','http://127.0.0.1:8000','http://localhost:8000'],
+    allow_credentials=False,
+    allow_methods=['GET','POST','DELETE'],
+    allow_headers=['*'],
+)
 app.include_router(stocks_router)
 app.include_router(technicals_router)
 app.include_router(financials_router)
