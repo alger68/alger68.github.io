@@ -18,9 +18,9 @@ def roc_month(value: str | None):
 
 def num(value):
     try:
-        return float(str(value).replace(',',''))
-    except Exception:
-        return None
+        x=float(str(value).replace(',',''))
+        return x
+    except Exception: return None
 
 class StockService:
     def __init__(self, provider_for_exchange, now=datetime.now):
@@ -34,7 +34,7 @@ class StockService:
             qd=roc_date(q.data.get('Date'))
             if qd:
                 fresh=quote_freshness(qd,checked)
-                price={**fresh,'price':num(q.data.get('ClosingPrice') or q.data.get('Close')),'open':num(q.data.get('OpeningPrice') or q.data.get('Open')),'high':num(q.data.get('HighestPrice') or q.data.get('High')),'low':num(q.data.get('LowestPrice') or q.data.get('Low')),'source':q.source_name}
+                price={**fresh,'price':num(q.data.get('ClosingPrice') or q.data.get('Close') or q.data.get('ClosePrice') or q.data.get('LastPrice')),'open':num(q.data.get('OpeningPrice') or q.data.get('Open') or q.data.get('OpenPrice')),'high':num(q.data.get('HighestPrice') or q.data.get('High') or q.data.get('HighPrice')),'low':num(q.data.get('LowestPrice') or q.data.get('Low') or q.data.get('LowPrice')),'source':q.source_name}
                 if fresh['freshness']=='stale': warnings.append(fresh.get('warning'))
         revenue=None
         if rev.data:
