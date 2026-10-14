@@ -22,6 +22,7 @@
 | 15.3 | Complete in code/tests | 2026-10-14 | `ce764c7475ec0e9a7adf654d33a93c53b362d567` | `20261014-2215_stage-15-3-runtime-build-port-diagnostics.md` |
 | 15.4A | Complete in code/tests | 2026-10-14 | `645e95f566c7fdcfc643a4a3742f4debf6ca3615` | `20261014-2315_stage-15-4A-public-fallback-source-health.md` |
 | 15.4B | Complete in code/tests | 2026-10-14 | `fa315788c12a7a5b5ffdb6eb143adc8f77e23392` | `20261014-2337_stage-15-4b-history-news-watchlist.md` |
+| 15.4B1 | Complete in code/tests — live TPEx validation pending | 2026-10-14 | `9eefc342f8bdc0c0586b388bdbf7507b65b4df7f` | `20261014-2355_stage-15-4b1-tpex-audit.md` |
 
 ## Current Next Stage
-Validate BUILD 15.4B on the user's Apple Silicon Mac: confirm `/api/health` reports `15.4B`, test a TPEx stock's history/technicals, confirm 2395 recent news and watchlist P/E/Decision. Then proceed to Stage 15.4C only for verified balance-sheet/cash-flow integration after an official source contract is confirmed. PR #4 remains Draft until external validation succeeds.
+Launch BUILD 15.4B1 on the user's Apple Silicon Mac and run `Check_TPEx.command`. Confirm 6488 has TPEX identity, non-empty 1M history, technical indicators, financial/news responses, and `history_tpex` changes from `configured` to `ready`. If any section is empty, fix that exact TPEx upstream contract before Stage 15.4C cash-flow work. PR #4 remains Draft until this external validation succeeds.
