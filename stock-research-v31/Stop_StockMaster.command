@@ -17,4 +17,4 @@ for PORT in 8000 8001 8002 8003 8004 8005; do
 done
 rm -f .stockmaster.pid .stockmaster.port
 if [ "$FOUND" -eq 0 ]; then echo "8000–8005 沒有偵測到 StockMaster 服務。"; else sleep 0.5; echo "StockMaster 舊/新本機服務已清理。"; fi
-echo "接下來請雙擊 StockMaster.command 啟動 BUILD 15.4B1。"
+echo "接下來請雙擊 StockMaster.command 啟動 BUILD 15.4B2。"
