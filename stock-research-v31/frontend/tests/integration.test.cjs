@@ -25,3 +25,8 @@ test('market panel surfaces Taishin Nova provider status',()=>{
  assert.ok(DASH.includes("ps.provider==='taishin_nova'"));
  assert.ok(DASH.includes('等待登入/行情連線'));
 });
+
+test('frontend assets are cache-busted and build id is visible',()=>{
+ assert.ok(HTML.includes('BUILD 15.3'));
+ for(const asset of ['app.css?v=15.3','runtime.js?v=15.3','dashboard.js?v=15.3']) assert.ok(HTML.includes(asset),asset);
+});
