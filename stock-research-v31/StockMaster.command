@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 mkdir -p logs
 exec > >(tee -a logs/startup.log) 2>&1
 
-EXPECTED_BUILD="15.4A"
+EXPECTED_BUILD="15.4B"
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] StockMaster AI build=$EXPECTED_BUILD · arch=$(uname -m)"
 command -v curl >/dev/null || { echo "找不到 curl，無法執行健康檢查。"; exit 1; }
 command -v open >/dev/null || { echo "找不到 macOS open 指令。"; exit 1; }
