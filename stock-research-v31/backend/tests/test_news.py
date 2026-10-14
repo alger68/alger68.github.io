@@ -77,3 +77,30 @@ def test_composite_news_combines_official_and_recent_without_failure():
         def search(self,q,limit=12): return [{'ticker':'2395','exchange':'TWSE','name':'研華'}]
     rows=CompositeNewsProvider(Official(),Recent(),Directory()).get('TWSE','2395')
     assert [r['title'] for r in rows]==['重大訊息','近期新聞']
+
+
+def test_news_quality_prefers_official_and_trusted_media_over_community():
+    from app.services.news import normalize_news
+    rows=[
+      {'title':'6488 環球晶 可以買回來了沒','url':'https://x.test/community','published_at':'2026-10-14T09:00:00+00:00','source':'CMoney','category':'近期新聞','quality':'community','relevance':3},
+      {'title':'環球晶 9月營收月增','url':'https://x.test/media','published_at':'2026-10-13T09:00:00+00:00','source':'TechNews 科技新報','category':'近期新聞','quality':'trusted','relevance':3},
+      {'title':'公告環球晶重大訊息','url':'https://x.test/mops','published_at':'2026-10-12T09:00:00+00:00','source':'TPEx MOPS','category':'重大訊息','quality':'official','relevance':3},
+    ]
+    out=normalize_news(rows)
+    assert [x['source'] for x in out]==['TPEx MOPS','TechNews 科技新報','CMoney']
+    assert out[0]['quality']=='official'
+
+
+def test_recent_news_drops_irrelevant_and_marks_community_low_quality():
+    from datetime import datetime, timezone
+    from app.providers.news_recent import RecentNewsProvider
+    rss='''<rss><channel>
+    <item><title>環球晶 9月營收月增 - TechNews</title><link>https://news.google.com/a</link><pubDate>Tue, 13 Oct 2026 08:00:00 GMT</pubDate><source>TechNews 科技新報</source></item>
+    <item><title>6488 環球晶 可以買回來了沒 - CMoney</title><link>https://news.google.com/b</link><pubDate>Tue, 13 Oct 2026 09:00:00 GMT</pubDate><source>CMoney</source></item>
+    <item><title>台積電今日上漲 - 某媒體</title><link>https://news.google.com/c</link><pubDate>Tue, 13 Oct 2026 10:00:00 GMT</pubDate><source>某媒體</source></item>
+    </channel></rss>'''
+    p=RecentNewsProvider(fetch_text=lambda u:rss,now=lambda:datetime(2026,10,14,tzinfo=timezone.utc))
+    rows=p.get('6488','環球晶',30)
+    assert len(rows)==2
+    assert rows[0]['quality']=='trusted'
+    assert rows[1]['quality']=='community'
