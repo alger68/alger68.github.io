@@ -1,7 +1,9 @@
 from datetime import datetime, timezone
 from app.models.provider import ProviderResult
 from app.providers.news import PublicNewsProvider
+from app.providers.news_recent import RecentNewsProvider, CompositeNewsProvider
 from app.providers.history_twse import TwseHistoryProvider
+from app.providers.history_tpex import TpexHistoryProvider, CompositeHistoryProvider
 from app.providers.taishin_fugle import TaishinFugleProvider
 from app.providers.taishin_nova import TaishinNovaProvider
 from app.providers.public_market import PublicMarketProvider
@@ -68,9 +70,9 @@ def configure_app(app, http=None, nova_provider=None):
         return CompositeCompanyProvider(official[ex], private)
     app.state.stock_service = StockService(provider_for_exchange)
     app.state.directory_service = directory
-    app.state.history_provider = TwseHistoryProvider()
+    app.state.history_provider = CompositeHistoryProvider(TwseHistoryProvider(), TpexHistoryProvider())
     app.state.financial_provider = SummaryFinancialProvider(provider_for_exchange)
-    app.state.news_provider = PublicNewsProvider(client)
+    app.state.news_provider = CompositeNewsProvider(PublicNewsProvider(client), RecentNewsProvider(), directory)
     public_market = IndustryEnrichedMarketProvider(PublicMarketProvider(client), directory)
     app.state.market_provider = FallbackMarketProvider(IndustryEnrichedMarketProvider(nova, directory), public_market)
     app.state.private_provider = nova
