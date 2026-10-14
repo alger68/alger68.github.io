@@ -1,0 +1,7 @@
+const test=require('node:test');const assert=require('node:assert/strict');
+const C=require('../canonical.js');
+test('explicit quarterly EPS remains verified',()=>{const d=C.datum({metric:'eps',value:3.72,unit:'TWD/share',period:'2026-Q2',scope:'single_quarter',sourceName:'MOPS',verified:true});assert.equal(d.verified,true);assert.equal(d.scope,'single_quarter')});
+test('ambiguous quarterly EPS is not verified',()=>{const d=C.datum({metric:'eps',value:7.18,period:'2026-Q2',scope:null,sourceName:'MOPS',verified:true});assert.equal(d.verified,false)});
+test('matching official values verify',()=>{const r=C.verify([{metric:'eps',value:3.72,period:'2026-Q2',scope:'single_quarter',sourceName:'MOPS'},{metric:'eps',value:3.72,period:'2026-Q2',scope:'single_quarter',sourceName:'Company IR'}]);assert.equal(r.verified,true);assert.equal(r.value,3.72)});
+test('official source wins conflict',()=>{const r=C.verify([{metric:'eps',value:3.72,period:'2026-Q2',scope:'single_quarter',sourceName:'MOPS'},{metric:'eps',value:3.70,period:'2026-Q2',scope:'single_quarter',sourceName:'Yahoo'}]);assert.equal(r.value,3.72);assert.equal(r.sourceName,'MOPS')});
+test('older datum cannot replace newer datum',()=>{const old=C.datum({metric:'price',value:700,period:'2026-10-14',scope:'single_day',sourceName:'TWSE'});const newer=C.datum({metric:'price',value:710,period:'2026-10-15',scope:'single_day',sourceName:'TWSE'});assert.equal(C.prefer(newer,old).value,710)});

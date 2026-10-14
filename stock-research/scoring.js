@@ -1,0 +1,6 @@
+(function(root){'use strict';
+const WEIGHTS={quality:20,growth:20,financial:20,valuation:20,momentum:10,risk:10};
+const clamp=x=>Math.max(0,Math.min(1,Number(x)));
+function grade(n){if(n===null)return null;if(n>=90)return'A+';if(n>=85)return'A';if(n>=80)return'A-';if(n>=75)return'B+';if(n>=70)return'B';if(n>=60)return'C';return'D';}
+function scoreCompany(bundle={}){if(bundle.asset==='ETF')return {unsupported:true,total:null,grade:null,confidence:0,categories:{},missing:Object.keys(WEIGHTS)};const m=bundle.metrics||{},categories={},missing=[];let total=0,availableWeight=0;for(const [k,w] of Object.entries(WEIGHTS)){if(m[k]===null||m[k]===undefined||!Number.isFinite(Number(m[k]))){categories[k]=null;missing.push(k);continue;}const pts=Math.round(clamp(m[k])*w*100)/100;categories[k]=pts;total+=pts;availableWeight+=w;}total=Math.round(total*100)/100;return {unsupported:false,total:availableWeight?total:null,grade:availableWeight?grade(total):null,confidence:availableWeight/100,categories,missing,details:Object.fromEntries(Object.keys(WEIGHTS).map(k=>[k,{weight:WEIGHTS[k],points:categories[k]}]))};}
+const S={WEIGHTS,grade,scoreCompany};if(typeof module!=='undefined')module.exports=S;else root.CompanyScoring=S;})(globalThis);
