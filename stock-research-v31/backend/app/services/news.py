@@ -1,3 +1,4 @@
+from datetime import datetime
 from urllib.parse import urlparse
 
 POSITIVE=('成長','上修','創高','獲利','訂單增加')
@@ -16,7 +17,9 @@ def _valid_url(url):
     except Exception:
         return False
 
-def normalize_news(rows):
+QUALITY_RANK={'official':0,'trusted':1,'research':2,'other':3,'community':4}
+
+def normalize_news(rows,limit=12):
     seen=set(); out=[]
     for r in rows or []:
         url=str(r.get('url') or '').strip()
@@ -24,7 +27,13 @@ def normalize_news(rows):
         seen.add(url)
         title=str(r.get('title') or '').strip()
         if not title: continue
-        item={'source':str(r.get('source') or ''),'title':title,'published_at':r.get('published_at'),'category':str(r.get('category') or 'news'),'canonical_url':url,'sentiment':_sentiment(title)}
+        source=str(r.get('source') or '')
+        quality=str(r.get('quality') or ('official' if 'MOPS' in source else 'other'))
+        item={'source':source,'title':title,'published_at':r.get('published_at'),'category':str(r.get('category') or 'news'),'canonical_url':url,'sentiment':_sentiment(title),'quality':quality,'relevance':int(r.get('relevance') or 0)}
         out.append(item)
     out.sort(key=lambda x:str(x.get('published_at') or ''),reverse=True)
-    return out
+    out.sort(key=lambda x:(QUALITY_RANK.get(x.get('quality'),9),-int(x.get('relevance') or 0)))
+    primary=[x for x in out if x.get('quality')!='community'][:limit]
+    if len(primary)<limit:
+        primary.extend([x for x in out if x.get('quality')=='community'][:min(2,limit-len(primary))])
+    return primary
