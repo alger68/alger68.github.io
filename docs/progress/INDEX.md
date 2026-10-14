@@ -3,7 +3,7 @@
 | Stage | Status | Date | Commit / Head | MARK |
 |---|---|---|---|---|
 | 01 | Complete | 2026-10-14 | `56bd4eda7f1d3e6098cf61c64c98b2bbcbd72290` | `20261014-1935_stage-01_backend-skeleton.md` |
-| 02 | Complete | 2026-10-14 | `94945a7be51477e552b4a6c1339756f3bfc088d3` | `20261014-1955_stage-02-provider-contract.md` |
+| 02 | Complete | 2026-10-14 | `94945a7be51477e552b4a6c1339756f3bfc088d3` | `20261014-1955_stage-02_provider-contract.md` |
 | 03 | Complete | 2026-10-14 | `1f342202708fd1715d1baac5df552b45019b71ec` | `20261014-2015_stage-03-official-providers.md` |
 | 04 | Complete | 2026-10-14 | `17deadc851cebcc68c2974133516e4888c63c1c3` | `20261014-2035_stage-04-canonical-freshness.md` |
 | 05 | Complete | 2026-10-14 | `bdf7d78253a8cd2296f52984e3dbee1130267915` | `20261014-2055_stage-05-summary-refresh-api.md` |
@@ -16,6 +16,7 @@
 | 12 | Complete | 2026-10-14 | `77b3e5092a493af66b84aee88471ee5ed845e69c` | `20261014-2355_stage-12-private-provider.md` |
 | 13 | Complete | 2026-10-14 | `7661acd98a5c9be07c6af731dd5d4b7ef40c6e11` | `20261014-2359_stage-13-online-fallback.md` |
 | 14 | Complete | 2026-10-14 | `b0ae95542d832980bf9ff79800f2c3d3ade52bb2` | `20261014-2359_stage-14-mac-launcher.md` |
+| 15 | Partial — external validation pending | 2026-10-14 | `adb04e47318995ba04cab8a82673467af517ab94` | `20261014-2359_stage-15-release-verification.md` |
 
 ## Current Next Stage
-Stage 15 — Release Verification + Final MARK.
+External validation on the user's Mac, then PR review/merge decision. Production merge remains blocked until the user approves after reviewing the external-validation limitations.
