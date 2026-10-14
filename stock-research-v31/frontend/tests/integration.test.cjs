@@ -30,3 +30,10 @@ test('frontend assets are cache-busted and build id is visible',()=>{
  assert.ok(HTML.includes('BUILD 15.3'));
  for(const asset of ['app.css?v=15.3','runtime.js?v=15.3','dashboard.js?v=15.3']) assert.ok(HTML.includes(asset),asset);
 });
+
+test('dashboard includes source health and enriched watchlist fields',()=>{
+ assert.ok(API.includes('sourceHealth:'));
+ assert.ok(DASH.includes('StockAPI.sourceHealth'));
+ assert.ok(HTML.includes('id="source-health"'));
+ for(const text of ['change_pct','sector']) assert.ok(DASH.includes(text),text);
+});
