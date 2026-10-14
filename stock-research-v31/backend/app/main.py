@@ -33,7 +33,7 @@ FRONTEND = Path(__file__).resolve().parents[2] / 'frontend'
 
 @app.get('/api/health')
 def health():
-    return {'status': 'ok', 'mode': settings.mode, 'version': settings.version}
+    return {'status': 'ok', 'mode': settings.mode, 'version': settings.version, 'build': settings.build}
 
 @app.get('/api/config/mode')
 def config_mode():
