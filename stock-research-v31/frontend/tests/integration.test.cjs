@@ -27,8 +27,8 @@ test('market panel surfaces Taishin Nova provider status',()=>{
 });
 
 test('frontend assets are cache-busted and build id is visible',()=>{
- assert.ok(HTML.includes('BUILD 15.3'));
- for(const asset of ['app.css?v=15.3','runtime.js?v=15.3','dashboard.js?v=15.3']) assert.ok(HTML.includes(asset),asset);
+ assert.ok(HTML.includes('BUILD 15.4A'));
+ for(const asset of ['app.css?v=15.4A','runtime.js?v=15.4A','dashboard.js?v=15.4A']) assert.ok(HTML.includes(asset),asset);
 });
 
 test('dashboard includes source health and enriched watchlist fields',()=>{
