@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from app.models.provider import ProviderResult
 from app.providers.news import PublicNewsProvider
+from app.providers.history_twse import TwseHistoryProvider
 from app.providers.taishin_fugle import TaishinFugleProvider
 from app.providers.tpex import TpexProvider
 from app.providers.twse import TwseProvider
@@ -28,9 +29,6 @@ class SummaryFinancialProvider:
         empty=lambda label: ProviderResult(source_name=label,fetched_at=datetime.now(timezone.utc),data=None,error='not_available')
         return {'income':income,'balance':empty(income.source_name),'cashflow':empty(income.source_name)}
 
-class EmptyHistoryProvider:
-    def history(self,exchange,ticker,range='1y'): return []
-
 class EmptyMarketProvider:
     checked_at=None
     def rows(self): return []
@@ -44,7 +42,7 @@ def configure_app(app,http=None):
         if ex not in official: raise ValueError('invalid_exchange')
         return CompositeCompanyProvider(official[ex],private)
     app.state.stock_service=StockService(provider_for_exchange)
-    app.state.history_provider=EmptyHistoryProvider()
+    app.state.history_provider=TwseHistoryProvider()
     app.state.financial_provider=SummaryFinancialProvider(provider_for_exchange)
     app.state.news_provider=PublicNewsProvider()
     app.state.market_provider=EmptyMarketProvider()
