@@ -20,3 +20,13 @@ def test_verified_single_quarter_scope_allows_eps_verification():
     assert r['eps']['verified'] is True
     assert r['ocf']==300.0
     assert r['fcf']==200.0
+
+
+def test_financial_summary_accepts_common_cashflow_aliases_and_capex_sign():
+    from app.services.financials import build_financial_summary
+    income={'年度':'115','季別':'2','營業收入':'1000','營業毛利（毛損）':'400','營業利益（損失）':'200','本期淨利（淨損）':'150','基本每股盈餘（元）':'2.5'}
+    cash={'營業活動之淨現金流入（流出）':'300','取得不動產、廠房及設備之現金流出':'100'}
+    r=build_financial_summary(income,scope_hint='quarter_unspecified',cashflow=cash)
+    assert r['ocf']==300.0
+    assert r['capex']==-100.0
+    assert r['fcf']==200.0
