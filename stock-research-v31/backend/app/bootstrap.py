@@ -6,6 +6,7 @@ from app.providers.taishin_fugle import TaishinFugleProvider
 from app.providers.tpex import TpexProvider
 from app.providers.twse import TwseProvider
 from app.services.http_client import JsonHttpClient
+from app.services.directory import DirectoryService
 from app.services.stock_service import StockService
 
 class CompositeCompanyProvider:
@@ -42,6 +43,7 @@ def configure_app(app,http=None):
         if ex not in official: raise ValueError('invalid_exchange')
         return CompositeCompanyProvider(official[ex],private)
     app.state.stock_service=StockService(provider_for_exchange)
+    app.state.directory_service=DirectoryService(client)
     app.state.history_provider=TwseHistoryProvider()
     app.state.financial_provider=SummaryFinancialProvider(provider_for_exchange)
     app.state.news_provider=PublicNewsProvider()
