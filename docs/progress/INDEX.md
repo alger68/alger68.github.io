@@ -8,6 +8,7 @@
 | 04 | Complete | 2026-10-14 | `17deadc851cebcc68c2974133516e4888c63c1c3` | `20261014-2035_stage-04-canonical-freshness.md` |
 | 05 | Complete | 2026-10-14 | `bdf7d78253a8cd2296f52984e3dbee1130267915` | `20261014-2055_stage-05-summary-refresh-api.md` |
 | 06 | Complete | 2026-10-14 | `66ae6c7e119ee33b02b58a6a593db2c05e8c79a3` | `20261014-2120_stage-06-history-technicals.md` |
+| 07 | Complete | 2026-10-14 | `f641befb05bc413e6c0e1b9866d4fcebf50cfd3c` | `20261014-2145_stage-07-financial-statements.md` |
 
 ## Current Next Stage
-Stage 07 — Financial Statements.
+Stage 08 — Scoring + Valuation + Rule-first Decision.
