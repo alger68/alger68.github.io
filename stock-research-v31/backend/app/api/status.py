@@ -13,12 +13,13 @@ def _status(request: Request):
       'public_market':{'status':'ready' if public_ready else 'degraded','provider':market_status.get('provider'),'detail':market_status},
       'taishin_nova':{'status':'ready' if private_status.get('connected') else ('optional' if not private_status.get('enabled') else 'degraded'),'detail':private_status},
       'official_announcements':{'status':'ready' if getattr(request.app.state,'news_provider',None) else 'missing'},
+      'recent_news':{'status':'ready' if getattr(request.app.state,'news_provider',None) else 'missing','provider':'Google News RSS + official disclosures'},
       'income_statement':{'status':'ready' if getattr(request.app.state,'financial_provider',None) else 'missing'},
-      'cashflow':{'status':'missing','note':'Stage 15.4B pending'},
+      'cashflow':{'status':'missing','note':'FCF parser ready; verified production cash-flow source pending'},
       'history_twse':{'status':'ready' if getattr(request.app.state,'history_provider',None) else 'missing'},
-      'history_tpex':{'status':'missing','note':'Stage 15.4B pending'},
+      'history_tpex':{'status':'ready' if getattr(request.app.state,'history_provider',None) else 'missing','provider':'TPEx afterTrading/tradingStock'},
     }
-    required=[sources['public_market'],sources['official_announcements'],sources['income_statement'],sources['history_twse']]
+    required=[sources['public_market'],sources['official_announcements'],sources['recent_news'],sources['income_statement'],sources['history_twse'],sources['history_tpex']]
     overall='ready' if all(x['status']=='ready' for x in required) else 'partial'
     return {'overall':overall,'sources':sources}
 
