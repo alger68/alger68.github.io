@@ -3,8 +3,10 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from .config import settings
+from .api.stocks import router as stocks_router
 
 app = FastAPI(title='StockMaster AI', version=settings.version)
+app.include_router(stocks_router)
 FRONTEND = Path(__file__).resolve().parents[2] / 'frontend'
 
 @app.get('/api/health')
