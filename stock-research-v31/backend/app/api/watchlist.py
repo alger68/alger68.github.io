@@ -2,6 +2,8 @@ from pathlib import Path
 from fastapi import APIRouter, Request
 from pydantic import BaseModel
 from app.services.watchlist import JsonWatchlist
+from app.services.scoring import score_company
+from app.services.decision import decide
 
 router=APIRouter(prefix='/api')
 class WatchItem(BaseModel):
@@ -34,7 +36,22 @@ def _enrich(request, rows):
                 name=name or hit.get('name') or ''
                 industry=hit.get('industry') or industry
             except Exception: pass
-        out.append({**row,'name':name,'price':m.get('price'),'change_pct':m.get('change_pct'),'sector':industry or '其他'})
+        pe=None; decision_state='INSUFFICIENT_DATA'; quote_date=None; price_source=None
+        stock=getattr(request.app.state,'stock_service',None)
+        if stock:
+            try:
+                summary=stock.summary(ex,ticker)
+                pe=(summary.get('valuation') or {}).get('pe')
+                quote_date=(summary.get('price') or {}).get('quote_date')
+                price_source=(summary.get('price') or {}).get('source')
+                metrics={}
+                yoy=(summary.get('revenue') or {}).get('yoy')
+                if yoy is not None: metrics['growth']=max(0,min(1,(float(yoy)+20)/80))
+                if pe not in (None,0): metrics['valuation']=max(0,min(1,(50-float(pe))/40))
+                score=score_company('個股',metrics)
+                decision_state=decide(score,None,False,'個股').get('state','INSUFFICIENT_DATA')
+            except Exception: pass
+        out.append({**row,'name':name,'price':m.get('price'),'change_pct':m.get('change_pct'),'sector':industry or '其他','pe':pe,'decision':decision_state,'quote_date':quote_date,'price_source':price_source})
     return out
 
 @router.get('/watchlist')
