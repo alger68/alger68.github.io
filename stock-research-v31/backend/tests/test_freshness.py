@@ -22,3 +22,12 @@ def test_weekend_does_not_claim_one_day_lag():
     assert r['lag_trading_days']==0
     assert r['freshness']=='current_market_close'
     assert r['label']=='最近收盤'
+
+
+def test_premarket_previous_trading_day_close_is_expected_not_stale():
+    from app.services.freshness import quote_freshness
+    r=quote_freshness(date(2026,10,14),dt(2026,10,15,6,26))
+    assert r['freshness']=='premarket_previous_close'
+    assert r['lag_trading_days']==0
+    assert r['label']=='昨日收盤'
+    assert 'warning' not in r
