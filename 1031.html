@@ -1,0 +1,3081 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#DB6A41">
+<title>聚聚會 HAPPY GATHERING｜10/31 水果家・30年老友與家庭微縮群島 (HEART 政策島解析版)</title>
+<style>
+:root {
+  --coral: #db6a41;
+  --ink: #211d1d;
+  --cream: #fff8f4;
+  --yellow: #fcea8b;
+  --line: #211d1d26;
+  --muted: #78685e;
+  --green: #708f68;
+  --teal: #3e7c8c;
+  --blue: #3f6fb5;
+}
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #e7d9cd;
+  color: var(--ink);
+  font-family: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+button, input, select, a {
+  font: inherit;
+}
+button, a {
+  touch-action: manipulation;
+}
+button {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 38px;
+  border-radius: 9px;
+  padding: 6px 11px;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+button:hover {
+  background: var(--yellow);
+}
+button:active {
+  transform: scale(0.97);
+}
+button[aria-pressed="true"],
+button.active {
+  background: var(--ink);
+  color: var(--cream);
+}
+h1, h2, h3, p {
+  margin: 0;
+}
+#app {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 44% 35%, #fffdf9 0%, #fff8f4 44%, #edddcf 100%);
+  transition: background 0.5s ease;
+}
+#app.time-dawn {
+  background: radial-gradient(ellipse at 44% 35%, #fff3eb 0%, #fde4d2 48%, #dec4b4 100%);
+}
+#app.time-dusk {
+  background: radial-gradient(ellipse at 44% 35%, #ffd8b8 0%, #f0b698 48%, #b88478 100%);
+}
+#app.time-night {
+  background: radial-gradient(ellipse at 44% 35%, #233044 0%, #182232 50%, #0f1722 100%);
+  color: #f5ece6;
+}
+#stage {
+  position: absolute;
+  inset: 0 326px 0 0;
+  touch-action: none;
+  transition: inset 0.3s ease;
+}
+#stage.full {
+  inset: 0;
+}
+#stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  cursor: grab;
+  touch-action: none;
+}
+#stage canvas:active {
+  cursor: grabbing;
+}
+
+/* FLOATING HTML LABELS OVER 3D ISLANDS */
+#labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 3;
+}
+.island-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  font-size: 11px;
+  padding: 4px 8px;
+  min-height: 26px;
+  border: 1px solid #211d1d35;
+  border-radius: 6px;
+  background: #fff8f4f2;
+  color: var(--ink);
+  box-shadow: 0 2px 0 #211d1d18;
+  white-space: nowrap;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.island-label strong {
+  color: var(--coral);
+  font: 700 10px ui-monospace, monospace;
+}
+.island-label.selected {
+  background: var(--ink);
+  color: var(--cream);
+  border-color: var(--coral);
+  z-index: 10;
+}
+.island-label.selected strong {
+  color: var(--yellow);
+}
+.island-label.dim {
+  opacity: 0.24;
+}
+.sign-label {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: auto;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+  cursor: pointer;
+}
+
+/* TOP-LEFT BRAND & HERO NOTE */
+.brand {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  pointer-events: none;
+  z-index: 4;
+}
+.eyebrow {
+  font: 700 10px ui-monospace, monospace;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+.brand .future {
+  pointer-events: auto;
+  text-decoration: none;
+  font: 900 clamp(20px, 2.6vw, 34px) / 0.92 "Arial Black", Impact, sans-serif;
+  letter-spacing: -1px;
+  color: var(--coral);
+  display: inline-block;
+}
+.brand .future span {
+  display: block;
+}
+.brand h1 {
+  font-size: 17px;
+  letter-spacing: 2.5px;
+  margin-top: 8px;
+  font-weight: 900;
+}
+.brand .candidate {
+  font-size: 11.5px;
+  margin-top: 5px;
+}
+.brand .proj {
+  background: var(--coral);
+  color: var(--cream);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 700;
+  margin-left: 5px;
+}
+.brand .proj em {
+  font-style: normal;
+  color: var(--yellow);
+  margin-right: 2px;
+}
+.hero-note {
+  position: absolute;
+  left: 24px;
+  top: 146px;
+  max-width: 195px;
+  pointer-events: none;
+  z-index: 4;
+}
+.hero-note .number {
+  font: italic 52px/0.95 Georgia, serif;
+  color: var(--coral);
+}
+.hero-note h2 {
+  font-size: 15.5px;
+  line-height: 1.45;
+  margin: 6px 0;
+  font-weight: 800;
+}
+.hero-note p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.master-switch-btn {
+  pointer-events: auto;
+  margin-top: 10px;
+  background: var(--coral);
+  color: var(--cream);
+  border-color: var(--coral);
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 7px 11px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(219, 106, 65, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.master-switch-btn:hover {
+  background: var(--ink);
+  color: var(--yellow);
+}
+#app.time-night .hero-note p {
+  color: #c2b6ae;
+}
+
+/* TOP-RIGHT TOOLBAR */
+.toolbar {
+  position: absolute;
+  right: 340px;
+  top: 18px;
+  display: flex;
+  gap: 6px;
+  z-index: 6;
+  transition: right 0.3s ease;
+}
+.toolbar.shifted {
+  right: 16px;
+}
+.toolbar button {
+  background: #fff8f4eb;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 11px;
+  min-height: 36px;
+  box-shadow: 0 2px 8px rgba(33,29,29,0.08);
+}
+.mob-only {
+  display: none;
+}
+
+/* RIGHT SIDEBAR: THE PSU INDEX */
+.sidebar {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 36px;
+  width: 326px;
+  background: #fff8f4f5;
+  color: var(--ink);
+  border-left: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  z-index: 11;
+  backdrop-filter: blur(16px);
+  transition: transform 0.3s ease;
+}
+.sidebar.closed {
+  transform: translateX(100%);
+}
+.side-head {
+  padding: 20px 18px 12px;
+  position: relative;
+}
+.side-head .eyebrow {
+  color: var(--coral);
+  margin-bottom: 6px;
+}
+.side-head h2 {
+  font-size: 21px;
+  font-weight: 900;
+}
+.side-head p {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 6px 0 12px;
+  line-height: 1.5;
+}
+.mobile-close {
+  position: absolute;
+  right: 12px;
+  top: 14px;
+  width: 34px;
+  min-height: 34px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 18px;
+}
+.search {
+  color: var(--ink);
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdfb;
+  padding: 6px 11px;
+  font-size: 12.5px;
+}
+.side-tabs {
+  display: flex;
+  gap: 5px;
+  margin: 10px 0 0;
+}
+.side-tabs button {
+  flex: 1;
+  font-size: 12px;
+  padding: 6px;
+  min-height: 34px;
+}
+.tree {
+  overflow-y: auto;
+  padding: 4px 12px 20px;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+}
+.tree details {
+  border-bottom: 1px solid var(--line);
+}
+.tree summary {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+  padding: 6px 8px;
+  border-radius: 7px;
+}
+.tree summary::-webkit-details-marker { display: none; }
+.tree .index {
+  font: italic 20px Georgia, serif;
+  color: var(--coral);
+  width: 24px;
+  flex: none;
+}
+.tree .item-name {
+  font-size: 13px;
+  font-weight: 700;
+  flex: 1;
+}
+.tree .count {
+  font: 10px ui-monospace, monospace;
+  color: var(--muted);
+  background: #efe3d8;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+.tree details[open] summary {
+  background: #fcea8b66;
+}
+.tree .children {
+  padding: 4px 6px 10px 32px;
+  display: grid;
+  gap: 3px;
+}
+.tree .children button {
+  font-size: 12px;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 6px 8px;
+  min-height: 32px;
+  border-radius: 6px;
+}
+.tree .island-open {
+  font-weight: 700;
+  color: var(--coral);
+}
+.flow-item {
+  width: 100%;
+  margin-bottom: 6px;
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.45;
+  padding: 8px 10px;
+  position: relative;
+}
+.flow-item b {
+  color: var(--coral);
+  margin-right: 5px;
+  font-family: ui-monospace, monospace;
+}
+.flow-item.master-flow {
+  border: 1.5px solid var(--coral);
+  background: #fff2eb;
+}
+.flow-item.master-flow.active {
+  background: var(--ink);
+  color: var(--cream);
+}
+.basis-tag {
+  display: inline-block;
+  font-size: 9.5px;
+  font-family: ui-monospace, monospace;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #efe3d8;
+  color: #5a4a40;
+  margin-top: 4px;
+}
+.flow-item.active .basis-tag {
+  background: #3d3535;
+  color: var(--yellow);
+}
+
+/* LEFT DETAIL CARD (#card) */
+.card {
+  position: absolute;
+  left: 24px;
+  top: 146px;
+  bottom: 205px;
+  width: 356px;
+  background: #fff8f4fa;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 16px 50px rgba(83, 49, 27, 0.18);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  z-index: 12;
+  padding: 20px;
+  backdrop-filter: blur(20px);
+}
+.card[hidden] {
+  display: none;
+}
+.card .close {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  width: 36px;
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 22px;
+}
+.card .eyebrow {
+  color: var(--coral);
+  margin-bottom: 8px;
+  padding-right: 28px;
+}
+.card h2 {
+  font-size: 20px;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  font-weight: 900;
+}
+.card p, .card li {
+  font-size: 12.5px;
+  line-height: 1.68;
+}
+.card ul {
+  padding-left: 18px;
+  margin: 8px 0;
+}
+.chips {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin: 8px 0;
+}
+.chip {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font-size: 10.5px;
+  padding: 3px 8px;
+  background: #f7ede4;
+  font-family: ui-monospace, monospace;
+}
+.card h3 {
+  font-size: 10.5px;
+  letter-spacing: 1px;
+  margin: 15px 0 6px;
+  color: var(--muted);
+  font-family: ui-monospace, monospace;
+}
+.card .phase {
+  padding: 9px 11px;
+  border-left: 3px solid var(--coral);
+  background: #f2e5dc;
+  font-size: 12px;
+  line-height: 1.6;
+  border-radius: 0 6px 6px 0;
+}
+.card .quote {
+  border-left: 2px solid var(--coral);
+  padding: 6px 10px;
+  margin: 8px 0;
+  font-style: italic;
+  color: #5a4a40;
+  background: #fcf4ee;
+  font-size: 12px;
+}
+
+/* 4-STAGE PHASE LIGHT-UP BAR (As highlighted in 春龍政論 video!) */
+.stage-lights {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin: 6px 0 8px;
+}
+.stage-lamp {
+  padding: 5px 4px;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: #efe6dc;
+  color: #8c7b70;
+  font-size: 10px;
+  text-align: center;
+  font-family: ui-monospace, monospace;
+}
+.stage-lamp.lit {
+  background: var(--coral);
+  color: var(--cream);
+  border-color: var(--coral);
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(219, 106, 65, 0.35);
+}
+
+/* SOURCES & YOUTUBE REFERENCE LINKS IN CARD */
+.sources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 6px;
+}
+.source-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: #fffdfb;
+  font-size: 11.5px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: background 0.15s;
+}
+.source-link:hover {
+  background: var(--yellow);
+}
+.source-link span.src-type {
+  font-family: ui-monospace, monospace;
+  font-size: 9.5px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #f2e5dc;
+  color: var(--coral);
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+.derate-mini-row {
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  margin-bottom: 6px;
+}
+.derate-mini-bar {
+  height: 6px;
+  background: #e5d6c8;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 2px;
+}
+.derate-mini-fill {
+  height: 100%;
+  background: var(--coral);
+  border-radius: 3px;
+}
+.derate-mini-limit {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 80%;
+  width: 2px;
+  background: #d91b42;
+}
+
+/* CONNECTION BASIS LEGEND (Exact HEART `#legend` replica) */
+.legend {
+  position: absolute;
+  right: 340px;
+  bottom: 230px;
+  font-size: 10.5px;
+  line-height: 1.85;
+  color: var(--muted);
+  background: #fff8f4d9;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 8px 11px;
+  pointer-events: none;
+  z-index: 5;
+  transition: right 0.3s ease;
+}
+.legend.shifted {
+  right: 16px;
+}
+.legend b {
+  color: var(--ink);
+  font-weight: 700;
+}
+.legend i {
+  display: inline-block;
+  width: 18px;
+  border-top: 2.5px solid var(--coral);
+  vertical-align: middle;
+  margin-right: 5px;
+}
+.legend i.dash {
+  border-top-style: dashed;
+}
+.legend i.dot {
+  border-top-style: dotted;
+}
+
+/* HUD TOGGLES */
+.hud {
+  position: absolute;
+  right: 340px;
+  bottom: 184px;
+  z-index: 6;
+  transition: right 0.3s ease;
+}
+.hud.shifted {
+  right: 16px;
+}
+.toggles {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.seg {
+  display: flex;
+  background: #fff8f4eb;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+  box-shadow: 0 4px 14px rgba(33,29,29,0.08);
+}
+.seg button {
+  min-height: 30px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 7px;
+  font-size: 11px;
+  background: transparent;
+}
+.seg button.active {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+/* MASCOT */
+.mascot {
+  position: absolute;
+  right: 340px;
+  bottom: 298px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10.5px;
+  color: var(--muted);
+  pointer-events: none;
+  z-index: 5;
+}
+.mascot .face {
+  background: #708f68;
+  border: 2px solid #43533d;
+  width: 28px;
+  height: 26px;
+  border-radius: 45% 50% 42% 44%;
+  color: white;
+  text-align: center;
+  font: bold 13px/23px monospace;
+  transform: rotate(-8deg);
+}
+
+/* BOTTOM CONTROLS PANEL */
+.controls {
+  position: absolute;
+  left: 24px;
+  right: 340px;
+  bottom: 44px;
+  z-index: 6;
+  max-width: 900px;
+  background: #fff8f4f2;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px 15px;
+  box-shadow: 0 8px 24px rgba(84, 54, 32, 0.08);
+  backdrop-filter: blur(12px);
+  transition: right 0.3s ease, transform 0.3s ease;
+}
+.controls.shifted {
+  right: 16px;
+}
+.control-tabs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 6px;
+  margin-bottom: 7px;
+  flex-wrap: wrap;
+}
+.control-tabs button {
+  min-height: 30px;
+  border: 0;
+  background: transparent;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+}
+.control-tabs button.active {
+  background: var(--ink);
+  color: var(--cream);
+}
+.control-tabs .status {
+  margin-left: auto;
+  color: var(--muted);
+  font: 10.5px ui-monospace, monospace;
+}
+.panel { display: none; }
+.panel.active { display: block; }
+.day-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.day-row output {
+  font: 700 18px ui-monospace, monospace;
+  min-width: 58px;
+  color: var(--coral);
+}
+.day-row input[type="range"] {
+  width: 100%;
+  accent-color: var(--coral);
+  height: 28px;
+  cursor: pointer;
+}
+.ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 104px;
+  font: 9px ui-monospace, monospace;
+  color: var(--muted);
+}
+.control-note {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.45;
+}
+.term-buttons, .heart-buttons {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.term-buttons button {
+  flex: 1;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 8px;
+  min-height: 32px;
+}
+.heart-buttons button {
+  min-width: 42px;
+  min-height: 34px;
+  font: 800 14px Arial, sans-serif;
+}
+
+/* QUICK ISLAND DOCK FOR MOBILE & TABLET */
+.quick-dock {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 44px;
+  display: none;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 6px 4px;
+  z-index: 7;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.quick-dock::-webkit-scrollbar { display: none; }
+.dock-pill {
+  flex: none;
+  background: #fff8f4f2;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 5px 11px;
+  min-height: 32px;
+  font-size: 11.5px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(33,29,29,0.1);
+  white-space: nowrap;
+}
+.dock-pill b {
+  color: var(--coral);
+  margin-right: 4px;
+  font-family: ui-monospace, monospace;
+}
+.dock-pill.active {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+/* CITY LOG */
+.log {
+  position: absolute;
+  left: 24px;
+  bottom: 185px;
+  width: 340px;
+  max-height: 240px;
+  background: #fff8f4f5;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  z-index: 10;
+  box-shadow: 0 12px 32px rgba(33,29,29,0.14);
+  display: flex;
+  flex-direction: column;
+}
+.log[hidden] { display: none; }
+.log-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.log-head .eyebrow { color: var(--coral); }
+.log-head h3 { font-size: 15px; font-weight: 900; }
+.log-list {
+  margin: 0;
+  padding-left: 16px;
+  overflow-y: auto;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #4a3e38;
+}
+
+/* MY CHARACTER MODAL */
+.char-modal {
+  position: absolute;
+  right: 340px;
+  top: 64px;
+  width: 295px;
+  background: #fff8f4fa;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  z-index: 13;
+  box-shadow: 0 16px 48px rgba(33,29,29,0.2);
+}
+.char-modal[hidden] { display: none; }
+.role-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 8px 0 10px;
+}
+.role-grid button {
+  font-size: 11px;
+  padding: 4px 8px;
+  min-height: 28px;
+}
+
+/* INTRO ONBOARDING DIALOG */
+.intro {
+  position: absolute;
+  inset: 0;
+  background: rgba(33, 29, 29, 0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 25;
+  backdrop-filter: blur(4px);
+}
+.intro[hidden] { display: none; }
+.intro-box {
+  background: var(--cream);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 24px 60px rgba(33,29,29,0.25);
+}
+.intro-box .eyebrow { color: var(--coral); margin-bottom: 6px; }
+.intro-box h2 { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
+.intro-box p { font-size: 13px; line-height: 1.65; color: var(--muted); margin-bottom: 16px; }
+.intro-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.intro-actions .next { background: var(--coral); color: var(--cream); border-color: var(--coral); font-weight: 700; }
+
+/* BOTTOM FOOTER BAR */
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 12;
+  background: var(--ink);
+  color: var(--cream);
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-size: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.footer span:last-child {
+  color: var(--yellow);
+  font-family: ui-monospace, monospace;
+}
+
+/* =========================================================================
+   RESPONSIVE MOBILE & NARROW CANVAS LAYOUT (<= 820px)
+   ========================================================================= */
+@media (max-width: 820px) {
+  #stage {
+    inset: 0 !important;
+  }
+  .brand {
+    top: 12px;
+    left: 14px;
+  }
+  .brand .future {
+    font-size: 20px;
+  }
+  .brand h1 {
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  .hero-note {
+    display: none;
+  }
+  .mascot, .legend {
+    display: none;
+  }
+  .toolbar {
+    right: 12px !important;
+    top: 12px;
+    gap: 4px;
+  }
+  .toolbar button {
+    padding: 5px 8px;
+    font-size: 11px;
+    min-height: 32px;
+  }
+  .mob-only {
+    display: inline-flex;
+    align-items: center;
+  }
+  .sidebar {
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 36px;
+    width: 100%;
+    height: 64dvh;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -10px 30px rgba(33,29,29,0.18);
+  }
+  .sidebar.closed {
+    transform: translateY(105%);
+  }
+  .card {
+    left: 10px;
+    right: 10px;
+    top: auto;
+    bottom: 44px;
+    width: auto;
+    max-height: 58dvh;
+    padding: 16px;
+  }
+  .hud {
+    left: 12px;
+    right: 12px !important;
+    bottom: auto;
+    top: 84px;
+    pointer-events: none;
+  }
+  .toggles {
+    justify-content: space-between;
+  }
+  .seg {
+    pointer-events: auto;
+    padding: 2px;
+  }
+  .seg button {
+    padding: 3px 6px;
+    font-size: 10.5px;
+    min-height: 26px;
+  }
+  .controls {
+    left: 10px;
+    right: 10px !important;
+    bottom: 84px;
+    padding: 10px 12px;
+    z-index: 14;
+  }
+  .controls.mob-hidden {
+    display: none;
+  }
+  .control-tabs .status {
+    display: none;
+  }
+  .ticks {
+    margin-left: 0;
+  }
+  .quick-dock {
+    display: flex;
+  }
+  .char-modal {
+    left: 12px;
+    right: 12px;
+    top: 56px;
+    width: auto;
+  }
+  .log {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    bottom: 86px;
+  }
+}
+</style>
+</head>
+<body>
+<main id="app">
+  <!-- 3D MINIATURE HEXAGONAL CITY STAGE -->
+  <div id="stage" role="img" aria-label="14 個六邊形組成 10/31 聚聚會 30年老友與家庭微縮互動群島">
+    <canvas id="world-canvas"></canvas>
+    <div id="labels"></div>
+  </div>
+
+  <!-- TOP-LEFT BRAND HEADER -->
+  <header class="brand">
+    <a class="future" href="#overview" id="brand-reset-link">GATHER <span>SOON.</span></a>
+    <div class="brand-r">
+      <h1>10/31 聚聚會</h1>
+      <p class="candidate"><b>水果家主揪</b><span class="proj"><em>HEART</em>30年老友島</span></p>
+    </div>
+  </header>
+
+  <!-- LEFT HERO NOTE + MASTER SWITCH BUTTON -->
+  <div class="hero-note">
+    <div class="number">30</div>
+    <h2>一格回憶<br>一座相連的老友島</h2>
+    <p>從三十年前的青春開始，<br>看見老朋友與下一代的連結。</p>
+    <button class="master-switch-btn" id="btn-master-hub" title="點亮總開關 F0：從 07 水果家主島連向全島 13 座島">⚡ 點亮聚聚會總開關 (F0)</button>
+  </div>
+
+  <!-- TOP-RIGHT TOOLBAR -->
+  <nav class="toolbar" id="toolbar" aria-label="地圖操作">
+    <button id="btn-home" title="回到全景">↗ 全景</button>
+    <button id="btn-top-master" title="一鍵點亮全島 13 條總開關情誼線" style="color:var(--coral);font-weight:800;">⚡ 總開關</button>
+    <button id="btn-auto-tour" title="像解析影片一樣自動巡禮全島" style="font-weight:700;">🎬 導覽</button>
+    <button id="btn-char">☺ 角色</button>
+    <button id="btn-mob-time" class="mob-only">◷ 時間</button>
+    <button id="btn-sidebar">☰ 清單</button>
+    <button id="btn-help">?</button>
+  </nav>
+
+  <!-- MY CHARACTER CUSTOMIZER ("我的角色") -->
+  <div class="char-modal" id="char-modal" hidden>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div>
+        <div class="eyebrow" style="color:var(--coral)">MY CHARACTER</div>
+        <h3 style="font-size:15px;font-weight:900;">我的上島角色</h3>
+      </div>
+      <button id="btn-char-close" style="border:0;background:transparent;font-size:18px;min-height:28px;padding:2px 6px;">×</button>
+    </div>
+    <p style="font-size:11.5px;color:var(--muted);line-height:1.45;">切換身分會套用該家庭戰隊的專屬配色與手持小道具，並在島上漫步串門子：</p>
+    <div class="role-grid" id="role-grid">
+      <button class="active" data-role="島主・水果家" data-color="#db6a41" data-badge="迎賓好茶">島主・水果家</button>
+      <button data-role="阿伯家戰隊" data-color="#3f6fb5" data-badge="幽默開講">阿伯家戰隊</button>
+      <button data-role="阿冠家戰隊" data-color="#708f68" data-badge="特調茶飲">阿冠家戰隊</button>
+      <button data-role="余老闆家戰隊" data-color="#3e7c8c" data-badge="精美點心">余老闆家戰隊</button>
+      <button data-role="老呂家戰隊" data-color="#c97a3e" data-badge="青春相機">老呂家戰隊</button>
+      <button data-role="單身老友(中和)" data-color="#6b5280" data-badge="中和5分達">單身老友(中和)</button>
+      <button data-role="孩子青年團" data-color="#b84b4b" data-badge="Switch手把">孩子青年團</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid var(--line);font-size:11px;">
+      <span id="char-status-text">化身：<b>島主・水果家</b></span>
+      <button id="btn-follow-hero" style="padding:4px 10px;min-height:28px;">🎲 追蹤串門子</button>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDEBAR: THE GATHERING INDEX -->
+  <aside id="sidebar" class="sidebar" aria-label="完整聚聚會主題與情誼清單">
+    <div class="side-head">
+      <div class="eyebrow">THE GATHERING INDEX</div>
+      <h2>把三十載情誼，連起來。</h2>
+      <button id="btn-sidebar-close" class="mobile-close" aria-label="關閉清單">✕</button>
+      <p>14 座老友與家庭主題島 ／ 56 個歡聚亮點<br>點選任一項主題，走進 10/31 水果家的微縮風景。</p>
+      <input id="search" class="search" type="search" placeholder="搜尋水果家、下午茶、Switch、桌遊、景安站、停車…">
+      <div class="side-tabs">
+        <button id="tab-policies" class="active">聚會主題 14</button>
+        <button id="tab-flows">情誼連線 18</button>
+      </div>
+    </div>
+    <div id="tree" class="tree"></div>
+  </aside>
+
+  <!-- LEFT / BOTTOM DETAIL CARD (#card) -->
+  <article id="card" class="card" hidden aria-label="選取項目詳細資料">
+    <button class="close" id="btn-card-close" aria-label="關閉詳細資料">×</button>
+    <div id="card-content"></div>
+  </article>
+
+  <!-- CONNECTION BASIS LEGEND -->
+  <div class="legend" id="legend">
+    <b>情誼連線・依據</b><br>
+    <i></i><span>30年老友默契</span>　<i class="dash"></i><span>跨世代親子同樂</span><br>
+    <i class="dot"></i><span>水果家主揪召集令 (全島總開關)</span>
+  </div>
+
+  <!-- FLOATING HUD TOGGLES -->
+  <div class="hud" id="hud" aria-label="城市狀態與顯示選項">
+    <div class="toggles">
+      <div class="seg" id="time-seg" role="group" aria-label="時段">
+        <button data-mins="945" data-mode="dawn" title="15:45 準備迎賓">🌅</button>
+        <button class="active" data-mins="960" data-mode="day" title="16:00 下午茶會">☀️</button>
+        <button data-mins="1080" data-mode="dusk" title="18:00 溫馨晚宴">🌇</button>
+        <button data-mins="1230" data-mode="night" title="20:30 星空夜談">🌙</button>
+      </div>
+      <div class="seg" role="group" aria-label="顯示圖層">
+        <button class="active" id="tg-names" data-layer="names">名牌</button>
+        <button class="active" id="tg-badges" data-layer="badges">伴手禮</button>
+        <button class="active" id="tg-flows" data-layer="flows">情誼線</button>
+        <button id="tg-freeze" data-layer="freeze">暫停</button>
+        <button id="tg-bird" data-layer="bird">鳥瞰</button>
+        <button id="tg-log" data-layer="log">日誌</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CITY LOG -->
+  <aside class="log" id="log-panel" hidden aria-label="聚聚會日誌">
+    <div class="log-head">
+      <div>
+        <div class="eyebrow">GATHERING LOG</div>
+        <h3>聚聚會即時日誌</h3>
+      </div>
+      <button id="btn-log-close" style="border:0;background:transparent;font-size:18px;min-height:28px;">×</button>
+    </div>
+    <ol class="log-list" id="log-list"></ol>
+  </aside>
+
+  <!-- MASCOT -->
+  <div class="mascot">
+    <span class="face">•ᴗ•</span>
+    <span>小果 · 點一格六角島，或點「⚡總開關」全島亮燈</span>
+  </div>
+
+  <!-- MOBILE QUICK ISLAND DOCK -->
+  <nav class="quick-dock" id="quick-dock" aria-label="快速前往聚會島"></nav>
+
+  <!-- BOTTOM CONTROLS (01 聚會的一天 / 02 歡聚四部曲 / 03 HEART) -->
+  <section class="controls mob-hidden" id="controls" aria-label="時間與主題篩選">
+    <div class="control-tabs" role="tablist">
+      <button class="active" id="ctab-day" data-panel="day">01 聚會的一天</button>
+      <button id="ctab-term" data-panel="term">02 歡聚四部曲</button>
+      <button id="ctab-heart" data-panel="heart">03 HEART</button>
+      <div class="status" id="status-bar">14座主題島 · 56個亮點 · 18條情誼線 · 30年老友與孩子在島上</div>
+    </div>
+
+    <div class="panel active" id="panel-day">
+      <div class="day-row">
+        <button id="day-play" class="play">▶</button>
+        <output id="clock">16:00</output>
+        <input id="day-slider" type="range" min="0" max="1439" value="960">
+      </div>
+      <div class="ticks"><span>15:30 準備</span><span>16:00 下午茶會</span><span>17:00 電競桌遊</span><span>18:00 溫馨晚宴</span><span>21:00 賦歸</span></div>
+      <p class="control-note" id="day-note">16:00 下午茶會開席：中和景新街 210 巷 15 號 3 樓（水果家），大人共享香醇茶飲與精美小點心，孩子們暢玩 Switch 與桌遊！</p>
+    </div>
+
+    <div class="panel" id="panel-term">
+      <div class="term-buttons" id="term-buttons">
+        <button class="active" data-term="ALL">全部 (14島)</button>
+        <button data-term="P1">Stage 1 迎賓登島</button>
+        <button data-term="P2">Stage 2 午後茶敘</button>
+        <button data-term="P3">Stage 3 溫馨晚宴</button>
+        <button data-term="P4">Stage 4 拾光紀念</button>
+      </div>
+      <p class="control-note">依 10/31 (六) 當日活動推進階段，檢視各座家庭戰隊與活動島嶼。</p>
+    </div>
+
+    <div class="panel" id="panel-heart">
+      <div class="heart-buttons" id="swarm-buttons">
+        <button data-swarm="S" title="Host & Access (主場與交通)">H</button>
+        <button data-swarm="W" title="Enjoyment & Games (電競桌遊)">E</button>
+        <button data-swarm="A" title="Afternoon Tea & Treats (茶飲與精美小點心)">A</button>
+        <button data-swarm="R" title="Reunion Families (30年老友家庭)">R</button>
+        <button data-swarm="M" title="Time & Memories (拾光記憶與報名)">T</button>
+        <button class="reset active" id="swarm-reset">全部</button>
+      </div>
+      <p class="control-note">可複選：H 主場交通 ／ E 電競桌遊 ／ A 茶飲與精美小點心 ／ R 老友家庭 ／ T 拾光記憶與報名。</p>
+    </div>
+  </section>
+
+  <!-- INTRO ONBOARDING MODAL -->
+  <div class="intro" id="intro" hidden>
+    <div class="intro-box" role="dialog" aria-modal="true">
+      <div class="eyebrow">HELLO, 10/31 聚聚會 / 30 YEARS</div>
+      <h2>真正的重點，是老朋友與家庭之間的線！</h2>
+      <p>14 個六邊形拼成 <b>10/31 (六) 水果家「聚聚會」微縮群島</b>。試著點擊「<b>⚡ 總開關 (F0)</b>」或正中央的 <b>07 號 水果家 3F 聚聚會主島</b>，你會看見一條總開關情誼線同時點亮全島 13 座家庭與美食遊戲島！點擊 <b>14 號 開戰登錄報名島</b> 還可一鍵複製 LINE 接龍回覆。</p>
+      <div class="intro-actions">
+        <button id="btn-intro-skip">略過</button>
+        <button class="next" id="btn-intro-next">點亮全島總開關 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM FOOTER BAR -->
+  <footer class="footer">
+    <span>聚聚會 HAPPY GATHERING · 2026/10/31 (六) 新北市中和區景新街210巷15號3樓 (水果家)</span>
+    <span>精美小點心 · 香醇茶飲 · 30年老友家庭聚會</span>
+  </footer>
+</main>
+
+<script>
+// ============================================================================
+// 1. 14 HEXAGONAL ISLANDS DATA (10/31 聚聚會・30年老友與家庭微縮群島)
+// ============================================================================
+const ISLANDS = [
+  {
+    id: 'emi', num: '01', name: '景安捷運與停車島',
+    q: -2, r: -1, term: 'P1', litStages: [1, 2], swarm: ['S', 'M'],
+    groundColor: '#d7c8b2', cliffColor: '#b59f84', roofColor: '#db6a41',
+    tagline: '抵達中和景新街的第一哩路，無論搭捷運或開車都能輕鬆順暢登島。',
+    phaseText: '雙線超近距離集結：所有家庭從【永和區】出發（約 8–12 分鐘車程）、單身老友從【中和區】在地出發（約 5–8 分鐘）直達景新街 210 巷！',
+    quote: '「把交通與停車路線都安排妥當，讓每個家庭從出門那一刻就帶著好心情！」',
+    deratings: [
+      { label: '捷運景安站轉乘便利度', pct: 78, text: '3–5 mins 抵達' },
+      { label: '周邊三大停車場步行距離', pct: 72, text: '輕鬆停放 PASS' }
+    ],
+    sources: [
+      { type: 'MAP', title: 'Google Maps 導航：新北市中和區景新街210巷15號3樓（水果家）', url: 'https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' },
+      { type: 'MRT', title: '新北捷運環狀線 Y11 景安站官方車站與出口資訊', url: 'https://www.ntmetro.com.tw/basic/?mode=detail&node=800' },
+      { type: 'PARK', title: '新北市路外公共停車場查詢：捷運南勢角站轉乘停車場 (337車位)', url: 'https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=030026' }
+    ],
+    buildings: [
+      { id: 'emi-x2', name: '① 捷運景安站傳送亭', dx: -0.38, dz: -0.25, type: 'pavilion', sign: '景安捷運站', desc: '搭乘中和新蘆線或環狀線至「景安站」，出站後散步或轉乘計程車約 3–5 分鐘即達景新街 210 巷。' },
+      { id: 'emi-cm', name: '② 公有景新/日月亭停車雙塔', dx: 0.28, dz: -0.22, type: 'twin_coil', sign: '景新停車場', desc: '位於景新街 399 巷 12 號，立體雙車道平面車位寬敞明亮，附設電梯直達一樓。' },
+      { id: 'emi-ntc', name: '③ 南勢角轉乘平面停車場', dx: -0.15, dz: 0.35, type: 'house', sign: '337格停車場', desc: '位於和平街 19-2 號旁，備有 337 個平面大車位與充電樁，停好車散步過來超方便。' },
+      { id: 'emi-surge', name: '④ 景新街 210 巷迎賓指引哨', dx: 0.42, dz: 0.32, type: 'tower', sign: '210巷15號', desc: '抵達景新街 210 巷 15 號，直上 3 樓就是我們今天的「水果家・聚聚會」秘密基地！' }
+    ]
+  },
+  {
+    id: 'pfc', num: '02', name: '迎賓茶飲與小點心島',
+    q: -1, r: -1, term: 'P1', litStages: [1, 2], swarm: ['A', 'S'],
+    groundColor: '#e4d5c3', cliffColor: '#bc9f82', roofColor: '#db6a41',
+    tagline: '16:00 下午茶會第一站的溫暖款待，用鮮果茶飲與精美小點心迎接老友登島。',
+    phaseText: '16:00 下午茶會開席：清爽茶飲、手沖咖啡與一口大小的精美小點心全天候供應。',
+    quote: '「一進門先喝杯好茶、嚐口精緻小點心，老朋友的笑容就是最好的開場白。」',
+    deratings: [
+      { label: '特調迎賓茶飲回甘度', pct: 78, text: '100% 清爽回甘' },
+      { label: '精美小點心豐富度', pct: 75, text: '甜鹹皆備 PASS' }
+    ],
+    sources: [
+      { type: 'TEA', title: '台灣特色茶風味指南（紅玉／金萱／四季春／高山烏龍）', url: 'https://tastetaiwantea.com/taiwan-tea-innovation-guide/' },
+      { type: 'MAP', title: '迎賓報到座標：新北市中和區景新街210巷15號3樓（水果家）', url: 'https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' }
+    ],
+    buildings: [
+      { id: 'pfc-gan', name: '① 鮮果特調迎賓茶飲吧', dx: 0.0, dz: -0.25, type: 'hall', sign: '迎賓茶飲吧', desc: '水果家特別準備清爽解膩的鮮果茶飲與氣泡飲，大人小孩一進門就能清涼暢飲。' },
+      { id: 'pfc-ind', name: '② 手作精美小點心工坊', dx: -0.42, dz: 0.2, type: 'coil_mill', sign: '精美小點心', desc: '精心挑選多款一口享用的精緻烘焙茶點與季節小點心，搭配茶飲剛剛好。' },
+      { id: 'pfc-zcd', name: '③ 16:00 下午茶會鐘塔', dx: 0.42, dz: 0.18, type: 'clock', sign: '16:00茶會', desc: '下午 16:00 茶會準時開席，各家庭從永和、單身老友從中和從容抵達入座！' }
+    ]
+  },
+  {
+    id: 'bus', num: '03', name: '午後茶敘大客廳',
+    q: 0, r: -1, term: 'P2', litStages: [1, 2, 3], swarm: ['A', 'R'],
+    groundColor: '#d9ccb8', cliffColor: '#b39b7e', roofColor: '#3e7c8c',
+    tagline: '不限時的溫馨交誼大客廳，高山好茶、手沖咖啡配精美小點心，暢聊三十年近況。',
+    phaseText: '16:00–18:00 下午茶會：免去外面餐廳 90 分鐘限時壓力，在水果家自在品茗配精美小點心。',
+    quote: '「外面的咖啡廳有時間限制，但我們在水果家泡的茶，可以從下午一路聊到星光滿天。」',
+    deratings: [
+      { label: '高山茶與精品咖啡香氣指標', pct: 79, text: '濃郁回甘 PASS' },
+      { label: '客廳沙發區舒適放鬆度', pct: 76, text: '不限時暢聊' }
+    ],
+    sources: [
+      { type: 'TEA', title: '台灣高山茗茶與茶湯風味全攻略（午後茶敘嚴選）', url: 'https://tastetaiwantea.com/taiwan-tea-innovation-guide/' },
+      { type: 'MAP', title: '午後茶敘座標：新北市中和區景新街210巷15號3樓（水果家）', url: 'https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' }
+    ],
+    buildings: [
+      { id: 'bus-cap', name: '① 台灣高山茗茶品茗雙席', dx: 0.0, dz: -0.1, type: 'twin_silo', sign: '高山茶席', desc: '沖泡溫潤回甘的台灣高山烏龍與特選紅茶，茶香四溢中細數三十年老交情。' },
+      { id: 'bus-holdup', name: '② 手沖精品咖啡飄香站', dx: -0.42, dz: 0.32, type: 'house', sign: '手沖咖啡館', desc: '現場沖煮香氣迷人的單品咖啡，配上一盤精美小點心，享受最愜意的週末午後。' },
+      { id: 'bus-cbb', name: '③ 6大家庭分享餐桌亭', dx: 0.4, dz: 0.28, type: 'pavilion', sign: '伴手禮分享亭', desc: '歡迎各家隨喜攜帶喜愛的小茶點或伴手禮一起擺滿長桌，共享百家風味！' }
+    ]
+  },
+  {
+    id: 'llc', num: '04', name: '青年電競與桌遊島',
+    q: 1, r: -1, term: 'P2', litStages: [2, 3], swarm: ['W', 'R'],
+    groundColor: '#cfe0c8', cliffColor: '#9eb596', roofColor: '#db6a41',
+    tagline: '專為國中、高中、大學生與孩子們打造的派對天地，Switch 與桌遊一秒破冰！',
+    phaseText: '16:00–20:30 跨世代同樂：大人在客廳享受 16:00 下午茶會，孩子們在遊戲區組隊嗨翻天。',
+    quote: '「以前是我們這群老朋友並肩作戰，現在看孩子們湊在一起打電動玩桌遊，就是最棒的傳承！」',
+    deratings: [
+      { label: 'Switch 多人派對歡樂指數', pct: 80, text: '滿分嗨翻 PASS' },
+      { label: '青年桌遊破冰互動率', pct: 78, text: '一秒熟絡 PASS' }
+    ],
+    sources: [
+      { type: 'GAME', title: '巴哈姆特遊戲介紹：《超級瑪利歐派對 空前盛會》Switch 多人同樂', url: 'https://buy.gamer.com.tw/atmItem.php?sn=38934' },
+      { type: 'MAP', title: '青年電競桌遊基地：新北市中和區景新街210巷15號3樓', url: 'https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' }
+    ],
+    buildings: [
+      { id: 'llc-hb', name: '① Switch 大螢幕派對電競館', dx: -0.35, dz: -0.22, type: 'hall', sign: 'Switch電競館', desc: '支援多人手把同樂（瑪利歐派對、大亂鬥、Overcooked），年輕世代立刻打成一片。' },
+      { id: 'llc-tank', name: '② 狼人殺與派對桌遊巨蛋', dx: 0.28, dz: -0.15, type: 'dome', sign: '桌遊競技場', desc: '精選阿瓦隆、狼人殺、拉密等熱門派對桌遊，鬥智歡笑聲不斷。' },
+      { id: 'llc-capmode', name: '③ 青年專屬茶飲點心補給站', dx: -0.15, dz: 0.38, type: 'tower', sign: '點心補給站', desc: '遊戲區旁隨時備有茶飲與精美小點心，讓孩子們邊玩邊補充能量！' }
+    ]
+  },
+  {
+    id: 'mag', num: '05', name: '10/31 秋日派對島',
+    q: 2, r: -1, term: 'P2', litStages: [2, 3, 4], swarm: ['W', 'A', 'M'],
+    groundColor: '#e0d3c3', cliffColor: '#b39d84', roofColor: '#c97a3e',
+    tagline: '適逢 10/31 萬聖節週末，用溫暖秋日燈串與應景造型小點心點綴聚聚會氛圍。',
+    phaseText: '16:30–18:00 節慶彩蛋：驚喜開箱秋日限定精美小點心與拍照打卡道具。',
+    quote: '「十月的最後一天，在微涼秋日裡與三十年老友相聚，連空氣裡都是溫暖甜美的味道。」',
+    deratings: [
+      { label: '10/31 節慶溫馨佈置氛圍', pct: 77, text: '暖心滿分 PASS' },
+      { label: '節慶限定小點心驚喜度', pct: 79, text: '大小都愛 PASS' }
+    ],
+    sources: [
+      { type: 'CALENDAR', title: '一鍵加入 Google 日曆：2026/10/31 (六) 16:00 下午茶會 ＆ 晚宴', url: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=10/31+%E8%81%9A%E8%81%9A%E6%9C%83%EF%BD%9C16:00%E4%B8%8B%E5%8D%88%E8%8C%B6%E6%9C%83%EF%BC%86%E6%99%9A%E5%AE%B4&dates=20261031T080000Z/20261031T130000Z&location=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F3%E6%A8%93' },
+      { type: 'MAP', title: '秋日派對座標：新北市中和區景新街210巷15號3樓（水果家）', url: 'https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' }
+    ],
+    buildings: [
+      { id: 'mag-xfmr', name: '① 10/31 節慶點心寶箱殿', dx: 0.0, dz: -0.15, type: 'transformer_hall', sign: '節慶點心殿', desc: '解鎖 10/31 應景的精緻造型小點心與糖果茶點，為孩子與大人帶來滿滿節慶驚喜。' },
+      { id: 'mag-safety', name: '② 暖光露台拍照打卡界碑', dx: -0.42, dz: 0.28, type: 'monument', sign: '打卡拍照區', desc: '溫馨燈串與秋日裝飾角落，隨手一拍都是三十年老友與家人的最佳紀念照。' }
+    ]
+  },
+  {
+    id: 'sr', num: '06', name: '豐盛家宴與茶酒島',
+    q: -2, r: 0, term: 'P3', litStages: [3, 4], swarm: ['A', 'R', 'M'],
+    groundColor: '#cde0d8', cliffColor: '#95b3a6', roofColor: '#3e7c8c',
+    tagline: '17:30 華燈初上，從午後茶點無縫銜接豐盛家庭晚宴，舉杯敬三十年不變的情誼！',
+    phaseText: '17:30–20:30 溫馨晚宴：澎湃多樣的家庭晚餐佳餚、清爽茶飲與微醺小酌。',
+    quote: '「滿滿一桌好菜、好茶與精美小點心，最重要的從來不是山珍海味，而是身邊坐著三十年的老朋友。」',
+    deratings: [
+      { label: '晚宴佳餚與茶飲澎湃度', pct: 80, text: '豐盛滿載 PASS' },
+      { label: '6大家庭全員飽足幸福感', pct: 80, text: '100% 滿意 PASS' }
+    ],
+    sources: [
+      { type: 'MAP', title: '17:30 晚宴導航：新北市中和區景新街210巷15號3樓（水果家）', url: 'https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' },
+      { type: 'PARK', title: '晚宴停車導航：中和區公有景新停車場 (景新街399巷12號)', url: 'https://www.google.com/maps/search/?api=1&query=%E4%B8%AD%E5%92%8C%E5%8D%80%E5%85%AC%E6%9C%89%E6%99%AF%E6%96%B0%E5%81%9C%E8%BB%8A%E5%A0%B4' }
+    ],
+    buildings: [
+      { id: 'sr-mos', name: '① 聚聚會豐盛晚宴大廳', dx: -0.3, dz: -0.2, type: 'hall', sign: '豐盛晚宴廳', desc: '17:30 準時開席！準備多道老少咸宜的豐盛熱食佳餚，讓大人小孩盡情大快朵頤。' },
+      { id: 'sr-cap', name: '② 茶飲與微醺舉杯雙塔', dx: 0.32, dz: -0.18, type: 'twin_silo', sign: '舉杯敬30年', desc: '備有清爽茶飲、果汁氣泡飲與微醺酒水，全家一起舉杯慶祝三十週年！' },
+      { id: 'sr- ripple', name: '③ 飯後水果與精美甜點亭', dx: 0.0, dz: 0.35, type: 'pavilion', sign: '鮮果甜點亭', desc: '晚宴後再度奉上水果家嚴選鮮果與精美小點心，延續夜晚的溫暖話匣子。' }
+    ]
+  },
+  {
+    id: 'dsp', num: '07', name: '水果家 3F 聚聚會主島',
+    q: -1, r: 0, term: 'P1', litStages: [1, 2, 3, 4], swarm: ['S', 'W', 'A', 'R', 'M'],
+    groundColor: '#fce8d5', cliffColor: '#d4ab87', roofColor: '#db6a41',
+    tagline: '【全島總開關中心】新北市中和區景新街 210 巷 15 號 3 樓，一條情誼線連向全島 13 座島！',
+    phaseText: '10/31 全日核心：由水果家擔任主揪島主，串聯所有老友家庭、茶飲小點心與跨世代歡樂時光。',
+    quote: '「就像《HEART 政策島》解析影片裡一條線連向全島 13 座島的核心——水果家 3F 就是我們 30 年老友聚聚會的總開關！」',
+    deratings: [
+      { label: '主場溫馨款待能量', pct: 80, text: '100% 全島點亮' },
+      { label: '30年老友與家庭凝聚力', pct: 80, text: '1連13島 MAX' }
+    ],
+    sources: [
+      { type: 'HOST', title: '主場座標：新北市中和區景新街210巷15號3樓（水果家）', url: 'https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' },
+      { type: 'YOUTUBE', title: '靈感致敬：HEART 政策島解析影片（一條線連向全島 13 座島）', url: 'https://www.youtube.com/watch?v=gUeElWlDhAU' }
+    ],
+    buildings: [
+      { id: 'dsp-core', name: '① 水果家 3F 聚聚會總部', dx: 0.0, dz: -0.15, type: 'city_hall', sign: '水果家主島', desc: '位於中和景新街 210 巷 15 號 3 樓，寬敞溫馨的居家聚會空間，歡迎所有老友家庭登島！' },
+      { id: 'dsp-soap', name: '② 島主肥皂箱開講舞台', dx: -0.35, dz: 0.28, type: 'soapbox', sign: '島主召集台', desc: '一鍵點亮 F0 總開關，向全島 13 座家庭與活動島發射 10/31 聚聚會召集能量！' },
+      { id: 'dsp- break', name: '③ 四季鮮果與好茶招待所', dx: 0.36, dz: 0.25, type: 'pavilion', sign: '鮮果好茶所', desc: '水果家主場招牌款待，隨時補滿新鮮水果、香醇茶飲與精美小點心。' }
+    ]
+  },
+  {
+    id: 'aux', num: '08', name: '30年青春時光機島',
+    q: 0, r: 0, term: 'P4', litStages: [1, 2, 3, 4], swarm: ['R', 'M'],
+    groundColor: '#dfd3e6', cliffColor: '#ab98b8', roofColor: '#6b5280',
+    tagline: '從 1996 到 2026 的三十年歲月長河，收藏我們從青澀年華到為人父母的珍貴記憶。',
+    phaseText: '跨時代記憶庫：當年青春合照 × 歷年家庭出遊紀錄 × 2026/10/31 全新全家福。',
+    quote: '「三十年很長，長到我們從少年變成了爸媽；三十年也很短，一坐下來喝杯茶，笑聲還是跟當年一模一樣。」',
+    deratings: [
+      { label: '30年青春回憶殺感動值', pct: 80, text: '1996–2026 MAX' },
+      { label: '跨世代友誼傳承指數', pct: 79, text: '邁向40週年' }
+    ],
+    sources: [
+      { type: 'ARCHIVE', title: '回顧老友團聚記憶：2026 宜蘭三富農場 6 家庭歡聚專頁', url: 'https://drive.google.com/file/d/1sjD_z3wIHxEIFypYr9JCZbnLDNJrCRvP/view' },
+      { type: 'SHEET', title: '老友團 6 大家庭成員名冊與歡聚紀錄表 (Google Sheet)', url: 'https://docs.google.com/spreadsheets/d/1b06FO1Kd2Jsui521iI0WjA9KBmYqc5nRSzYfDoZRrag/edit' }
+    ],
+    buildings: [
+      { id: 'aux-fly', name: '① 1996–2026 拾光記憶館', dx: -0.28, dz: -0.18, type: 'hall', sign: '30年記憶館', desc: '回顧三十年來一起走過的讀書、工作、成家與每一次聚會的經典瞬間。' },
+      { id: 'aux-otp', name: '② 2026 全家福大合照鐘塔', dx: 0.32, dz: 0.22, type: 'clock', sign: '大合照紀念塔', desc: '10/31 晚宴高潮，為所有老友與長大成人的孩子們拍下最具紀念價值的三十週年大合照！' }
+    ]
+  },
+  {
+    id: 'gate1', num: '09', name: '阿伯家・皇家戰隊島',
+    q: 1, r: 0, term: 'P1', litStages: [1, 2, 3, 4], swarm: ['R', 'A'],
+    groundColor: '#f2dec4', cliffColor: '#c2a480', roofColor: '#db6a41',
+    tagline: '爸媽 2 人 ＋ 大學 1 ＋ 國中 1（4人戰隊），幽默風趣的氣氛擔當！',
+    phaseText: '戰隊編制：阿伯家 4 人全勤登島，從【永和區】出發約 10 分鐘直達中和景新街，共享茶飲與精美小點心。',
+    quote: '「有阿伯家在的地方絕對不會冷場，一句話就能讓全場笑聲加倍！」',
+    deratings: [
+      { label: '全場幽默氣氛帶動值', pct: 80, text: '+200% 歡笑 PASS' },
+      { label: '永和出發秒速登島效率', pct: 79, text: '永和→中和 10min' }
+    ],
+    sources: [
+      { type: 'ROUTE', title: '阿伯家專屬路線：新北永和區出發 → 中和景新街210巷15號3樓 Google 導航', url: 'https://www.google.com/maps/dir/%E6%96%B0%E5%8C%97%E5%B8%82%E6%B0%B8%E5%92%8C%E5%8D%80/%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' },
+      { type: 'SHEET', title: '6 大家庭成員名冊：阿伯家（爸媽2人＋大學1＋國中1）', url: 'https://docs.google.com/spreadsheets/d/1b06FO1Kd2Jsui521iI0WjA9KBmYqc5nRSzYfDoZRrag/edit' }
+    ],
+    buildings: [
+      { id: 'g1-arch', name: '① 阿伯家皇家歡樂會館', dx: 0.0, dz: -0.12, type: 'arch', sign: '阿伯家戰隊', desc: '阿伯家 4 人主力戰隊大本營，大人泡茶開講、孩子加入電競桌遊團！' },
+      { id: 'g1-tea', name: '② 茶敘說書人涼亭', dx: 0.35, dz: 0.25, type: 'pavilion', sign: '幽默開講亭', desc: '午後茶敘最熱鬧的角落，配著精美小點心聽阿伯暢談當年趣事。' }
+    ]
+  },
+  {
+    id: 'agent1', num: '10', name: '阿冠家・科技戰隊島',
+    q: -2, r: 1, term: 'P2', litStages: [1, 2, 3, 4], swarm: ['R', 'W'],
+    groundColor: '#d9e3ec', cliffColor: '#a3b5c7', roofColor: '#3f6fb5',
+    tagline: '爸媽 2 人 ＋ 大學 1 ＋ 高中 1（4人戰隊），品味與活力兼具的科技家庭！',
+    phaseText: '戰隊編制：阿冠家 4 人從【永和區】結伴出發登島，大人品茗敘舊、大學與高中雙寶制霸桌遊場。',
+    quote: '「從永和出發轉個彎就到中和水果家，帶著好心情來喝好茶、吃精美小點心！」',
+    deratings: [
+      { label: '特調茶飲與點心鑑賞力', pct: 78, text: '品味滿分 PASS' },
+      { label: '大學/高中雙寶電競戰力', pct: 79, text: 'MVP 級別 PASS' }
+    ],
+    sources: [
+      { type: 'ROUTE', title: '阿冠家專屬路線：新北永和區出發 → 中和景新街210巷15號3樓 Google 導航', url: 'https://www.google.com/maps/dir/%E6%96%B0%E5%8C%97%E5%B8%82%E6%B0%B8%E5%92%8C%E5%8D%80/%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' },
+      { type: 'SHEET', title: '6 大家庭成員名冊：阿冠家（爸媽2人＋大學1＋高中1）', url: 'https://docs.google.com/spreadsheets/d/1b06FO1Kd2Jsui521iI0WjA9KBmYqc5nRSzYfDoZRrag/edit' }
+    ],
+    buildings: [
+      { id: 'a1-spec', name: '① 阿冠家科技領航館', dx: -0.25, dz: -0.15, type: 'hall', sign: '阿冠家戰隊', desc: '阿冠家 4 人戰隊據點，大人小孩都準備好在 10/31 聚聚會大顯身手。' },
+      { id: 'a1-game', name: '② 青年雙寶電競連線塔', dx: 0.32, dz: 0.22, type: 'tower', sign: '雙寶電競塔', desc: '大學與高中生雙人組，隨時與各家孩子連線開局 Switch 派對。' }
+    ]
+  },
+  {
+    id: 'agent2', num: '11', name: '余老闆家・森林戰隊島',
+    q: -1, r: 1, term: 'P2', litStages: [1, 2, 3, 4], swarm: ['R', 'A'],
+    groundColor: '#d7e6d5', cliffColor: '#9eb89b', roofColor: '#708f68',
+    tagline: '爸媽 2 人 ＋ 大學 1 ＋ 高中 1（4人戰隊），溫文儒雅、熱愛美食與分享的好夥伴！',
+    phaseText: '戰隊編制：余老闆家 4 人從【永和區】出發登島，共享午後香醇茶飲、精美小點心與豐盛晚宴。',
+    quote: '「老朋友相聚，喝杯熱茶、配幾樣精緻小點心，就是秋天最舒服的享受。」',
+    deratings: [
+      { label: '精美小點心與茶飲喜愛度', pct: 77, text: '溫馨愜意 PASS' },
+      { label: '永和至中和快速連線', pct: 78, text: '永和→中和 10min' }
+    ],
+    sources: [
+      { type: 'ROUTE', title: '余老闆家專屬路線：新北永和區出發 → 中和景新街210巷15號3樓 Google 導航', url: 'https://www.google.com/maps/dir/%E6%96%B0%E5%8C%97%E5%B8%82%E6%B0%B8%E5%92%8C%E5%8D%80/%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' },
+      { type: 'SHEET', title: '6 大家庭成員名冊：余老闆家（爸媽2人＋大學1＋高中1）', url: 'https://docs.google.com/spreadsheets/d/1b06FO1Kd2Jsui521iI0WjA9KBmYqc5nRSzYfDoZRrag/edit' }
+    ],
+    buildings: [
+      { id: 'a2-fha', name: '① 余老闆木木森林會館', dx: 0.0, dz: -0.2, type: 'dome', sign: '余老闆戰隊', desc: '余老闆家 4 人專屬會館，與三十年老友家庭自在暢談、共享美食。' },
+      { id: 'a2-zvs', name: '② 午後慢活品茗涼亭', dx: 0.38, dz: 0.25, type: 'pavilion', sign: '慢活品茗亭', desc: '細細品味水果家準備的香醇茶飲與精美小點心，度過悠閒週六時光。' }
+    ]
+  },
+  {
+    id: 'agent3', num: '12', name: '老呂家・元氣戰隊島',
+    q: 0, r: 1, term: 'P3', litStages: [1, 2, 3, 4], swarm: ['R', 'W'],
+    groundColor: '#e6dfd3', cliffColor: '#b5a895', roofColor: '#c97a3e',
+    tagline: '家長 2 人 ＋ 國中生 1 人（3人精銳戰隊），老友團最給力的元氣神隊友！',
+    phaseText: '戰隊編制：老呂家 3 人從【永和區】直達中和景新街，無論泡茶聊天還是青少年桌遊都全情投入。',
+    quote: '「每一次老友號召從不缺席，帶著孩子一起見證我們三十年的深厚交情！」',
+    deratings: [
+      { label: '老友團默契支援指數', pct: 80, text: '100% 神隊友' },
+      { label: '國中生桌遊派對活力值', pct: 78, text: '活力滿點 PASS' }
+    ],
+    sources: [
+      { type: 'ROUTE', title: '老呂家專屬路線：新北永和區出發 → 中和景新街210巷15號3樓 Google 導航', url: 'https://www.google.com/maps/dir/%E6%96%B0%E5%8C%97%E5%B8%82%E6%B0%B8%E5%92%8C%E5%8D%80/%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' },
+      { type: 'SHEET', title: '6 大家庭成員名冊：老呂家（家長2人＋國中1）', url: 'https://docs.google.com/spreadsheets/d/1b06FO1Kd2Jsui521iI0WjA9KBmYqc5nRSzYfDoZRrag/edit' }
+    ],
+    buildings: [
+      { id: 'a3-bom', name: '① 老呂家元氣旅人會館', dx: -0.3, dz: -0.18, type: 'hall', sign: '老呂家戰隊', desc: '老呂家 3 人精銳據點，一上島就為聚聚會注入滿滿元氣與笑聲。' },
+      { id: 'a3-spice', name: '② 青春回憶故事屋', dx: 0.32, dz: 0.2, type: 'house', sign: '回憶故事屋', desc: '與老朋友們一邊喝茶吃小點心，一邊把當年的熱血故事說給孩子們聽。' }
+    ]
+  },
+  {
+    id: 'agent4', num: '13', name: '單身老友・中和戰隊島',
+    q: 1, r: 1, term: 'P3', litStages: [1, 2, 3, 4], swarm: ['R', 'M'],
+    groundColor: '#d4e4dc', cliffColor: '#98b5a6', roofColor: '#3e7c8c',
+    tagline: '單身老友從【中和區】在地瀟灑出發（5–8 分鐘即達），與永和出發的家庭團在景新街快樂會師！',
+    phaseText: '雙城會師：家庭團全數從【永和】出發、單身老友從【中和】出發，雙和零距離直達景新街 210 巷 15 號 3 樓！',
+    quote: '「家庭從永和來、單身老友從中和來，大家都在雙和生活圈，轉個彎就能上 3 樓喝好茶配精美小點心！」',
+    deratings: [
+      { label: '30年重逢驚喜與感動度', pct: 80, text: '無價情誼 PASS' },
+      { label: '大人小孩自在融入度', pct: 80, text: '賓至如歸 PASS' }
+    ],
+    sources: [
+      { type: 'ROUTE', title: '單身老友專屬路線：新北中和區出發 → 景新街210巷15號3樓 Google 導航', url: 'https://www.google.com/maps/dir/%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80/%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' },
+      { type: 'MRT', title: '台北捷運景安站 (O02/Y11) 轉乘與出口平面圖資訊', url: 'https://taiwanhelper.com/taipeiMetro/station/O02' }
+    ],
+    buildings: [
+      { id: 'a4-runner', name: '① 30年摯友貴賓星空館', dx: 0.0, dz: -0.18, type: 'dome', sign: '老友貴賓館', desc: '專為三十年老朋友與家人打造的迎賓館，一踏進水果家就像回到自己家一樣自在。' },
+      { id: 'a4-step', name: '② 茗茶與精美點心接待室', dx: 0.38, dz: 0.24, type: 'house', sign: '茗茶點心室', desc: '隨時奉上溫熱好茶與精美小點心，讓許久未見的老友能盡情敘舊、孩子們開心同樂。' }
+    ]
+  },
+  {
+    id: 'agent5', num: '14', name: '開戰登錄與 LINE 報名島',
+    q: 2, r: 0, term: 'P4', litStages: [1, 2, 3, 4], swarm: ['S', 'M'],
+    groundColor: '#f5e2cf', cliffColor: '#c4a68a', roofColor: '#db6a41',
+    tagline: '最後一格行動島：確認你的家庭出席人數與抵達時段，一鍵複製訊息貼回 LINE 群組！',
+    phaseText: '報名接龍：可選擇「16:00 下午茶會準時登島（茶會＋晚宴）」或「18:00 晚宴時段登島」，方便水果家準備茶飲與精美小點心。',
+    quote: '「從第 01 格交通島逛到第 14 格報名島，現在就在 LINE 群組喊聲『+1』，我們 10/31 水果家見！」',
+    deratings: [
+      { label: 'LINE 群組接龍報名便利度', pct: 80, text: '一鍵複製 PASS' },
+      { label: '10/31 聚聚會期待指數', pct: 80, text: '14 / 14 滿分' }
+    ],
+    sources: [
+      { type: 'MAP', title: '點此開啟 Google Maps：新北市中和區景新街210巷15號3樓（水果家）', url: 'https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F' },
+      { type: 'CALENDAR', title: '將 10/31 聚聚會加入 Google 行事曆提醒', url: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=10/31+%E8%81%9A%E8%81%9A%E6%9C%83%EF%BD%9C30%E5%B9%B4%E8%80%81%E5%8F%8B%E5%AE%B6%E5%BA%AD%E8%8C%B2%E9%A3%B2%E8%88%87%E6%99%9A%E5%AE%B4&dates=20261031T080000Z/20261031T130000Z&location=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F3%E6%A8%93' }
+    ],
+    buildings: [
+      { id: 'a5-misra', name: '① LINE 群組接龍報名終端院', dx: -0.32, dz: -0.18, type: 'hall', sign: 'LINE報名院', desc: '點擊本島卡片下方的「一鍵複製 LINE 報名文字」按鈕，即可快速完成家庭登島回報！' },
+      { id: 'a5-gate2', name: '② 10/31 聚聚會啟程凱旋門', dx: 0.32, dz: 0.18, type: 'arch', sign: '16:00見面門', desc: '2026/10/31 (六) 下午 16:00 茶會 ／ 晚宴，我們在中和水果家 3 樓不見不散！' }
+    ]
+  }
+];
+
+// ============================================================================
+// 2. 17 CROSS-ISLAND COLLABORATION FLOWS (Including F0 Master 1-to-13 Starburst!)
+// ============================================================================
+const FLOWS = [
+  {
+    id: 'F0', from: 'dsp', to: 'ALL', basis: 'soapbox', basisLabel: '水果家主揪召集令・全島總開關',
+    title: '【全島總開關】從 07 號「水果家 3F 主島」一條線連向全島 13 座家庭與美食遊戲島！',
+    desc: '完美還原《HEART 政策島》解析影片最經典的「1 連 13 島總開關」！點選此線時，位於中和景新街 210 巷 15 號 3 樓的「07 水果家主島」會同時射出 13 道溫暖金色弧線，把所有 30 年老友家庭、16:00 下午茶會（茶飲与精美小點心）、Switch 桌遊與豐盛晚宴全部連起來！'
+  },
+  { id: 'F1', from: 'emi', to: 'pfc', basis: 'constitution', basisLabel: '30年老友默契 (順暢登島)', title: '從捷運景安站或周邊停車場輕鬆抵達，16:00 一上 3 樓就奉上迎賓茶飲與精美小點心', desc: '01 交通停車島與 02 迎賓茶飲島無縫銜接，讓每個家庭停好車上樓就能立刻喝杯好茶喘口氣。' },
+  { id: 'F2', from: 'pfc', to: 'bus', basis: 'constitution', basisLabel: '30年老友默契 (16:00 茶會)', title: '16:00 下午茶會正式開席！轉入大客廳開啟不限時高山茶、手沖咖啡與精美小點心茶敘', desc: '從清爽迎賓飲延伸到 16:00 大客廳的深度品茗，配著精美小點心暢談三十年人生故事。' },
+  { id: 'F3', from: 'bus', to: 'llc', basis: 'coupling', basisLabel: '跨世代親子同樂 (大人小孩雙軌)', title: '大人在客廳安心享受 16:00 茶會與小點心，孩子們在隔壁電競桌遊島打 Switch 嗨翻天', desc: '雙軌空間設計讓大人不用趕時間、青少年與小朋友也不怕無聊，兩個世代各自盡興又緊密相連。' },
+  { id: 'F4', from: 'llc', to: 'mag', basis: 'coupling', basisLabel: '跨世代親子同樂 (節慶派對)', title: 'Switch 電競與狼人殺桌遊對決，結合 10/31 節慶造型精美小點心驚喜開箱', desc: '年輕世代在遊戲競技之餘，還能一起分享 10/31 秋日限定的精緻小點心與打卡道具。' },
+  { id: 'F5', from: 'mag', to: 'sr', basis: 'constitution', basisLabel: '30年老友默契 (茶會轉晚宴)', title: '從 16:00 下午茶會一路歡聚至華燈初上，無縫銜接聚聚會豐盛家庭晚宴', desc: '不用換場地奔波！在水果家從 16:00 下午茶會直接銜接澎湃晚餐佳餚與微醺舉杯時光。' },
+  { id: 'F6', from: 'sr', to: 'dsp', basis: 'constitution', basisLabel: '30年老友默契 (主場款待)', title: '水果家 3F 主場全天候供應香醇茶飲、鮮果與精美小點心，支撐茶會與晚宴滿滿能量', desc: '07 水果家主島作為後勤核心，讓 16:00 茶會與晚宴的每一道精美小點心與茶水都溫暖到位。' },
+  { id: 'F7', from: 'dsp', to: 'llc', basis: 'coupling', basisLabel: '跨世代親子同樂 (主場遊戲區)', title: '水果家主場大螢幕與客廳桌椅，為孩子們打造最舒適的 Switch 與桌遊擂台', desc: '提供高速 Wi-Fi、大螢幕電視與寬敞桌面，讓各家國中、高中、大學生一秒組隊。' },
+  { id: 'F8', from: 'dsp', to: 'bus', basis: 'constitution', basisLabel: '30年老友默契 (16:00 茶席)', title: '水果家主場開放式客廳，打造 16:00 開席、免去餐廳限時壓力的茶飲與小點心天地', desc: '在自己老朋友家裡聚會，想泡幾壺好茶、配精美小點心聊到幾點都自在隨心。' },
+  { id: 'F9', from: 'aux', to: 'dsp', basis: 'soapbox', basisLabel: '水果家主揪召集令 (30年初心)', title: '1996–2026 三十年不變的同窗老友情誼，在 10/31 水果家再度寫下全新篇章', desc: '08 青春時光機島喚醒三十年前的記憶，將所有老朋友與下一代緊緊凝聚在水果家。' },
+  { id: 'F10', from: 'aux', to: 'sr', basis: 'constitution', basisLabel: '30年老友默契 (全家福紀念)', title: '晚宴高潮全體舉杯敬三十年交情，拍下 2026 最珍貴的跨世代全家福大合照', desc: '把當年的青春照片與今天帶著孩子的全家福並排珍藏，約定邁向下一個三十年。' },
+  { id: 'F11', from: 'dsp', to: 'gate1', basis: 'constitution', basisLabel: '30年老友戰隊串聯 (主島↔阿伯家)', title: '【老友戰隊串聯 ①】07 水果家主島 ↔ 09 阿伯家：永和家庭戰隊集結號！', desc: '水果家與阿伯家從永和結伴出發直達中和景新街 3 樓，拉開 16:00 下午茶會與老友戰隊串聯序幕！' },
+  { id: 'F12', from: 'gate1', to: 'agent1', basis: 'constitution', basisLabel: '30年老友戰隊串聯 (阿伯家↔阿冠家)', title: '【老友戰隊串聯 ②】09 阿伯家 ↔ 10 阿冠家：永和出發兄弟家庭連線，孩子組隊打 Switch！', desc: '阿伯家與阿冠家同從永和出發，大人在客廳品茶開講、兩家大學/高中/國中孩子直接組隊開戰！' },
+  { id: 'F13', from: 'agent1', to: 'agent2', basis: 'constitution', basisLabel: '30年老友戰隊串聯 (阿冠家↔余老闆家)', title: '【老友戰隊串聯 ③】10 阿冠家 ↔ 11 余老闆家：永和鄰居戰隊緊密相連，共享 16:00 茶飲與精美小點心！', desc: '09、10、11 戰隊島一氣呵成相連！阿冠家與余老闆家攜手登島，共享午後好茶與精緻茶點。' },
+  { id: 'F14', from: 'agent2', to: 'agent3', basis: 'constitution', basisLabel: '30年老友戰隊串聯 (余老闆家↔老呂家)', title: '【老友戰隊串聯 ④】11 余老闆家 ↔ 12 老呂家：永和四大老友家庭完整串聯，30年默契滿分！', desc: '余老闆家與老呂家木橋相連，永和出發的所有家庭戰隊（09→10→11→12）在此全部緊密串聯！' },
+  { id: 'F15', from: 'agent3', to: 'agent4', basis: 'constitution', basisLabel: '30年老友戰隊串聯 (老呂家↔單身老友)', title: '【老友戰隊串聯 ⑤】12 老呂家（永和家庭）↔ 13 單身老友（中和出發）：雙和老友大合體！', desc: '把永和出發的家庭戰隊（09～12）與中和在地出發的 13 單身老友緊緊連在一起，雙和零距離！' },
+  { id: 'F16', from: 'agent4', to: 'dsp', basis: 'soapbox', basisLabel: '30年老友戰隊串聯 (單身老友↔主島閉環)', title: '【老友戰隊大閉環】13 單身老友 ↔ 07 水果家主島 ↔ 14 報名島：09～13 老友全數串聯會師！', desc: '完成「07 水果家 → 09 阿伯家 → 10 阿冠家 → 11 余老闆家 → 12 老呂家 → 13 單身老友 → 07 水果家」的黃金情誼閉環！' },
+  { id: 'F17', from: 'agent4', to: 'agent5', basis: 'soapbox', basisLabel: '水果家主揪召集令 (接龍報名)', title: '13 單身老友與 09～12 家庭戰隊一齊連向 14 報名島，一鍵複製 16:00 茶會 / 晚宴接龍！', desc: '所有老友戰隊最終連向 14 號開戰登錄島，選擇 16:00 下午茶會或晚宴時段貼回 LINE 群組！' }
+];
+
+// ============================================================================
+// 3. STATE & CAMERA
+// ============================================================================
+let selectedIslandId = null;
+let selectedBuildingId = null;
+let selectedFlowId = null;
+let hoveredIslandId = null;
+let masterStarburstActive = false;
+
+let activeSideTab = 'policies';
+let activeTermFilter = 'ALL';
+const activeSwarmSet = new Set();
+
+const layerState = {
+  names: true,
+  badges: true,
+  flows: true,
+  freeze: false,
+  bird: false,
+  log: false
+};
+
+let dayMinutes = 960; // 16:00 Afternoon Tea Party
+let dayPlaying = false;
+let timeMode = 'day';
+
+const isMobileInit = window.innerWidth <= 820;
+const cam = {
+  panX: isMobileInit ? 0 : -20,
+  panY: isMobileInit ? -15 : -10,
+  zoom: isMobileInit ? 0.68 : 1.0,
+  yaw: 0.45,
+  targetYaw: 0.45,
+  pitch: 0.58,
+  targetPitch: 0.58,
+  hexRadius: 74
+};
+
+const citizens = [];
+const CARRY_ITEMS = ['🍵好茶', '🍰小點心', '🎮Switch', '🃏桌遊', '🍎鮮果', '☕手沖', '🎃10/31', '🥂乾杯'];
+
+function initCitizens() {
+  citizens.length = 0;
+  citizens.push({
+    isHero: true,
+    name: '島主・水果家',
+    badge: '🎤 迎賓好茶',
+    shirtColor: '#db6a41',
+    islandIdx: 6 // Starts at 07 水果家 3F 聚聚會主島!
+  });
+
+  for (let i = 0; i < 88; i++) {
+    const isl = ISLANDS[i % ISLANDS.length];
+    citizens.push({
+      isHero: false,
+      islandId: isl.id,
+      angle: Math.random() * Math.PI * 2,
+      dist: 12 + Math.random() * (cam.hexRadius * 0.62),
+      speed: (Math.random() > 0.5 ? 1 : -1) * (0.008 + Math.random() * 0.014),
+      shirtColor: ['#db6a41', '#3f6fb5', '#708f68', '#3e7c8c', '#d99560', '#6b5280'][i % 6],
+      badge: i % 3 === 0 ? CARRY_ITEMS[i % CARRY_ITEMS.length] : null
+    });
+  }
+}
+
+// ============================================================================
+// 4. 3D LOW-POLY RENDERING ENGINE
+
+
+function buildRSVPWidgetHTML(defaultFam = '阿伯家') {
+  const isSingle = defaultFam.includes('單身') || defaultFam.includes('老友');
+  const defaultDep = isSingle ? '中和區出發（單身老友線・約5–8分鐘直達）' : '永和區出發（家庭戰隊線・約8–12分鐘直達）';
+  const defaultAdults = isSingle ? '1' : '2';
+  const defaultKids = isSingle ? '0' : '2';
+
+  return `
+    <div style="margin:14px 0;padding:14px;background:#fff2eb;border:1.5px solid var(--coral);border-radius:12px;box-shadow:0 4px 12px rgba(219,106,65,0.12);" onclick="event.stopPropagation()">
+      <div style="font-weight:900;font-size:13.5px;color:var(--coral);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+        <span>📋 LINE 報名接龍（自動帶入永和/中和出發）</span>
+        <span style="font-size:10.5px;background:var(--coral);color:#fff;padding:2px 7px;border-radius:10px;">雙和專線版</span>
+      </div>
+      <div style="display:grid;gap:8px;font-size:12px;">
+        <div>
+          <label style="font-weight:700;display:block;margin-bottom:3px;color:#5a4a40;">① 選擇報到身分（家庭從永和 ／ 單身從中和）：</label>
+          <select id="rsvp-fam" onchange="onRSVPIdentityChange()" style="width:100%;padding:6px 8px;border-radius:7px;border:1px solid #d4ab87;background:#fff;font-weight:700;">
+            <option value="阿伯家（永和家庭線）" data-type="family" ${defaultFam.includes('阿伯') ? 'selected' : ''}>👑 阿伯家（永和出發）</option>
+            <option value="阿冠家（永和家庭線）" data-type="family" ${defaultFam.includes('阿冠') ? 'selected' : ''}>⚡ 阿冠家（永和出發）</option>
+            <option value="余老闆家（永和家庭線）" data-type="family" ${defaultFam.includes('余老闆') ? 'selected' : ''}>🌲 余老闆家（永和出發）</option>
+            <option value="老呂家（永和家庭線）" data-type="family" ${defaultFam.includes('老呂') ? 'selected' : ''}>🛡️ 老呂家（永和出發）</option>
+            <option value="單身老友代表（中和在地線）" data-type="single" ${isSingle ? 'selected' : ''}>🍵 30年單身老友（中和出發・1人瀟灑登島）</option>
+            <option value="老友家庭代表（永和家庭線）" data-type="family">🏡 30年老友家庭（永和出發）</option>
+            <option value="水果家（主揪島主）" data-type="family" ${defaultFam.includes('水果') ? 'selected' : ''}>🍎 水果家（永和出發／中和主場島主）</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-weight:700;display:block;margin-bottom:3px;color:#5a4a40;">② 出發地與交通方式：</label>
+          <select id="rsvp-dep" onchange="updateRSVPPreview()" style="width:100%;padding:6px 8px;border-radius:7px;border:1px solid #d4ab87;background:#fff;font-weight:700;">
+            <option value="永和區出發（家庭戰隊線・開車/共乘約8–12分）" ${!isSingle ? 'selected' : ''}>🚗 永和區出發（家庭戰隊・開車/搭車約8–12分）</option>
+            <option value="中和區出發（單身老友線・騎車/捷運/散步約5–8分）" ${isSingle ? 'selected' : ''}>🛵 中和區出發（單身老友・捷運景安站/騎車約5–8分）</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-weight:700;display:block;margin-bottom:3px;color:#5a4a40;">③ 選擇預計抵達時段：</label>
+          <select id="rsvp-slot" onchange="updateRSVPPreview()" style="width:100%;padding:6px 8px;border-radius:7px;border:1px solid #d4ab87;background:#fff;font-weight:700;color:var(--coral);">
+            <option value="16:00 下午茶會準時登島（茶飲小點心＋晚宴全程參與！）">☕ 16:00 下午茶會準時登島（茶飲小點心＋晚宴全程）</option>
+            <option value="18:00 晚宴時段登島（直接參加溫馨晚餐聚會！）">🍷 18:00 晚宴時段登島（參加溫馨晚餐聚會）</option>
+            <option value="16:00–18:00 下午茶會時段（喝茶配精美小點心敘舊）">🍰 16:00–18:00 下午茶會時段（品茗配精美小點心）</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div>
+            <label style="font-weight:700;display:block;margin-bottom:3px;color:#5a4a40;">④ 大人人數：</label>
+            <select id="rsvp-adults" onchange="updateRSVPPreview()" style="width:100%;padding:6px 8px;border-radius:7px;border:1px solid #d4ab87;background:#fff;font-weight:700;">
+              <option value="1" ${defaultAdults === '1' ? 'selected' : ''}>大人 1 位（單身老友）</option>
+              <option value="2" ${defaultAdults === '2' ? 'selected' : ''}>大人 2 位（爸媽同行）</option>
+              <option value="3">大人 3 位</option>
+              <option value="4">大人 4 位</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-weight:700;display:block;margin-bottom:3px;color:#5a4a40;">⑤ 孩子/青年人數：</label>
+            <select id="rsvp-kids" onchange="updateRSVPPreview()" style="width:100%;padding:6px 8px;border-radius:7px;border:1px solid #d4ab87;background:#fff;font-weight:700;">
+              <option value="0" ${defaultKids === '0' ? 'selected' : ''}>孩子 0 位（單身/大人團）</option>
+              <option value="1">孩子 1 位</option>
+              <option value="2" ${defaultKids === '2' ? 'selected' : ''}>孩子 2 位</option>
+              <option value="3">孩子 3 位</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label style="font-weight:700;display:block;margin-bottom:3px;color:#5a4a40;">⑥ 小點心/茶飲分享或留言（選填）：</label>
+          <input id="rsvp-note" type="text" oninput="updateRSVPPreview()" placeholder="例如：期待喝好茶吃小點心！雙和出發超近！" style="width:100%;padding:6px 8px;border-radius:7px;border:1px solid #d4ab87;background:#fff;font-size:12px;">
+        </div>
+      </div>
+      <pre id="rsvp-preview-box" style="margin:10px 0 8px;padding:8px 10px;background:#fffdfb;border:1px dashed #d4ab87;border-radius:7px;font-size:11px;line-height:1.5;white-space:pre-wrap;color:#3d2314;font-family:inherit;"></pre>
+      <button type="button" onclick="copyLineRSVP()" style="width:100%;background:var(--coral);color:#fff;font-weight:900;border:0;padding:9px 12px;border-radius:8px;font-size:12.5px;box-shadow:0 3px 8px rgba(219,106,65,0.3);">👉 複製上方選好時段的「LINE 報名接龍文字」</button>
+      <div id="copy-toast" style="font-size:11.5px;color:#2b9348;font-weight:800;margin-top:6px;display:none;text-align:center;">✅ 已複製到剪貼簿！現在可直接貼到 LINE 群組接龍！</div>
+    </div>
+  `;
+}
+
+function onRSVPIdentityChange() {
+  const famEl = document.getElementById('rsvp-fam');
+  const depEl = document.getElementById('rsvp-dep');
+  const adultsEl = document.getElementById('rsvp-adults');
+  const kidsEl = document.getElementById('rsvp-kids');
+  if (famEl && depEl && adultsEl && kidsEl) {
+    const val = famEl.value;
+    if (val.includes('單身')) {
+      depEl.selectedIndex = 1; // 中和區出發
+      adultsEl.value = '1';
+      kidsEl.value = '0';
+    } else {
+      depEl.selectedIndex = 0; // 永和區出發
+      adultsEl.value = '2';
+      if (val.includes('老呂')) kidsEl.value = '1';
+      else kidsEl.value = '2';
+    }
+  }
+  updateRSVPPreview();
+}
+
+function getFormattedRSVPText() {
+  const famEl = document.getElementById('rsvp-fam');
+  const depEl = document.getElementById('rsvp-dep');
+  const slotEl = document.getElementById('rsvp-slot');
+  const adultsEl = document.getElementById('rsvp-adults');
+  const kidsEl = document.getElementById('rsvp-kids');
+  const noteEl = document.getElementById('rsvp-note');
+  const fam = famEl ? famEl.value : '老友家庭';
+  const dep = depEl ? depEl.value : '永和區出發';
+  const slot = slotEl ? slotEl.value : '16:00 下午茶會準時登島';
+  const adults = adultsEl ? adultsEl.value : '2';
+  const kids = kidsEl ? kidsEl.value : '2';
+  const note = (noteEl && noteEl.value.trim()) ? noteEl.value.trim() : '期待在水果家共享香醇茶飲、精美小點心與溫馨晚宴！';
+  const kidsStr = kids === '0' ? '（單身瀟灑出席）' : ` ＋ 孩子 ${kids} 位`;
+  return `🏝️【10/31 聚聚會｜登島報名接龍】\n🚩 報到成員：${fam}\n🧭 出發路線：${dep}\n👨‍👩‍👧‍👦 出席人數：大人 ${adults} 位${kidsStr}\n⏰ 選擇時段：${slot}\n🍵 溫馨留言：${note}\n📍 聚會地點：新北市中和區景新街210巷15號3樓（水果家）`;
+}
+
+function updateRSVPPreview() {
+  const box = document.getElementById('rsvp-preview-box');
+  if (box) {
+    box.textContent = getFormattedRSVPText();
+  }
+}
+
+function copyLineRSVP() {
+  const msg = getFormattedRSVPText();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(msg);
+  }
+  const toast = document.getElementById('copy-toast');
+  if (toast) toast.style.display = 'block';
+  addLogEntry('📋 已複製選好時段與出發地的「10/31 聚聚會 LINE 報名單」至剪貼簿！');
+}
+
+// Auto-Tour mode (like the HEART 政策島解析影片!)
+let autoTourTimer = null;
+const TOUR_ORDER = ['dsp', 'emi', 'pfc', 'bus', 'llc', 'mag', 'sr', 'gate1', 'agent1', 'agent2', 'agent3', 'agent4', 'aux', 'agent5'];
+let tourIdx = 0;
+
+function toggleAutoTour() {
+  const btn = document.getElementById('btn-auto-tour');
+  if (autoTourTimer) {
+    clearInterval(autoTourTimer);
+    autoTourTimer = null;
+    if (btn) {
+      btn.classList.remove('active');
+      btn.textContent = '🎬 導覽';
+    }
+    addLogEntry('⏹ 已停止全島自動導覽巡禮。');
+    return;
+  }
+  if (btn) {
+    btn.classList.add('active');
+    btn.textContent = '⏸ 導覽中';
+  }
+  tourIdx = 0;
+  triggerMasterStarburst();
+  addLogEntry('🎬 啟動《HEART 聚聚會島》解析影片式全島自動導覽！');
+  autoTourTimer = setInterval(() => {
+    tourIdx = (tourIdx + 1) % TOUR_ORDER.length;
+    const nextId = TOUR_ORDER[tourIdx];
+    if (nextId === 'dsp') triggerMasterStarburst();
+    else selectIsland(nextId, true);
+  }, 4200);
+}
+const canvas = document.getElementById('world-canvas');
+const ctx = canvas.getContext('2d');
+const labelsContainer = document.getElementById('labels');
+const islandLabelEls = new Map();
+const buildingSignEls = new Map();
+
+function resizeWorld() {
+  const stage = document.getElementById('stage');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = stage.clientWidth * dpr;
+  canvas.height = stage.clientHeight * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+window.addEventListener('resize', resizeWorld);
+
+function hexToWorldXZ(q, r) {
+  const R = cam.hexRadius * 1.035;
+  const x = R * Math.sqrt(3) * (q + r / 2);
+  const z = R * (3 / 2) * r;
+  return { x, z };
+}
+
+function project3D(wx, wy, wz) {
+  const stage = document.getElementById('stage');
+  const cx = stage.clientWidth * 0.5 + cam.panX;
+  const cy = stage.clientHeight * 0.48 + cam.panY;
+
+  const cosY = Math.cos(cam.yaw);
+  const sinY = Math.sin(cam.yaw);
+  const rx = wx * cosY - wz * sinY;
+  const rz = wx * sinY + wz * cosY;
+
+  const sx = cx + rx * cam.zoom;
+  const sy = cy + (rz * cam.pitch - wy) * cam.zoom;
+  return { sx, sy, depth: rz };
+}
+
+function draw3DBox(wx, wy, wz, w, h, d, topCol, leftCol, rightCol, strokeCol = null) {
+  const hw = w / 2, hd = d / 2;
+  const corners = [
+    project3D(wx - hw, wy, wz - hd),
+    project3D(wx + hw, wy, wz - hd),
+    project3D(wx + hw, wy, wz + hd),
+    project3D(wx - hw, wy, wz + hd),
+    project3D(wx - hw, wy + h, wz - hd),
+    project3D(wx + hw, wy + h, wz - hd),
+    project3D(wx + hw, wy + h, wz + hd),
+    project3D(wx - hw, wy + h, wz + hd)
+  ];
+
+  ctx.fillStyle = leftCol;
+  ctx.beginPath();
+  ctx.moveTo(corners[3].sx, corners[3].sy);
+  ctx.lineTo(corners[2].sx, corners[2].sy);
+  ctx.lineTo(corners[6].sx, corners[6].sy);
+  ctx.lineTo(corners[7].sx, corners[7].sy);
+  ctx.closePath();
+  ctx.fill();
+  if (strokeCol) { ctx.strokeStyle = strokeCol; ctx.lineWidth = 0.8; ctx.stroke(); }
+
+  ctx.fillStyle = rightCol;
+  ctx.beginPath();
+  ctx.moveTo(corners[2].sx, corners[2].sy);
+  ctx.lineTo(corners[1].sx, corners[1].sy);
+  ctx.lineTo(corners[5].sx, corners[5].sy);
+  ctx.lineTo(corners[6].sx, corners[6].sy);
+  ctx.closePath();
+  ctx.fill();
+  if (strokeCol) ctx.stroke();
+
+  ctx.fillStyle = topCol;
+  ctx.beginPath();
+  ctx.moveTo(corners[4].sx, corners[4].sy);
+  ctx.lineTo(corners[5].sx, corners[5].sy);
+  ctx.lineTo(corners[6].sx, corners[6].sy);
+  ctx.lineTo(corners[7].sx, corners[7].sy);
+  ctx.closePath();
+  ctx.fill();
+  if (strokeCol) ctx.stroke();
+}
+
+function drawLowPolyTree(wx, wy, wz, scale = 1.0) {
+  const trunkBase = project3D(wx, wy, wz);
+  const trunkTop = project3D(wx, wy + 10 * scale, wz);
+  ctx.strokeStyle = '#89705c';
+  ctx.lineWidth = 3.0 * scale * cam.zoom;
+  ctx.beginPath();
+  ctx.moveTo(trunkBase.sx, trunkBase.sy);
+  ctx.lineTo(trunkTop.sx, trunkTop.sy);
+  ctx.stroke();
+
+  const puffs = [
+    [0, 14, 0, 7.2, '#86a56c'],
+    [-4, 11, 2, 5.5, '#728f5f'],
+    [4, 12, -2, 5.8, '#7f9a6a'],
+    [1, 17, 1, 4.8, '#a3bf86']
+  ];
+  puffs.forEach(([dx, dy, dz, r, col]) => {
+    const pt = project3D(wx + dx * scale, wy + dy * scale, wz + dz * scale);
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.arc(pt.sx, pt.sy, r * scale * cam.zoom, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function drawPolicyBuilding(b, wx, wy, wz, roofColor, isHighlighted) {
+  const s = isHighlighted ? 1.2 : 1.0;
+  if (b.type === 'twin_silo' || b.type === 'twin_coil') {
+    [-8.5, 8.5].forEach(dx => {
+      const base = project3D(wx + dx, wy, wz);
+      const top = project3D(wx + dx, wy + 21 * s, wz);
+      const rx = 7.2 * s * cam.zoom;
+      const ry = rx * cam.pitch;
+      ctx.fillStyle = b.type === 'twin_silo' ? '#365875' : '#5f826c';
+      ctx.strokeStyle = '#fff8f4';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(base.sx - rx, base.sy);
+      ctx.lineTo(top.sx - rx, top.sy);
+      ctx.ellipse(top.sx, top.sy, rx, ry, 0, Math.PI, 0, true);
+      ctx.lineTo(base.sx + rx, base.sy);
+      ctx.ellipse(base.sx, base.sy, rx, ry, 0, 0, Math.PI, false);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#f4ebdd';
+      ctx.beginPath();
+      ctx.ellipse(top.sx, top.sy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    });
+  } else if (b.type === 'city_hall' || b.type === 'transformer_hall' || b.type === 'hall') {
+    draw3DBox(wx, wy, wz, 23 * s, 14 * s, 19 * s, '#f4ebdd', '#ebe0d0', '#dfd2c0', '#211d1d22');
+    draw3DBox(wx, wy + 14 * s, wz, 26 * s, 5 * s, 22 * s, roofColor, '#b8532e', '#9e4424');
+    if (b.type === 'city_hall') {
+      draw3DBox(wx, wy + 19 * s, wz, 13 * s, 8 * s, 13 * s, '#fcea8b', '#e6d273', '#c9b65b');
+    }
+  } else if (b.type === 'dome') {
+    draw3DBox(wx, wy, wz, 21 * s, 10 * s, 21 * s, '#f4ebdd', '#e8dccb', '#d8cbb8');
+    const domeCenter = project3D(wx, wy + 12 * s, wz);
+    ctx.fillStyle = roofColor;
+    ctx.beginPath();
+    ctx.arc(domeCenter.sx, domeCenter.sy, 10.5 * s * cam.zoom, Math.PI, 0, false);
+    ctx.closePath();
+    ctx.fill();
+  } else if (b.type === 'clock' || b.type === 'tower') {
+    draw3DBox(wx, wy, wz, 12.5 * s, 24 * s, 12.5 * s, '#f4ebdd', '#e8dccb', '#d6c7b2');
+    draw3DBox(wx, wy + 24 * s, wz, 15 * s, 4.5 * s, 15 * s, roofColor, '#b8532e', '#9e4424');
+  } else if (b.type === 'soapbox') {
+    draw3DBox(wx, wy, wz, 15 * s, 6.5 * s, 15 * s, '#db6a41', '#b8532e', '#9e4424');
+  } else {
+    draw3DBox(wx, wy, wz, 16 * s, 10.5 * s, 14 * s, '#f4ebdd', '#e8dccb', '#d6c7b2');
+    draw3DBox(wx, wy + 10.5 * s, wz, 19 * s, 4 * s, 17 * s, roofColor, '#b8532e', '#9e4424');
+  }
+}
+
+function drawMiniPerson(wx, wy, wz, shirtColor, isHero, badgeText, time) {
+  const pos = project3D(wx, wy, wz);
+  const z = cam.zoom;
+
+  ctx.save();
+  ctx.fillStyle = 'rgba(33, 29, 29, 0.22)';
+  ctx.beginPath();
+  ctx.ellipse(pos.sx, pos.sy, 3.2 * z, 1.8 * z, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  let yOffset = 0;
+  if (isHero) {
+    ctx.fillStyle = '#d99560';
+    ctx.strokeStyle = '#211d1d';
+    ctx.lineWidth = 1;
+    ctx.fillRect(pos.sx - 4.8 * z, pos.sy - 5.5 * z, 9.6 * z, 5.5 * z);
+    ctx.strokeRect(pos.sx - 4.8 * z, pos.sy - 5.5 * z, 9.6 * z, 5.5 * z);
+    yOffset = -5.5 * z;
+  }
+
+  const bob = Math.abs(Math.sin(time * 6 + wx)) * 1.8 * z;
+  ctx.fillStyle = shirtColor;
+  ctx.beginPath();
+  ctx.roundRect(pos.sx - 2.8 * z, pos.sy + yOffset - 8.5 * z - bob, 5.6 * z, 6.5 * z, 2 * z);
+  ctx.fill();
+
+  ctx.fillStyle = '#f7d3ba';
+  ctx.beginPath();
+  ctx.arc(pos.sx, pos.sy + yOffset - 11.5 * z - bob, 3.0 * z, 0, Math.PI * 2);
+  ctx.fill();
+
+  if (isHero) {
+    ctx.fillStyle = '#211d1d';
+    ctx.beginPath();
+    ctx.arc(pos.sx, pos.sy + yOffset - 13.0 * z - bob, 3.4 * z, Math.PI, 0, false);
+    ctx.fill();
+  }
+
+  if (layerState.badges && badgeText) {
+    ctx.font = `700 ${Math.max(8, Math.round(8.5 * z))}px ui-monospace, monospace`;
+    const tw = ctx.measureText(badgeText).width + 7 * z;
+    const bx = pos.sx - tw / 2;
+    const by = pos.sy + yOffset - 25 * z - bob;
+    ctx.fillStyle = isHero ? '#211d1d' : '#fff8f4eb';
+    ctx.strokeStyle = isHero ? '#db6a41' : '#211d1d33';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(bx, by, tw, 11.5 * z, 4 * z);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = isHero ? '#fcea8b' : '#211d1d';
+    ctx.textAlign = 'center';
+    ctx.fillText(badgeText, pos.sx, by + 8.5 * z);
+  }
+  ctx.restore();
+}
+
+// ============================================================================
+// 5. HTML OVERLAYS & MOBILE QUICK DOCK
+// ============================================================================
+function initHTMLOverlays() {
+  labelsContainer.innerHTML = '';
+  islandLabelEls.clear();
+  buildingSignEls.clear();
+
+  const dock = document.getElementById('quick-dock');
+  dock.innerHTML = '';
+
+  // Add Master Switch Pill first in mobile dock
+  const masterPill = document.createElement('button');
+  masterPill.className = 'dock-pill';
+  masterPill.id = 'dock-master-pill';
+  masterPill.innerHTML = `<b>⚡F0</b>聚聚會總開關`;
+  masterPill.addEventListener('click', () => triggerMasterStarburst());
+  dock.appendChild(masterPill);
+
+  ISLANDS.forEach(isl => {
+    const btn = document.createElement('button');
+    btn.className = 'island-label';
+    btn.innerHTML = `<strong>${isl.num}</strong>${isl.name}`;
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectIsland(isl.id, true);
+    });
+    labelsContainer.appendChild(btn);
+    islandLabelEls.set(isl.id, btn);
+
+    const pill = document.createElement('button');
+    pill.className = 'dock-pill';
+    pill.dataset.islandId = isl.id;
+    pill.innerHTML = `<b>${isl.num}</b>${isl.name}`;
+    pill.addEventListener('click', () => selectIsland(isl.id, true));
+    dock.appendChild(pill);
+
+    isl.buildings.slice(0, 2).forEach(b => {
+      const sign = document.createElement('div');
+      sign.className = 'sign-label';
+      sign.style.background = isl.roofColor;
+      sign.textContent = b.sign;
+      sign.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectBuilding(isl.id, b.id);
+      });
+      labelsContainer.appendChild(sign);
+      buildingSignEls.set(b.id, { el: sign, isl, b });
+    });
+  });
+}
+
+// ============================================================================
+// 6. MAIN RENDER LOOP (With F0 1-to-13 Master Starburst Animation!)
+// ============================================================================
+let animClock = 0;
+let hitHexPolys = [];
+
+function renderScene() {
+  const stage = document.getElementById('stage');
+  const W = stage.clientWidth;
+  const H = stage.clientHeight;
+
+  cam.yaw += (cam.targetYaw - cam.yaw) * 0.12;
+  cam.pitch += (cam.targetPitch - cam.pitch) * 0.12;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Water ripples
+  ctx.save();
+  ctx.strokeStyle = timeMode === 'night' ? 'rgba(255,255,255,0.06)' : 'rgba(120, 104, 94, 0.12)';
+  ctx.lineWidth = 1.2;
+  for (let i = 1; i <= 3; i++) {
+    const c = project3D(0, -14, 0);
+    const rx = (265 + i * 50 + Math.sin(animClock * 1.5 + i) * 5) * cam.zoom;
+    const ry = rx * cam.pitch;
+    ctx.beginPath();
+    ctx.ellipse(c.sx, c.sy, rx, ry, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  const islandWorldMap = new Map();
+  const sortedIslands = ISLANDS.map(isl => {
+    const { x, z } = hexToWorldXZ(isl.q, isl.r);
+    const centerProj = project3D(x, 0, z);
+    const isSel = (selectedIslandId === isl.id) || (masterStarburstActive && isl.id === 'dsp');
+    const isDim = isIslandDimmed(isl);
+    const elev = isSel ? 9 : (masterStarburstActive ? 4 : (hoveredIslandId === isl.id ? 4 : 0));
+    const data = { ...isl, wx: x, wz: z, elev, depth: centerProj.depth, isSel, isDim };
+    islandWorldMap.set(isl.id, data);
+    return data;
+  }).sort((a, b) => a.depth - b.depth);
+
+  // Bridges (Draw wooden bridges across ALL adjacent flows, plus connect the 09-10-11-12-13 Friend Chain!)
+  ctx.save();
+  FLOWS.slice(1).forEach(f => {
+    const a = islandWorldMap.get(f.from);
+    const b = islandWorldMap.get(f.to);
+    if (!a || !b) return;
+    const dist = Math.hypot(a.wx - b.wx, a.wz - b.wz);
+    if (dist < cam.hexRadius * 2.2) {
+      const p1 = project3D(a.wx * 0.65 + b.wx * 0.35, 2, a.wz * 0.65 + b.wz * 0.35);
+      const p2 = project3D(b.wx * 0.65 + a.wx * 0.35, 2, b.wz * 0.65 + a.wz * 0.35);
+      ctx.strokeStyle = '#c99768';
+      ctx.lineWidth = 7.5 * cam.zoom;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(p1.sx, p1.sy);
+      ctx.lineTo(p2.sx, p2.sy);
+      ctx.stroke();
+    }
+  });
+  // Also draw direct wooden walkways between (08 aux <-> 09 gate1), (07 dsp <-> 10 agent1), (07 dsp <-> 11 agent2), (08 aux <-> 12 agent3), (09 gate1 <-> 13 agent4) so the bottom row 10-11-12-13 and 09 are physically bridged!
+  const extraBridgePairs = [['aux', 'gate1'], ['dsp', 'agent1'], ['dsp', 'agent2'], ['aux', 'agent3'], ['gate1', 'agent4']];
+  extraBridgePairs.forEach(([idA, idB]) => {
+    const a = islandWorldMap.get(idA);
+    const b = islandWorldMap.get(idB);
+    if (!a || !b) return;
+    const p1 = project3D(a.wx * 0.65 + b.wx * 0.35, 2, a.wz * 0.65 + b.wz * 0.35);
+    const p2 = project3D(b.wx * 0.65 + a.wx * 0.35, 2, b.wz * 0.65 + a.wz * 0.35);
+    ctx.strokeStyle = '#c99768';
+    ctx.lineWidth = 7.0 * cam.zoom;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(p1.sx, p1.sy);
+    ctx.lineTo(p2.sx, p2.sy);
+    ctx.stroke();
+  });
+  ctx.restore();
+
+  hitHexPolys = [];
+
+  sortedIslands.forEach(isl => {
+    const R = cam.hexRadius * 0.94;
+    const topY = 12 + isl.elev;
+    const botY = -8;
+
+    const topVerts = [];
+    const botVerts = [];
+    for (let i = 0; i < 6; i++) {
+      const ang = (Math.PI / 180) * (60 * i + 30);
+      const vx = isl.wx + R * Math.cos(ang);
+      const vz = isl.wz + R * Math.sin(ang);
+      topVerts.push(project3D(vx, topY, vz));
+      botVerts.push(project3D(vx, botY, vz));
+    }
+
+    hitHexPolys.push({ id: isl.id, verts: topVerts });
+
+    ctx.save();
+    if (isl.isDim) ctx.globalAlpha = 0.28;
+
+    ctx.fillStyle = 'rgba(83, 49, 27, 0.14)';
+    ctx.beginPath();
+    botVerts.forEach((v, i) => i === 0 ? ctx.moveTo(v.sx, v.sy + 5) : ctx.lineTo(v.sx, v.sy + 5));
+    ctx.closePath();
+    ctx.fill();
+
+    for (let i = 0; i < 6; i++) {
+      const ni = (i + 1) % 6;
+      ctx.fillStyle = isl.cliffColor;
+      ctx.strokeStyle = 'rgba(33, 29, 29, 0.15)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(topVerts[i].sx, topVerts[i].sy);
+      ctx.lineTo(topVerts[ni].sx, topVerts[ni].sy);
+      ctx.lineTo(botVerts[ni].sx, botVerts[ni].sy);
+      ctx.lineTo(botVerts[i].sx, botVerts[i].sy);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = isl.groundColor;
+    ctx.strokeStyle = (isl.isSel || masterStarburstActive) ? '#db6a41' : '#fff8f4';
+    ctx.lineWidth = isl.isSel ? 3.2 : (masterStarburstActive ? 2.2 : 1.5);
+    ctx.beginPath();
+    topVerts.forEach((v, i) => i === 0 ? ctx.moveTo(v.sx, v.sy) : ctx.lineTo(v.sx, v.sy));
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    const innerVerts = [];
+    for (let i = 0; i < 6; i++) {
+      const ang = (Math.PI / 180) * (60 * i + 30);
+      innerVerts.push(project3D(isl.wx + R * 0.76 * Math.cos(ang), topY + 0.5, isl.wz + R * 0.76 * Math.sin(ang)));
+    }
+    ctx.strokeStyle = 'rgba(255, 248, 244, 0.55)';
+    ctx.lineWidth = 1.8 * cam.zoom;
+    ctx.beginPath();
+    innerVerts.forEach((v, i) => i === 0 ? ctx.moveTo(v.sx, v.sy) : ctx.lineTo(v.sx, v.sy));
+    ctx.closePath();
+    ctx.stroke();
+
+    const treeOffsets = [[-0.58, -0.35], [0.58, -0.32], [-0.52, 0.45], [0.52, 0.48]];
+    treeOffsets.forEach(([tx, tz], tidx) => {
+      drawLowPolyTree(isl.wx + tx * R, topY, isl.wz + tz * R, 0.72 + (tidx % 2) * 0.14);
+    });
+
+    isl.buildings.forEach(b => {
+      const bx = isl.wx + b.dx * R * 0.85;
+      const bz = isl.wz + b.dz * R * 0.85;
+      const isBldSel = (selectedBuildingId === b.id);
+      drawPolicyBuilding(b, bx, topY, bz, isl.roofColor, isBldSel);
+    });
+
+    citizens.forEach(c => {
+      if (c.isHero) {
+        const heroIsl = ISLANDS[c.islandIdx];
+        if (heroIsl && heroIsl.id === isl.id) {
+          drawMiniPerson(isl.wx + 8, topY, isl.wz + 12, c.shirtColor, true, c.badge, animClock);
+        }
+      } else if (c.islandId === isl.id) {
+        if (!layerState.freeze) {
+          c.angle += c.speed * (dayPlaying ? 1.0 : 0.6);
+        }
+        const cx = isl.wx + Math.cos(c.angle) * c.dist;
+        const cz = isl.wz + Math.sin(c.angle) * c.dist;
+        drawMiniPerson(cx, topY, cz, c.shirtColor, false, c.badge, animClock);
+      }
+    });
+
+    ctx.restore();
+
+    const lblEl = islandLabelEls.get(isl.id);
+    if (lblEl) {
+      if (!layerState.names) {
+        lblEl.style.display = 'none';
+      } else {
+        lblEl.style.display = 'flex';
+        const lp = project3D(isl.wx, topY + 32, isl.wz + R * 0.25);
+        lblEl.style.left = `${lp.sx}px`;
+        lblEl.style.top = `${lp.sy}px`;
+        lblEl.classList.toggle('selected', isl.isSel || masterStarburstActive);
+        lblEl.classList.toggle('dim', isl.isDim);
+      }
+    }
+  });
+
+  buildingSignEls.forEach(({ el, isl, b }) => {
+    const islData = islandWorldMap.get(isl.id);
+    if (!islData || !layerState.names || (cam.zoom < 1.05 && selectedIslandId !== isl.id)) {
+      el.style.display = 'none';
+      return;
+    }
+    el.style.display = 'block';
+    const R = cam.hexRadius * 0.94;
+    const bx = islData.wx + b.dx * R * 0.85;
+    const bz = islData.wz + b.dz * R * 0.85;
+    const sp = project3D(bx, 12 + islData.elev + 24, bz);
+    el.style.left = `${sp.sx}px`;
+    el.style.top = `${sp.sy}px`;
+  });
+
+  // Draw Standard Collaboration Flows (F1..F16) with Basis Line Styles (Solid / Dashed / Dotted)
+  if (layerState.flows) {
+    FLOWS.slice(1).forEach((f, fIdx) => {
+      const a = islandWorldMap.get(f.from);
+      const b = islandWorldMap.get(f.to);
+      if (!a || !b) return;
+
+      const isFriendChain = ['F11', 'F12', 'F13', 'F14', 'F15', 'F16'].includes(f.id);
+      const isFocus = (selectedFlowId === f.id) || (selectedIslandId === f.from || selectedIslandId === f.to);
+      ctx.save();
+      ctx.strokeStyle = isFocus ? '#db6a41' : (isFriendChain ? 'rgba(219, 106, 65, 0.82)' : 'rgba(219, 106, 65, 0.38)');
+      ctx.lineWidth = (isFocus ? 3.2 : (isFriendChain ? 2.4 : 1.4)) * cam.zoom;
+
+      if (f.basis === 'coupling') ctx.setLineDash([6, 4]);
+      else if (f.basis === 'soapbox') ctx.setLineDash([2, 4]);
+
+      ctx.beginPath();
+      const steps = 20;
+      for (let s = 0; s <= steps; s++) {
+        const t = s / steps;
+        const wx = a.wx + (b.wx - a.wx) * t;
+        const wz = a.wz + (b.wz - a.wz) * t;
+        const wy = 20 + Math.sin(t * Math.PI) * 44;
+        const pt = project3D(wx, wy, wz);
+        s === 0 ? ctx.moveTo(pt.sx, pt.sy) : ctx.lineTo(pt.sx, pt.sy);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      if (!layerState.freeze) {
+        const t = (animClock * 0.35 + fIdx * 0.13) % 1.0;
+        const wx = a.wx + (b.wx - a.wx) * t;
+        const wz = a.wz + (b.wz - a.wz) * t;
+        const wy = 20 + Math.sin(t * Math.PI) * 44;
+        const pt = project3D(wx, wy, wz);
+        ctx.fillStyle = isFocus ? '#fcea8b' : '#db6a41';
+        ctx.strokeStyle = '#211d1d';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(pt.sx, pt.sy, (isFocus ? 4.2 : 2.8) * cam.zoom, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+      ctx.restore();
+    });
+
+    // Draw F0 Master 1-to-13 Starburst when active! (From DSP 07 to all 13 other islands!)
+    if (masterStarburstActive) {
+      const hub = islandWorldMap.get('dsp');
+      if (hub) {
+        ISLANDS.forEach((targetIsl, idx) => {
+          if (targetIsl.id === 'dsp') return;
+          const b = islandWorldMap.get(targetIsl.id);
+          if (!b) return;
+
+          ctx.save();
+          ctx.strokeStyle = '#db6a41';
+          ctx.lineWidth = 3.0 * cam.zoom;
+          ctx.setLineDash([3, 4]);
+
+          ctx.beginPath();
+          const steps = 24;
+          for (let s = 0; s <= steps; s++) {
+            const t = s / steps;
+            const wx = hub.wx + (b.wx - hub.wx) * t;
+            const wz = hub.wz + (b.wz - hub.wz) * t;
+            const wy = 26 + Math.sin(t * Math.PI) * 68;
+            const pt = project3D(wx, wy, wz);
+            s === 0 ? ctx.moveTo(pt.sx, pt.sy) : ctx.lineTo(pt.sx, pt.sy);
+          }
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // Dual high-visibility energy packets along each of the 13 master rays
+          if (!layerState.freeze) {
+            [0, 0.5].forEach(offset => {
+              const t = (animClock * 0.45 + idx * 0.07 + offset) % 1.0;
+              const wx = hub.wx + (b.wx - hub.wx) * t;
+              const wz = hub.wz + (b.wz - hub.wz) * t;
+              const wy = 26 + Math.sin(t * Math.PI) * 68;
+              const pt = project3D(wx, wy, wz);
+              ctx.fillStyle = '#fcea8b';
+              ctx.strokeStyle = '#db6a41';
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.arc(pt.sx, pt.sy, 4.8 * cam.zoom, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.stroke();
+            });
+          }
+          ctx.restore();
+        });
+      }
+    }
+  }
+}
+
+function isIslandDimmed(isl) {
+  if (activeTermFilter !== 'ALL' && isl.term !== activeTermFilter) return true;
+  if (activeSwarmSet.size > 0) {
+    return !isl.swarm.some(s => activeSwarmSet.has(s));
+  }
+  return false;
+}
+
+// ============================================================================
+// 7. SIDEBAR TREE, 4-STAGE LIGHTS & SOURCES CARD
+// ============================================================================
+function renderSidebarTree() {
+  const tree = document.getElementById('tree');
+  const q = (document.getElementById('search').value || '').trim().toLowerCase();
+  tree.innerHTML = '';
+
+  if (activeSideTab === 'policies') {
+    ISLANDS.forEach(isl => {
+      const matchIsl = !q || isl.name.toLowerCase().includes(q) || isl.tagline.toLowerCase().includes(q) ||
+                       isl.buildings.some(b => b.name.toLowerCase().includes(q) || b.desc.toLowerCase().includes(q));
+      if (!matchIsl) return;
+
+      const details = document.createElement('details');
+      if (selectedIslandId === isl.id || q.length > 0) details.open = true;
+
+      const summary = document.createElement('summary');
+      summary.innerHTML = `
+        <span class="index">${isl.num}</span>
+        <span class="item-name">${isl.name}</span>
+        <span class="count">${isl.buildings.length} ↗</span>
+      `;
+      summary.addEventListener('click', () => selectIsland(isl.id, false));
+      details.appendChild(summary);
+
+      const children = document.createElement('div');
+      children.className = 'children';
+
+      const openIslBtn = document.createElement('button');
+      openIslBtn.className = 'island-open';
+      openIslBtn.textContent = isl.id === 'dsp' ? '⚡ 點亮全島 13 條總開關並探索 ↗' : '探索此聚會島 ↗';
+      openIslBtn.addEventListener('click', () => {
+        if (window.innerWidth <= 820) closeSidebarOnMobile();
+        if (isl.id === 'dsp') triggerMasterStarburst();
+        else selectIsland(isl.id, true);
+      });
+      children.appendChild(openIslBtn);
+
+      isl.buildings.forEach(b => {
+        const bBtn = document.createElement('button');
+        bBtn.textContent = b.name;
+        bBtn.addEventListener('click', () => {
+          if (window.innerWidth <= 820) closeSidebarOnMobile();
+          selectBuilding(isl.id, b.id);
+        });
+        children.appendChild(bBtn);
+      });
+
+      details.appendChild(children);
+      tree.appendChild(details);
+    });
+  } else {
+    FLOWS.forEach(f => {
+      if (q && !f.title.toLowerCase().includes(q) && !f.desc.toLowerCase().includes(q) && !f.basisLabel.toLowerCase().includes(q)) return;
+      const btn = document.createElement('button');
+      const isMaster = f.id === 'F0';
+      btn.className = `flow-item ${isMaster ? 'master-flow' : ''} ${(selectedFlowId === f.id || (isMaster && masterStarburstActive)) ? 'active' : ''}`;
+      btn.innerHTML = `
+        <div><b>${f.id}｜</b>${f.title}</div>
+        <span class="basis-tag">依據：${f.basisLabel}</span>
+      `;
+      btn.addEventListener('click', () => {
+        if (window.innerWidth <= 820) closeSidebarOnMobile();
+        if (isMaster) triggerMasterStarburst();
+        else selectFlow(f.id);
+      });
+      tree.appendChild(btn);
+    });
+  }
+}
+
+function updateDockSelection() {
+  document.querySelectorAll('.dock-pill').forEach(btn => {
+    if (btn.id === 'dock-master-pill') {
+      btn.classList.toggle('active', masterStarburstActive);
+    } else {
+      btn.classList.toggle('active', btn.dataset.islandId === selectedIslandId && !masterStarburstActive);
+    }
+  });
+}
+
+function buildStageLightsHTML(litStages) {
+  const stages = [
+    { num: 1, label: '16:00 茶會' },
+    { num: 2, label: '16:30 桌遊' },
+    { num: 3, label: '18:00 晚宴' },
+    { num: 4, label: '30年大合照' }
+  ];
+  return `
+    <div class="stage-lights">
+      ${stages.map(s => `<div class="stage-lamp ${litStages.includes(s.num) ? 'lit' : ''}">${litStages.includes(s.num) ? '● ' : '○ '}${s.label}</div>`).join('')}
+    </div>
+  `;
+}
+
+function buildSourcesHTML(sources) {
+  if (!sources || sources.length === 0) return '';
+  return `
+    <h3>聚會座標、停車導航與參考連結 (${sources.length})</h3>
+    <div class="sources-list">
+      ${sources.map(s => `
+        <a class="source-link" href="${s.url}" target="_blank" rel="noopener noreferrer">
+          <span><span class="src-type">${s.type}</span>${s.title}</span>
+          <span>↗</span>
+        </a>
+      `).join('')}
+    </div>
+  `;
+}
+
+function triggerMasterStarburst() {
+  masterStarburstActive = true;
+  selectedIslandId = 'dsp';
+  selectedFlowId = 'F0';
+  layerState.flows = true;
+  document.getElementById('tg-flows').classList.add('active');
+
+  // Move Architect Alger to 07 DSP Hub on soapbox
+  citizens[0].islandIdx = 6;
+
+  // Zoom out slightly to show all 14 islands lit up together
+  const isMob = window.innerWidth <= 820;
+  cam.panX = isMob ? 0 : -20;
+  cam.panY = isMob ? -25 : -10;
+  cam.zoom = isMob ? 0.65 : 0.96;
+
+  updateDockSelection();
+  renderSidebarTree();
+
+  const dspIsl = ISLANDS.find(x => x.id === 'dsp');
+  const card = document.getElementById('card');
+  const content = document.getElementById('card-content');
+  card.hidden = false;
+
+  content.innerHTML = `
+    <div class="eyebrow">MASTER CONNECTION F0 · 聚聚會總開關已點亮</div>
+    <h2>⚡ 一條線連向全島 13 座島：07 號 水果家 3F 聚聚會主島</h2>
+    <div class="chips">
+      <span class="chip">主揪：水果家</span>
+      <span class="chip">日期：2026/10/31 (六)</span>
+      <span class="chip">茶飲 ＆ 精美小點心 ＆ 晚宴</span>
+    </div>
+    <p>致敬《HEART 政策島》解析影片最受矚目的彩蛋——「<b>從中心主島拉出一條線連向其他全部 13 座島！</b>」在這次 30 年老友家庭聚會中，位於<b>新北市中和區景新街 210 巷 15 號 3 樓</b>的「<b>水果家</b>」就是連結所有老朋友與孩子的總開關！</p>
+    <div class="quote">「從 16:00 下午茶會（香醇茶飲與精美小點心）、大人品茗敘舊、青少年 Switch 桌遊同樂，一路到溫馨家宴，所有溫暖都從水果家 3 樓連向每一個家庭與老友！」</div>
+
+    <h3>當日歡聚四階段亮燈 (全階段點亮)</h3>
+    ${buildStageLightsHTML([1, 2, 3, 4])}
+
+${buildRSVPWidgetHTML("阿伯家")}
+
+    ${buildSourcesHTML(dspIsl.sources)}
+  `;
+
+  updateRSVPPreview();
+  addLogEntry('⚡ 點亮聚聚會總開關 F0！07 號水果家 3F 主島向全島 13 座家庭與美食遊戲島發射召集能量！');
+}
+
+function selectIsland(id, openModal = true) {
+  masterStarburstActive = (id === 'dsp');
+  selectedIslandId = id;
+  selectedBuildingId = null;
+  selectedFlowId = id === 'dsp' ? 'F0' : null;
+  updateDockSelection();
+
+  const isl = ISLANDS.find(x => x.id === id);
+  if (!isl) return;
+
+  const { x, z } = hexToWorldXZ(isl.q, isl.r);
+  const cosY = Math.cos(cam.yaw), sinY = Math.sin(cam.yaw);
+  const rx = x * cosY - z * sinY;
+  const rz = x * sinY + z * cosY;
+  cam.panX = -rx * cam.zoom * 0.45;
+  cam.panY = -rz * cam.pitch * cam.zoom * 0.45 - (window.innerWidth <= 820 ? 50 : 0);
+
+  if (openModal) {
+    const card = document.getElementById('card');
+    const content = document.getElementById('card-content');
+    card.hidden = false;
+
+    const derateHTML = isl.deratings.map(d => `
+      <div class="derate-mini-row">
+        <div style="display:flex;justify-content:space-between;"><span>${d.label}</span><b>${d.text}</b></div>
+        <div class="derate-mini-bar">
+          <div class="derate-mini-fill" style="width:${d.pct}%"></div>
+          <div class="derate-mini-limit" title="聚聚會滿分指標"></div>
+        </div>
+      </div>
+    `).join('');
+
+    const relatedFlows = FLOWS.filter(f => f.from === isl.id || f.to === isl.id || (isl.id === 'dsp' && f.id === 'F0'));
+
+    content.innerHTML = `
+      <div class="eyebrow">ISLAND ${isl.num} · SWARM [${isl.swarm.join(', ')}]</div>
+      <h2>${isl.name}</h2>
+      <p>${isl.tagline}</p>
+      <div class="quote">${isl.quote}</div>
+
+      <h3>10/31 聚聚會時段亮燈</h3>
+      ${buildStageLightsHTML(isl.litStages)}
+      <div class="phase">${isl.phaseText}</div>
+
+      <h3>聚聚會款待與歡樂指標</h3>
+      <div class="derate-mini">${derateHTML}</div>
+
+      <h3>島上微縮聚會亮點 (${isl.buildings.length})</h3>
+      <ul id="card-building-list"></ul>
+
+      <h3>跨島情誼連線 (${relatedFlows.length})</h3>
+      <div class="chips" id="card-flow-chips"></div>
+
+      ${['dsp', 'agent5', 'gate1', 'agent1', 'agent2', 'agent3', 'agent4'].includes(isl.id) ? buildRSVPWidgetHTML(isl.name) : ''}
+      ${buildSourcesHTML(isl.sources)}
+    `;
+
+    const ul = document.getElementById('card-building-list');
+    isl.buildings.forEach(b => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `#${b.id}`;
+      a.innerHTML = `<b>${b.name}</b>`;
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        selectBuilding(isl.id, b.id);
+      });
+      li.appendChild(a);
+      li.appendChild(document.createTextNode(`：${b.desc}`));
+      ul.appendChild(li);
+    });
+
+    const chipBox = document.getElementById('card-flow-chips');
+    relatedFlows.forEach(f => {
+      const sp = document.createElement('span');
+      sp.className = 'chip';
+      sp.style.cursor = 'pointer';
+      sp.textContent = `${f.id} ${f.title.slice(0, 12)}…`;
+      sp.addEventListener('click', () => {
+        if (f.id === 'F0') triggerMasterStarburst();
+        else selectFlow(f.id);
+      });
+      chipBox.appendChild(sp);
+    });
+    updateRSVPPreview();
+  }
+  renderSidebarTree();
+}
+
+function selectBuilding(islandId, buildingId) {
+  masterStarburstActive = false;
+  selectedIslandId = islandId;
+  selectedBuildingId = buildingId;
+  updateDockSelection();
+
+  const isl = ISLANDS.find(x => x.id === islandId);
+  const b = isl?.buildings.find(x => x.id === buildingId);
+  if (!isl || !b) return;
+
+  const card = document.getElementById('card');
+  const content = document.getElementById('card-content');
+  card.hidden = false;
+  content.innerHTML = `
+    <div class="eyebrow">${isl.num} ${isl.name} ／ 建築細項</div>
+    <h2>${b.name}</h2>
+    <div class="chips">
+      <span class="chip">招牌：${b.sign}</span>
+      <span class="chip">SWARM：${isl.swarm.join('/')}</span>
+      <span class="chip">10/31 聚聚會 READY</span>
+    </div>
+    <p>${b.desc}</p>
+    <h3>推動時程亮燈</h3>
+    ${buildStageLightsHTML(isl.litStages)}
+    <div class="phase">${isl.phaseText}</div>
+    ${buildSourcesHTML(isl.sources)}
+    <div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--line);">
+      <button id="btn-back-island">← 返回「${isl.name}」全島總覽</button>
+    </div>
+  `;
+  document.getElementById('btn-back-island').addEventListener('click', () => selectIsland(isl.id, true));
+  addLogEntry(`探索細項：${isl.num} ${isl.name} → ${b.name}`);
+}
+
+function selectFlow(flowId) {
+  if (flowId === 'F0') {
+    triggerMasterStarburst();
+    return;
+  }
+  masterStarburstActive = false;
+  selectedFlowId = flowId;
+  const f = FLOWS.find(x => x.id === flowId);
+  if (!f) return;
+  layerState.flows = true;
+  document.getElementById('tg-flows').classList.add('active');
+
+  const fromIsl = ISLANDS.find(x => x.id === f.from);
+  const toIsl = ISLANDS.find(x => x.id === f.to);
+
+  const card = document.getElementById('card');
+  const content = document.getElementById('card-content');
+  card.hidden = false;
+  content.innerHTML = `
+    <div class="eyebrow">CROSS-ISLAND CONNECTION · ${f.id}</div>
+    <h2>${f.title}</h2>
+    <div class="chips">
+      <span class="chip">依據：${f.basisLabel}</span>
+      <span class="chip" id="chip-from" style="cursor:pointer">起點：${fromIsl.num} ${fromIsl.name}</span>
+      <span class="chip" id="chip-to" style="cursor:pointer">終點：${toIsl.num} ${toIsl.name}</span>
+    </div>
+    <p>${f.desc}</p>
+    <div class="phase">點擊起點或終點標籤，可直接走進對應的六邊形聚會島。</div>
+    ${buildSourcesHTML(fromIsl.sources)}
+  `;
+  document.getElementById('chip-from').addEventListener('click', () => selectIsland(fromIsl.id, true));
+  document.getElementById('chip-to').addEventListener('click', () => selectIsland(toIsl.id, true));
+  renderSidebarTree();
+  addLogEntry(`點亮協作線 ${f.id} (${f.basisLabel})：${fromIsl.name} ↔ ${toIsl.name}`);
+}
+
+function closeSidebarOnMobile() {
+  const sb = document.getElementById('sidebar');
+  sb.classList.add('closed');
+  document.getElementById('stage').classList.add('full');
+}
+
+function addLogEntry(text) {
+  const list = document.getElementById('log-list');
+  const li = document.createElement('li');
+  const hh = String(Math.floor(dayMinutes / 60)).padStart(2, '0');
+  const mm = String(dayMinutes % 60).padStart(2, '0');
+  li.textContent = `[${hh}:${mm}] ${text}`;
+  list.prepend(li);
+}
+
+// ============================================================================
+// 8. FULL DESKTOP MOUSE + MOBILE TOUCH GESTURES
+// ============================================================================
+let isDragging = false;
+let dragStartX = 0, dragStartY = 0;
+let startPanX = 0, startPanY = 0;
+let startYaw = 0;
+let initialPinchDist = 0;
+let initialPinchZoom = 1;
+let initialPinchAngle = 0;
+let initialPinchYaw = 0;
+
+function hitTestPoint(mx, my) {
+  for (let i = hitHexPolys.length - 1; i >= 0; i--) {
+    const poly = hitHexPolys[i].verts;
+    let inside = false;
+    for (let p = 0, q = poly.length - 1; p < poly.length; q = p++) {
+      const xi = poly[p].sx, yi = poly[p].sy;
+      const xj = poly[q].sx, yj = poly[q].sy;
+      if (((yi > my) !== (yj > my)) && (mx < (xj - xi) * (my - yi) / (yj - yi + 0.0001) + xi)) {
+        inside = !inside;
+      }
+    }
+    if (inside) return hitHexPolys[i].id;
+  }
+  return null;
+}
+
+canvas.addEventListener('mousedown', e => {
+  isDragging = true;
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
+  startPanX = cam.panX;
+  startPanY = cam.panY;
+  startYaw = cam.targetYaw;
+});
+
+window.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  if (isDragging) {
+    if (e.shiftKey || e.buttons === 2) {
+      cam.targetYaw = startYaw + (e.clientX - dragStartX) * 0.006;
+    } else {
+      cam.panX = startPanX + (e.clientX - dragStartX);
+      cam.panY = startPanY + (e.clientY - dragStartY);
+    }
+    return;
+  }
+
+  hoveredIslandId = hitTestPoint(mx, my);
+  canvas.style.cursor = hoveredIslandId ? 'pointer' : 'grab';
+});
+
+window.addEventListener('mouseup', e => {
+  if (!isDragging) return;
+  const dist = Math.hypot(e.clientX - dragStartX, e.clientY - dragStartY);
+  isDragging = false;
+  if (dist < 6 && hoveredIslandId) {
+    selectIsland(hoveredIslandId, true);
+  }
+});
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const factor = e.deltaY < 0 ? 1.08 : 0.92;
+  cam.zoom = Math.min(1.85, Math.max(0.48, cam.zoom * factor));
+}, { passive: false });
+
+canvas.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) {
+    isDragging = true;
+    dragStartX = e.touches[0].clientX;
+    dragStartY = e.touches[0].clientY;
+    startPanX = cam.panX;
+    startPanY = cam.panY;
+  } else if (e.touches.length === 2) {
+    isDragging = false;
+    const dx = e.touches[1].clientX - e.touches[0].clientX;
+    const dy = e.touches[1].clientY - e.touches[0].clientY;
+    initialPinchDist = Math.hypot(dx, dy);
+    initialPinchZoom = cam.zoom;
+    initialPinchAngle = Math.atan2(dy, dx);
+    initialPinchYaw = cam.targetYaw;
+  }
+}, { passive: true });
+
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (e.touches.length === 1 && isDragging) {
+    cam.panX = startPanX + (e.touches[0].clientX - dragStartX);
+    cam.panY = startPanY + (e.touches[0].clientY - dragStartY);
+  } else if (e.touches.length === 2 && initialPinchDist > 0) {
+    const dx = e.touches[1].clientX - e.touches[0].clientX;
+    const dy = e.touches[1].clientY - e.touches[0].clientY;
+    const dist = Math.hypot(dx, dy);
+    const scale = dist / initialPinchDist;
+    cam.zoom = Math.min(1.85, Math.max(0.45, initialPinchZoom * scale));
+
+    const angle = Math.atan2(dy, dx);
+    cam.targetYaw = initialPinchYaw + (angle - initialPinchAngle) * 0.7;
+  }
+}, { passive: false });
+
+canvas.addEventListener('touchend', e => {
+  if (e.changedTouches.length === 1 && isDragging) {
+    const t = e.changedTouches[0];
+    const dist = Math.hypot(t.clientX - dragStartX, t.clientY - dragStartY);
+    isDragging = false;
+    if (dist < 10) {
+      const rect = canvas.getBoundingClientRect();
+      const hit = hitTestPoint(t.clientX - rect.left, t.clientY - rect.top);
+      if (hit) selectIsland(hit, true);
+    }
+  }
+});
+
+// ============================================================================
+// 9. WIRE ALL BUTTON LISTENERS & BOOTSTRAP
+// ============================================================================
+function resetCamera() {
+  masterStarburstActive = false;
+  selectedIslandId = null;
+  selectedBuildingId = null;
+  selectedFlowId = null;
+  updateDockSelection();
+  const isMob = window.innerWidth <= 820;
+  cam.panX = isMob ? 0 : -20;
+  cam.panY = isMob ? -15 : -10;
+  cam.zoom = isMob ? 0.68 : 1.0;
+  cam.targetYaw = 0.45;
+  cam.targetPitch = 0.58;
+  document.getElementById('card').hidden = true;
+  renderSidebarTree();
+}
+
+function updateClockDisplay(mins) {
+  const hh = String(Math.floor(mins / 60)).padStart(2, '0');
+  const mm = String(mins % 60).padStart(2, '0');
+  document.getElementById('clock').textContent = `${hh}:${mm}`;
+
+  const note = document.getElementById('day-note');
+  if (mins < 960) {
+    note.textContent = `${hh}:${mm} 登島準備時段：水果家（中和景新街210巷15號3樓）備妥香醇茶飲與精美小點心，迎接永和出發的家庭與中和出發的單身老友！`;
+  } else if (mins < 1080) {
+    note.textContent = `${hh}:${mm} 16:00 下午茶會 × 電競桌遊：09～13 老友戰隊大串聯！大人在客廳品嚐高山茶與精美小點心；青少年暢玩 Switch 與桌遊！`;
+  } else {
+    note.textContent = `${hh}:${mm} 聚聚會豐盛晚宴 ＆ 星空夜談：共享溫馨晚餐佳餚、茶飲與飯後小點心，全體拍下 30 週年全家福大合照！`;
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (window.innerWidth <= 820) {
+    document.getElementById('sidebar').classList.add('closed');
+    document.getElementById('stage').classList.add('full');
+  }
+
+  resizeWorld();
+  initCitizens();
+  initHTMLOverlays();
+  renderSidebarTree();
+
+  document.getElementById('brand-reset-link').addEventListener('click', e => { e.preventDefault(); resetCamera(); });
+  document.getElementById('btn-home').addEventListener('click', resetCamera);
+  document.getElementById('btn-master-hub').addEventListener('click', triggerMasterStarburst);
+  document.getElementById('btn-top-master').addEventListener('click', triggerMasterStarburst);
+  document.getElementById('btn-auto-tour').addEventListener('click', toggleAutoTour);
+
+  document.getElementById('btn-char').addEventListener('click', () => {
+    const m = document.getElementById('char-modal');
+    m.hidden = !m.hidden;
+  });
+  document.getElementById('btn-char-close').addEventListener('click', () => {
+    document.getElementById('char-modal').hidden = true;
+  });
+  document.getElementById('btn-mob-time').addEventListener('click', () => {
+    document.getElementById('controls').classList.toggle('mob-hidden');
+  });
+  document.getElementById('btn-sidebar').addEventListener('click', () => {
+    const sb = document.getElementById('sidebar');
+    const closed = sb.classList.toggle('closed');
+    document.getElementById('stage').classList.toggle('full', closed);
+    document.getElementById('toolbar').classList.toggle('shifted', closed);
+    document.getElementById('hud').classList.toggle('shifted', closed);
+    document.getElementById('legend').classList.toggle('shifted', closed);
+    document.getElementById('controls').classList.toggle('shifted', closed);
+    setTimeout(resizeWorld, 310);
+  });
+  document.getElementById('btn-sidebar-close').addEventListener('click', closeSidebarOnMobile);
+  document.getElementById('btn-help').addEventListener('click', () => {
+    document.getElementById('intro').hidden = false;
+  });
+  document.getElementById('btn-intro-skip').addEventListener('click', () => {
+    document.getElementById('intro').hidden = true;
+  });
+  document.getElementById('btn-intro-next').addEventListener('click', () => {
+    document.getElementById('intro').hidden = true;
+    triggerMasterStarburst();
+  });
+  document.getElementById('btn-card-close').addEventListener('click', () => {
+    document.getElementById('card').hidden = true;
+    masterStarburstActive = false;
+    updateDockSelection();
+  });
+  document.getElementById('btn-log-close').addEventListener('click', () => {
+    layerState.log = false;
+    document.getElementById('tg-log').classList.remove('active');
+    document.getElementById('log-panel').hidden = true;
+  });
+
+  document.getElementById('search').addEventListener('input', renderSidebarTree);
+  document.getElementById('tab-policies').addEventListener('click', () => {
+    activeSideTab = 'policies';
+    document.getElementById('tab-policies').classList.add('active');
+    document.getElementById('tab-flows').classList.remove('active');
+    renderSidebarTree();
+  });
+  document.getElementById('tab-flows').addEventListener('click', () => {
+    activeSideTab = 'flows';
+    document.getElementById('tab-flows').classList.add('active');
+    document.getElementById('tab-policies').classList.remove('active');
+    renderSidebarTree();
+  });
+
+  document.querySelectorAll('#role-grid button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#role-grid button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const hero = citizens[0];
+      hero.name = btn.dataset.role;
+      hero.shirtColor = btn.dataset.color;
+      hero.badge = `🎤 ${btn.dataset.badge}`;
+      document.getElementById('char-status-text').innerHTML = `化身：<b>${hero.name}</b>`;
+      addLogEntry(`角色切換為「${hero.name}」`);
+    });
+  });
+
+  document.getElementById('btn-follow-hero').addEventListener('click', () => {
+    const hero = citizens[0];
+    hero.islandIdx = (hero.islandIdx + 1) % ISLANDS.length;
+    const targetIsl = ISLANDS[hero.islandIdx];
+    document.getElementById('char-modal').hidden = true;
+    selectIsland(targetIsl.id, true);
+    addLogEntry(`${hero.name} 走訪至 ${targetIsl.num} ${targetIsl.name} 站上肥皂箱開講！`);
+  });
+
+  document.querySelectorAll('#time-seg button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#time-seg button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      dayMinutes = parseInt(btn.dataset.mins, 10);
+      timeMode = btn.dataset.mode;
+      document.getElementById('day-slider').value = dayMinutes;
+      updateClockDisplay(dayMinutes);
+      document.getElementById('app').className = timeMode === 'day' ? '' : `time-${timeMode}`;
+    });
+  });
+
+  document.querySelectorAll('[data-layer]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.layer;
+      layerState[key] = !layerState[key];
+      btn.classList.toggle('active', layerState[key]);
+      if (key === 'bird') {
+        cam.targetPitch = layerState.bird ? 0.90 : 0.58;
+      } else if (key === 'log') {
+        document.getElementById('log-panel').hidden = !layerState.log;
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-panel]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.panel;
+      document.querySelectorAll('[data-panel]').forEach(b => b.classList.toggle('active', b === btn));
+      ['day', 'term', 'heart'].forEach(k => {
+        document.getElementById(`panel-${k}`).classList.toggle('active', k === target);
+      });
+    });
+  });
+
+  document.getElementById('day-play').addEventListener('click', () => {
+    dayPlaying = !dayPlaying;
+    document.getElementById('day-play').textContent = dayPlaying ? '⏸' : '▶';
+  });
+  document.getElementById('day-slider').addEventListener('input', e => {
+    dayMinutes = parseInt(e.target.value, 10);
+    updateClockDisplay(dayMinutes);
+    const app = document.getElementById('app');
+    if (dayMinutes < 360 || dayMinutes >= 1200) {
+      timeMode = 'night'; app.className = 'time-night';
+    } else if (dayMinutes < 540) {
+      timeMode = 'dawn'; app.className = 'time-dawn';
+    } else if (dayMinutes >= 1020) {
+      timeMode = 'dusk'; app.className = 'time-dusk';
+    } else {
+      timeMode = 'day'; app.className = '';
+    }
+  });
+
+  document.querySelectorAll('#term-buttons button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeTermFilter = btn.dataset.term;
+      document.querySelectorAll('#term-buttons button').forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  document.querySelectorAll('#swarm-buttons button[data-swarm]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const s = btn.dataset.swarm;
+      if (activeSwarmSet.has(s)) activeSwarmSet.delete(s);
+      else activeSwarmSet.add(s);
+      btn.classList.toggle('active', activeSwarmSet.has(s));
+      document.getElementById('swarm-reset').classList.toggle('active', activeSwarmSet.size === 0);
+    });
+  });
+  document.getElementById('swarm-reset').addEventListener('click', () => {
+    activeSwarmSet.clear();
+    document.querySelectorAll('#swarm-buttons button').forEach(b => b.classList.remove('active'));
+    document.getElementById('swarm-reset').classList.add('active');
+  });
+
+  addLogEntry('🎉 歡迎來到《10/31 聚聚會》30年老友與家庭微縮群島（水果家主揪）！');
+  addLogEntry('⚡ 點擊左上角或工具列的「⚡ 總開關」，即可從 07 水果家主島一鍵點亮全島 13 座家庭與美食遊戲島！');
+
+  let heroStepCounter = 0;
+  function animate() {
+    if (!layerState.freeze) {
+      animClock += 0.016;
+      heroStepCounter++;
+      if (heroStepCounter % 480 === 0 && !masterStarburstActive) {
+        citizens[0].islandIdx = (citizens[0].islandIdx + 1) % ISLANDS.length;
+      }
+      if (dayPlaying) {
+        dayMinutes = (dayMinutes + 1) % 1440;
+        document.getElementById('day-slider').value = dayMinutes;
+        updateClockDisplay(dayMinutes);
+      }
+    }
+    renderScene();
+    requestAnimationFrame(animate);
+  }
+  animate();
+});
+</script>
+</body>
+</html>
