@@ -69,17 +69,17 @@ h1, h2, h3, p {
   width: 100vw;
   height: 100dvh;
   overflow: hidden;
-  background: radial-gradient(ellipse at 44% 35%, #fffdf9 0%, #fff8f4 44%, #edddcf 100%);
-  transition: background 0.5s ease;
+  background: linear-gradient(180deg, #dff1f9 0%, #f7f3e8 36%, #9ad0dc 76%, #68acc0 100%);
+  transition: background 0.6s ease;
 }
 #app.time-dawn {
-  background: radial-gradient(ellipse at 44% 35%, #fff3eb 0%, #fde4d2 48%, #dec4b4 100%);
+  background: linear-gradient(180deg, #ffe3d3 0%, #fff0df 36%, #a6cdd9 78%, #77a8bc 100%);
 }
 #app.time-dusk {
-  background: radial-gradient(ellipse at 44% 35%, #ffd8b8 0%, #f0b698 48%, #b88478 100%);
+  background: linear-gradient(180deg, #f9b48a 0%, #fcd5b4 36%, #7da4b8 78%, #4d758f 100%);
 }
 #app.time-night {
-  background: radial-gradient(ellipse at 44% 35%, #233044 0%, #182232 50%, #0f1722 100%);
+  background: linear-gradient(180deg, #0d182a 0%, #182942 40%, #16324f 80%, #0c2138 100%);
   color: #f5ece6;
 }
 #stage {
@@ -1636,28 +1636,89 @@ const cam = {
 };
 
 const citizens = [];
-const CARRY_ITEMS = ['🍵好茶', '🍰小點心', '🎮Switch', '🃏桌遊', '🍎鮮果', '☕手沖', '🎃10/31', '🥂乾杯'];
+const CARRY_ITEMS = ['🍵好茶', '🍰小點心', '🎮Switch', '🃏桌遊', '🍎鮮果', '☕手沖', '🎃10/31', '🥂乾杯', '🚗永和出發', '🛵中和出發'];
+const ARCHETYPES = ['host', 'dad_glasses', 'mom_sunhat', 'youth_cap', 'girl_ponytail', 'kid_balloon', 'single_cool', 'pet_dog'];
+const HAIR_COLS = ['#2b221e', '#4a3222', '#1c1b29', '#6e472b', '#3b2e2a'];
+const PANTS_COLS = ['#2c3e50', '#4a5568', '#5a4638', '#2d3748', '#3b4252'];
+
+// Build adjacency graph so citizens can walk across bridges from island to island!
+const ADJ_MAP = new Map();
+function buildAdjacencyGraph() {
+  ADJ_MAP.clear();
+  ISLANDS.forEach(i => ADJ_MAP.set(i.id, new Set()));
+  const pairs = [
+    ['emi','pfc'], ['pfc','bus'], ['bus','llc'], ['llc','mag'],
+    ['emi','sr'], ['pfc','sr'], ['pfc','dsp'], ['bus','dsp'], ['bus','aux'], ['llc','aux'], ['llc','gate1'], ['mag','gate1'], ['mag','agent5'],
+    ['sr','dsp'], ['dsp','aux'], ['aux','gate1'], ['gate1','agent5'],
+    ['sr','agent1'], ['dsp','agent1'], ['dsp','agent2'], ['aux','agent2'], ['aux','agent3'], ['gate1','agent3'], ['gate1','agent4'], ['agent5','agent4'],
+    ['agent1','agent2'], ['agent2','agent3'], ['agent3','agent4']
+  ];
+  pairs.forEach(([a, b]) => {
+    if (ADJ_MAP.has(a) && ADJ_MAP.has(b)) {
+      ADJ_MAP.get(a).add(b);
+      ADJ_MAP.get(b).add(a);
+    }
+  });
+}
+
+function pickNeighborIsland(currId) {
+  const neighbors = Array.from(ADJ_MAP.get(currId) || []);
+  if (neighbors.length === 0) return currId;
+  return neighbors[Math.floor(Math.random() * neighbors.length)];
+}
 
 function initCitizens() {
+  buildAdjacencyGraph();
   citizens.length = 0;
+
+  // Hero character (smoothly walks from island to island across bridges!)
   citizens.push({
     isHero: true,
+    archetype: 'host',
     name: '島主・水果家',
     badge: '🎤 迎賓好茶',
     shirtColor: '#db6a41',
-    islandIdx: 6 // Starts at 07 水果家 3F 聚聚會主島!
+    pantsColor: '#2c3e50',
+    hairColor: '#211d1d',
+    propType: 'tea',
+    scale: 1.18,
+    islandIdx: 6,
+    fromId: 'dsp',
+    toId: 'gate1',
+    walkT: 0,
+    walkSpeed: 0.0042,
+    pauseTimer: 80
   });
 
-  for (let i = 0; i < 88; i++) {
-    const isl = ISLANDS[i % ISLANDS.length];
+  // 76 Cross-Island Bridge Travelers & Strollers (Adults, Youths, Kids, Pets!)
+  for (let i = 0; i < 76; i++) {
+    const startIsl = ISLANDS[i % ISLANDS.length];
+    const nextId = pickNeighborIsland(startIsl.id);
+    const arch = ARCHETYPES[i % ARCHETYPES.length];
+    const isKid = (arch === 'kid_balloon');
+    const isPet = (arch === 'pet_dog');
+    const isTraveler = (i % 4 !== 3); // 75% of citizens actively walk across bridges between islands!
+
     citizens.push({
       isHero: false,
-      islandId: isl.id,
+      isTraveler,
+      archetype: arch,
+      scale: isPet ? 0.88 : (isKid ? 0.80 : (arch.includes('youth') || arch.includes('girl') ? 0.96 : 1.06)),
+      fromId: startIsl.id,
+      toId: nextId,
+      walkT: Math.random(),
+      walkSpeed: 0.0038 + Math.random() * 0.0045,
+      pauseTimer: Math.floor(Math.random() * 45),
+      islandId: startIsl.id,
       angle: Math.random() * Math.PI * 2,
-      dist: 12 + Math.random() * (cam.hexRadius * 0.62),
-      speed: (Math.random() > 0.5 ? 1 : -1) * (0.008 + Math.random() * 0.014),
-      shirtColor: ['#db6a41', '#3f6fb5', '#708f68', '#3e7c8c', '#d99560', '#6b5280'][i % 6],
-      badge: i % 3 === 0 ? CARRY_ITEMS[i % CARRY_ITEMS.length] : null
+      dist: 10 + Math.random() * (cam.hexRadius * 0.46),
+      speed: (Math.random() > 0.5 ? 1 : -1) * (0.012 + Math.random() * 0.016),
+      offsetSide: (Math.random() - 0.5) * 14,
+      shirtColor: ['#db6a41', '#3f6fb5', '#708f68', '#3e7c8c', '#d99560', '#6b5280', '#e05a6d', '#d9822b'][i % 8],
+      pantsColor: PANTS_COLS[i % PANTS_COLS.length],
+      hairColor: HAIR_COLS[i % HAIR_COLS.length],
+      propType: ['tea', 'cake', 'switch', 'balloon', 'camera', 'none'][i % 6],
+      badge: i % 2 === 0 ? CARRY_ITEMS[i % CARRY_ITEMS.length] : null
     });
   }
 }
@@ -1905,40 +1966,232 @@ function draw3DBox(wx, wy, wz, w, h, d, topCol, leftCol, rightCol, strokeCol = n
   if (strokeCol) ctx.stroke();
 }
 
-function drawLowPolyTree(wx, wy, wz, scale = 1.0) {
+function drawLowPolyTree(wx, wy, wz, scale = 1.0, treeStyle = 'oak') {
   const trunkBase = project3D(wx, wy, wz);
   const trunkTop = project3D(wx, wy + 10 * scale, wz);
-  ctx.strokeStyle = '#89705c';
-  ctx.lineWidth = 3.0 * scale * cam.zoom;
+  ctx.strokeStyle = '#7c5c43';
+  ctx.lineWidth = 3.2 * scale * cam.zoom;
   ctx.beginPath();
   ctx.moveTo(trunkBase.sx, trunkBase.sy);
   ctx.lineTo(trunkTop.sx, trunkTop.sy);
   ctx.stroke();
 
-  const puffs = [
-    [0, 14, 0, 7.2, '#86a56c'],
-    [-4, 11, 2, 5.5, '#728f5f'],
-    [4, 12, -2, 5.8, '#7f9a6a'],
-    [1, 17, 1, 4.8, '#a3bf86']
-  ];
-  puffs.forEach(([dx, dy, dz, r, col]) => {
-    const pt = project3D(wx + dx * scale, wy + dy * scale, wz + dz * scale);
-    ctx.fillStyle = col;
+  if (treeStyle === 'sakura') {
+    const puffs = [
+      [0, 14, 0, 7.5, '#f4a6b8'],
+      [-4, 11, 2, 5.8, '#e88da2'],
+      [4, 12, -2, 6.0, '#f7bac8'],
+      [1, 17, 1, 5.0, '#ffd1dc']
+    ];
+    puffs.forEach(([dx, dy, dz, r, col]) => {
+      const pt = project3D(wx + dx * scale, wy + dy * scale, wz + dz * scale);
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      ctx.arc(pt.sx, pt.sy, r * scale * cam.zoom, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  } else if (treeStyle === 'autumn') {
+    const puffs = [
+      [0, 14, 0, 7.4, '#e07a3c'],
+      [-4, 11, 2, 5.6, '#c95f28'],
+      [4, 12, -2, 5.9, '#eb984e'],
+      [1, 17, 1, 4.9, '#f5b041']
+    ];
+    puffs.forEach(([dx, dy, dz, r, col]) => {
+      const pt = project3D(wx + dx * scale, wy + dy * scale, wz + dz * scale);
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      ctx.arc(pt.sx, pt.sy, r * scale * cam.zoom, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  } else if (treeStyle === 'pine') {
+    // Tiered conifer pine tree
+    [[0, 9, 8.5, '#4e7a51'], [0, 14, 6.8, '#5f8f62'], [0, 18.5, 4.8, '#76a879']].forEach(([dy, h, rad, col]) => {
+      const base = project3D(wx, wy + dy * scale, wz);
+      const tip = project3D(wx, wy + (dy + 6.5) * scale, wz);
+      const rx = rad * scale * cam.zoom;
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      ctx.moveTo(tip.sx, tip.sy);
+      ctx.lineTo(base.sx - rx, base.sy);
+      ctx.lineTo(base.sx + rx, base.sy);
+      ctx.closePath();
+      ctx.fill();
+    });
+  } else {
+    // Lush green fruit tree with golden fruit dots
+    const puffs = [
+      [0, 14, 0, 7.4, '#7ca362'],
+      [-4, 11, 2, 5.6, '#688f52'],
+      [4, 12, -2, 5.9, '#749c5b'],
+      [1, 17, 1, 5.0, '#99bf7c']
+    ];
+    puffs.forEach(([dx, dy, dz, r, col]) => {
+      const pt = project3D(wx + dx * scale, wy + dy * scale, wz + dz * scale);
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      ctx.arc(pt.sx, pt.sy, r * scale * cam.zoom, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    if (treeStyle === 'fruit') {
+      [[-3, 13, 2], [3, 14, -1], [0, 16, 1]].forEach(([fx, fy, fz]) => {
+        const fp = project3D(wx + fx * scale, wy + fy * scale, wz + fz * scale);
+        ctx.fillStyle = '#ff6b4a';
+        ctx.beginPath();
+        ctx.arc(fp.sx, fp.sy, 1.7 * scale * cam.zoom, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+  }
+}
+
+// Draw distinct island ground decorations (streams, stone paths, flower beds, cafe parasols, pumpkin patches, MRT tracks)
+function drawIslandCustomScenery(isl, topY, R) {
+  const z = cam.zoom;
+  ctx.save();
+
+  // Cobblestone path from center to buildings
+  isl.buildings.forEach(b => {
+    const p1 = project3D(isl.wx, topY + 0.3, isl.wz);
+    const p2 = project3D(isl.wx + b.dx * R * 0.78, topY + 0.3, isl.wz + b.dz * R * 0.78);
+    ctx.strokeStyle = 'rgba(255, 248, 240, 0.72)';
+    ctx.lineWidth = 4.2 * z;
+    ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.arc(pt.sx, pt.sy, r * scale * cam.zoom, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.moveTo(p1.sx, p1.sy);
+    ctx.lineTo(p2.sx, p2.sy);
+    ctx.stroke();
   });
+
+  if (isl.id === 'emi') {
+    // 01 景安捷運與停車島: Elevated MRT railway viaduct + yellow/blue MRT train!
+    const t1 = project3D(isl.wx - R * 0.65, topY + 8, isl.wz + R * 0.15);
+    const t2 = project3D(isl.wx + R * 0.65, topY + 8, isl.wz - R * 0.15);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 4.5 * z;
+    ctx.beginPath();
+    ctx.moveTo(t1.sx, t1.sy);
+    ctx.lineTo(t2.sx, t2.sy);
+    ctx.stroke();
+    // Moving Circular Line yellow MRT mini-train
+    const trainT = (Math.sin(animClock * 1.8) + 1) * 0.5;
+    const tx = isl.wx + (-R * 0.45 + trainT * R * 0.9);
+    const tz = isl.wz + (R * 0.1 - trainT * R * 0.2);
+    draw3DBox(tx, topY + 9, tz, 16, 5.5, 7, '#fcea8b', '#f5b942', '#d99126', '#211d1d44');
+  } else if (isl.id === 'pfc' || isl.id === 'bus') {
+    // 02 & 03 茶飲點心與大客廳島: Outdoor red/white & green/white cafe parasols + round tea tables!
+    [[-0.22, 0.12, '#e05a47'], [0.25, -0.28, '#3e7c8c']].forEach(([px, pz, col]) => {
+      const wx = isl.wx + px * R, wz = isl.wz + pz * R;
+      const tbl = project3D(wx, topY + 3, wz);
+      const top = project3D(wx, topY + 13, wz);
+      ctx.fillStyle = '#fff8f4';
+      ctx.beginPath();
+      ctx.ellipse(tbl.sx, tbl.sy, 6.5 * z, 3.8 * z, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      ctx.arc(top.sx, top.sy, 8.5 * z, Math.PI, 0, false);
+      ctx.closePath();
+      ctx.fill();
+    });
+  } else if (isl.id === 'llc') {
+    // 04 青年電競與桌遊島: Giant neon Red & Blue Switch Joy-Con monument + checkerboard arena floor!
+    const center = project3D(isl.wx, topY + 1, isl.wz + 6);
+    ctx.fillStyle = '#00c3e3';
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(center.sx - 13 * z, center.sy - 6 * z, 11 * z, 6 * z, 2 * z);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#ff4554';
+    ctx.beginPath();
+    ctx.roundRect(center.sx + 2 * z, center.sy - 6 * z, 11 * z, 6 * z, 2 * z);
+    ctx.fill();
+    ctx.stroke();
+  } else if (isl.id === 'mag') {
+    // 05 10/31 秋日派對島: Glowing Halloween pumpkins & golden fairy light garlands!
+    [[-0.32, -0.15], [0.28, 0.25], [-0.12, 0.38], [0.35, -0.22]].forEach(([px, pz]) => {
+      const pt = project3D(isl.wx + px * R, topY + 3, isl.wz + pz * R);
+      ctx.fillStyle = '#ff7518';
+      ctx.strokeStyle = '#8c3800';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(pt.sx, pt.sy, 4.8 * z, 3.8 * z, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#fff3b0';
+      ctx.beginPath();
+      ctx.arc(pt.sx, pt.sy - 0.5 * z, 1.5 * z, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  } else if (isl.id === 'sr') {
+    // 06 豐盛家宴與茶酒島: Long outdoor banquet table with white tablecloth & golden dishes!
+    draw3DBox(isl.wx + 4, topY, isl.wz + 6, 28, 5, 11, '#fffdf9', '#e6dac8', '#d4c3ad', '#8c6d53');
+    [-8, 0, 8].forEach(dx => {
+      const dp = project3D(isl.wx + 4 + dx, topY + 5.8, isl.wz + 6);
+      ctx.fillStyle = '#f5b942';
+      ctx.beginPath();
+      ctx.arc(dp.sx, dp.sy, 2.6 * z, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  } else if (isl.id === 'dsp') {
+    // 07 水果家 3F 聚聚會主島: Golden Starburst Plaza Floor & Lush Rooftop Garden!
+    const cp = project3D(isl.wx, topY + 0.8, isl.wz);
+    ctx.fillStyle = 'rgba(252, 234, 139, 0.55)';
+    ctx.strokeStyle = '#db6a41';
+    ctx.lineWidth = 1.8 * z;
+    ctx.beginPath();
+    ctx.ellipse(cp.sx, cp.sy, 24 * z, 14 * z, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  } else if (['gate1', 'agent1', 'agent2', 'agent3', 'agent4'].includes(isl.id)) {
+    // 09~13 老友與單身戰隊島: Blooming garden flowerbeds + crystal blue pond!
+    const pond = project3D(isl.wx - 10, topY + 0.6, isl.wz + 12);
+    ctx.fillStyle = '#74b9cf';
+    ctx.strokeStyle = '#fff8f4';
+    ctx.lineWidth = 1.2 * z;
+    ctx.beginPath();
+    ctx.ellipse(pond.sx, pond.sy, 11 * z, 6.5 * z, 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  }
+  ctx.restore();
 }
 
 function drawPolicyBuilding(b, wx, wy, wz, roofColor, isHighlighted) {
-  const s = isHighlighted ? 1.2 : 1.0;
-  if (b.type === 'twin_silo' || b.type === 'twin_coil') {
-    [-8.5, 8.5].forEach(dx => {
+  const s = isHighlighted ? 1.22 : 1.0;
+  const z = cam.zoom;
+
+  if (b.type === 'city_hall') {
+    // 07 水果家 3F 旗艦花園別墅 (3-Story Terraced Villa with Warm Glowing Windows & Rooftop Garden!)
+    // 1st Floor + Sunlit Terrace
+    draw3DBox(wx, wy, wz, 28 * s, 9 * s, 22 * s, '#fdf8f0', '#efe4d2', '#ded0ba', '#5c402844');
+    // 2nd Floor
+    draw3DBox(wx - 2 * s, wy + 9 * s, wz - 1 * s, 22 * s, 8.5 * s, 18 * s, '#fffdf9', '#f2e8d8', '#e2d4be', '#5c402844');
+    // 3rd Floor Penthouse (3F 水果家主場!)
+    draw3DBox(wx - 2 * s, wy + 17.5 * s, wz - 1 * s, 18 * s, 8 * s, 15 * s, '#fffdf9', '#f5ece0', '#e6d8c3', '#5c402844');
+    // Pitched Terracotta Roof
+    draw3DBox(wx - 2 * s, wy + 25.5 * s, wz - 1 * s, 21 * s, 4.5 * s, 18 * s, '#db6a41', '#b8532e', '#994120');
+    // Golden Glowing Windows on 1F, 2F, 3F
+    [4.5, 13, 21].forEach(hy => {
+      [-4, 2].forEach(dx => {
+        const wp = project3D(wx + dx * s, wy + hy * s, wz + 9 * s);
+        ctx.fillStyle = '#ffdf78';
+        ctx.strokeStyle = '#7a4b2a';
+        ctx.lineWidth = 0.8;
+        ctx.fillRect(wp.sx - 2.2 * z, wp.sy - 2.8 * z, 4.4 * z, 4.2 * z);
+        ctx.strokeRect(wp.sx - 2.2 * z, wp.sy - 2.8 * z, 4.4 * z, 4.2 * z);
+      });
+    });
+  } else if (b.type === 'twin_silo' || b.type === 'twin_coil') {
+    // Giant Teapot & Artisanal Coffee Roaster Towers!
+    [-8.5, 8.5].forEach((dx, idx) => {
       const base = project3D(wx + dx, wy, wz);
-      const top = project3D(wx + dx, wy + 21 * s, wz);
-      const rx = 7.2 * s * cam.zoom;
+      const top = project3D(wx + dx, wy + 20 * s, wz);
+      const rx = 7.4 * s * z;
       const ry = rx * cam.pitch;
-      ctx.fillStyle = b.type === 'twin_silo' ? '#365875' : '#5f826c';
+      ctx.fillStyle = idx === 0 ? '#4d7c8a' : '#c97a3e';
       ctx.strokeStyle = '#fff8f4';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -1950,90 +2203,343 @@ function drawPolicyBuilding(b, wx, wy, wz, roofColor, isHighlighted) {
       ctx.fill();
       ctx.stroke();
 
-      ctx.fillStyle = '#f4ebdd';
+      // Cream Dome Lid + Knob
+      ctx.fillStyle = '#fff5e4';
       ctx.beginPath();
       ctx.ellipse(top.sx, top.sy, rx, ry, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
+      ctx.fillStyle = '#db6a41';
+      ctx.beginPath();
+      ctx.arc(top.sx, top.sy - 3 * z, 2.5 * z, 0, Math.PI * 2);
+      ctx.fill();
     });
-  } else if (b.type === 'city_hall' || b.type === 'transformer_hall' || b.type === 'hall') {
-    draw3DBox(wx, wy, wz, 23 * s, 14 * s, 19 * s, '#f4ebdd', '#ebe0d0', '#dfd2c0', '#211d1d22');
-    draw3DBox(wx, wy + 14 * s, wz, 26 * s, 5 * s, 22 * s, roofColor, '#b8532e', '#9e4424');
-    if (b.type === 'city_hall') {
-      draw3DBox(wx, wy + 19 * s, wz, 13 * s, 8 * s, 13 * s, '#fcea8b', '#e6d273', '#c9b65b');
-    }
-  } else if (b.type === 'dome') {
-    draw3DBox(wx, wy, wz, 21 * s, 10 * s, 21 * s, '#f4ebdd', '#e8dccb', '#d8cbb8');
-    const domeCenter = project3D(wx, wy + 12 * s, wz);
+  } else if (b.type === 'pavilion') {
+    // Open-Air Hexagonal Garden Tea Pavilion with 4 Pillars & Tiered Roof
+    draw3DBox(wx, wy, wz, 18 * s, 2.2 * s, 18 * s, '#e8d5b7', '#cfb896', '#b89f7a');
+    [[-6, -6], [6, -6], [-6, 6], [6, 6]].forEach(([px, pz]) => {
+      const pBot = project3D(wx + px * s, wy + 2 * s, wz + pz * s);
+      const pTop = project3D(wx + px * s, wy + 12 * s, wz + pz * s);
+      ctx.strokeStyle = '#8c4a27';
+      ctx.lineWidth = 2.0 * z;
+      ctx.beginPath();
+      ctx.moveTo(pBot.sx, pBot.sy);
+      ctx.lineTo(pTop.sx, pTop.sy);
+      ctx.stroke();
+    });
+    const roofBase = project3D(wx, wy + 12 * s, wz);
+    const roofTip = project3D(wx, wy + 20 * s, wz);
     ctx.fillStyle = roofColor;
+    ctx.strokeStyle = '#fff8f4';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.arc(domeCenter.sx, domeCenter.sy, 10.5 * s * cam.zoom, Math.PI, 0, false);
+    ctx.moveTo(roofTip.sx, roofTip.sy);
+    ctx.lineTo(roofBase.sx - 13 * s * z, roofBase.sy + 2 * z);
+    ctx.lineTo(roofBase.sx, roofBase.sy + 6 * z);
+    ctx.lineTo(roofBase.sx + 13 * s * z, roofBase.sy + 2 * z);
     ctx.closePath();
     ctx.fill();
+    ctx.stroke();
+  } else if (b.type === 'arch') {
+    // Grand Triumphal Arch / Family Crest Gate
+    draw3DBox(wx - 7 * s, wy, wz, 6 * s, 18 * s, 8 * s, '#f7ede0', '#e6d6c3', '#d4c2ab');
+    draw3DBox(wx + 7 * s, wy, wz, 6 * s, 18 * s, 8 * s, '#f7ede0', '#e6d6c3', '#d4c2ab');
+    draw3DBox(wx, wy + 15 * s, wz, 22 * s, 5.5 * s, 10 * s, roofColor, '#b8532e', '#994120');
+    draw3DBox(wx, wy + 20.5 * s, wz, 14 * s, 3.5 * s, 7 * s, '#fcea8b', '#e6ce6a', '#c9b04e');
+  } else if (b.type === 'dome') {
+    // Glass Conservatory / Board Game Arena Dome
+    draw3DBox(wx, wy, wz, 22 * s, 9 * s, 22 * s, '#f4ebdd', '#e8dccb', '#d8cbb8');
+    const domeCenter = project3D(wx, wy + 10 * s, wz);
+    ctx.fillStyle = roofColor;
+    ctx.strokeStyle = '#fff8f4';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(domeCenter.sx, domeCenter.sy, 11.5 * s * z, Math.PI, 0, false);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // Skylight ribs
+    ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+    ctx.beginPath();
+    ctx.arc(domeCenter.sx, domeCenter.sy, 11.5 * s * z, Math.PI * 1.25, Math.PI * 1.75, false);
+    ctx.stroke();
   } else if (b.type === 'clock' || b.type === 'tower') {
-    draw3DBox(wx, wy, wz, 12.5 * s, 24 * s, 12.5 * s, '#f4ebdd', '#e8dccb', '#d6c7b2');
-    draw3DBox(wx, wy + 24 * s, wz, 15 * s, 4.5 * s, 15 * s, roofColor, '#b8532e', '#9e4424');
+    // European Clock & Bell Tower with Clock Face
+    draw3DBox(wx, wy, wz, 12 * s, 23 * s, 12 * s, '#faf3e8', '#ebdecb', '#d9c9b2');
+    const spireBase = project3D(wx, wy + 23 * s, wz);
+    const spireTip = project3D(wx, wy + 33 * s, wz);
+    ctx.fillStyle = roofColor;
+    ctx.beginPath();
+    ctx.moveTo(spireTip.sx, spireTip.sy);
+    ctx.lineTo(spireBase.sx - 8.5 * s * z, spireBase.sy + 2 * z);
+    ctx.lineTo(spireBase.sx + 8.5 * s * z, spireBase.sy + 2 * z);
+    ctx.closePath();
+    ctx.fill();
+    // Clock dial
+    const clk = project3D(wx + 2 * s, wy + 17 * s, wz + 5 * s);
+    ctx.fillStyle = '#fffdf9';
+    ctx.strokeStyle = '#db6a41';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(clk.sx, clk.sy, 3.2 * s * z, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  } else if (b.type === 'coil_mill') {
+    // French Patisserie & Dessert Bakery with Striped Awning!
+    draw3DBox(wx, wy, wz, 20 * s, 13 * s, 16 * s, '#fff7eb', '#f2e2ce', '#e0ccb4');
+    draw3DBox(wx, wy + 13 * s, wz, 22 * s, 4 * s, 18 * s, '#e05a6d', '#c44557', '#a33343');
+    // Awning
+    draw3DBox(wx, wy + 6 * s, wz + 9 * s, 16 * s, 2.5 * s, 5 * s, '#fcea8b', '#db6a41', '#b8532e');
   } else if (b.type === 'soapbox') {
-    draw3DBox(wx, wy, wz, 15 * s, 6.5 * s, 15 * s, '#db6a41', '#b8532e', '#9e4424');
+    // Festive Stage Podium with Golden Microphone Banner
+    draw3DBox(wx, wy, wz, 16 * s, 6 * s, 16 * s, '#db6a41', '#b8532e', '#9e4424');
+    draw3DBox(wx, wy + 6 * s, wz, 12 * s, 2 * s, 12 * s, '#fcea8b', '#e3ce6b', '#c7b250');
   } else {
-    draw3DBox(wx, wy, wz, 16 * s, 10.5 * s, 14 * s, '#f4ebdd', '#e8dccb', '#d6c7b2');
-    draw3DBox(wx, wy + 10.5 * s, wz, 19 * s, 4 * s, 17 * s, roofColor, '#b8532e', '#9e4424');
+    // Cozy Gabled Family Villa with Warm Windows & Chimney
+    draw3DBox(wx, wy, wz, 19 * s, 12 * s, 16 * s, '#faf3e8', '#ede0ce', '#dccbb4', '#211d1d18');
+    draw3DBox(wx, wy + 12 * s, wz, 22 * s, 4.5 * s, 19 * s, roofColor, '#b8532e', '#9e4424');
+    draw3DBox(wx + 5 * s, wy + 16 * s, wz - 3 * s, 3.5 * s, 4.5 * s, 3.5 * s, '#8c583a', '#6e4228', '#54301b');
+    // Warm lit window
+    const wp = project3D(wx, wy + 6 * s, wz + 8 * s);
+    ctx.fillStyle = '#ffe58f';
+    ctx.fillRect(wp.sx - 2.5 * z, wp.sy - 2.5 * z, 5 * z, 4 * z);
   }
 }
 
-function drawMiniPerson(wx, wy, wz, shirtColor, isHero, badgeText, time) {
+function drawMiniPerson(wx, wy, wz, c, time, walkingActive = true) {
   const pos = project3D(wx, wy, wz);
-  const z = cam.zoom;
+  const sc = (c.scale || 1.0) * cam.zoom;
+  const isHero = c.isHero;
+  const arch = c.archetype || 'host';
+  const phase = time * 11 + (wx + wz) * 0.08;
+  const legSwing = walkingActive ? Math.sin(phase) * 3.2 * sc : 0;
+  const armSwing = walkingActive ? -Math.sin(phase) * 3.0 * sc : Math.sin(time * 3) * 1.0 * sc;
+  const bob = walkingActive ? Math.abs(Math.sin(phase)) * 2.0 * sc : Math.abs(Math.sin(time * 3)) * 0.8 * sc;
 
   ctx.save();
-  ctx.fillStyle = 'rgba(33, 29, 29, 0.22)';
+
+  // Ground shadow
+  ctx.fillStyle = 'rgba(33, 29, 29, 0.24)';
   ctx.beginPath();
-  ctx.ellipse(pos.sx, pos.sy, 3.2 * z, 1.8 * z, 0, 0, Math.PI * 2);
+  ctx.ellipse(pos.sx, pos.sy, (arch === 'pet_dog' ? 4.2 : 3.8) * sc, 2.0 * sc, 0, 0, Math.PI * 2);
   ctx.fill();
 
+  // Cute pet dog archetype!
+  if (arch === 'pet_dog') {
+    const by = pos.sy - 3.5 * sc - bob;
+    ctx.fillStyle = '#d99b66';
+    ctx.strokeStyle = '#4a3222';
+    ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.roundRect(pos.sx - 4.2 * sc, by - 3 * sc, 8.4 * sc, 4.8 * sc, 2.2 * sc);
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = '#4a3222';
+    ctx.lineWidth = 1.6 * sc;
+    ctx.beginPath();
+    ctx.moveTo(pos.sx - 2.6 * sc, by + 1.5 * sc);
+    ctx.lineTo(pos.sx - 2.6 * sc + legSwing * 0.5, pos.sy);
+    ctx.moveTo(pos.sx + 2.6 * sc, by + 1.5 * sc);
+    ctx.lineTo(pos.sx + 2.6 * sc - legSwing * 0.5, pos.sy);
+    ctx.stroke();
+    ctx.fillStyle = '#e6af7e';
+    ctx.beginPath();
+    ctx.arc(pos.sx + 3.8 * sc, by - 3.6 * sc, 3.0 * sc, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#7a4b2a';
+    ctx.beginPath();
+    ctx.ellipse(pos.sx + 2.8 * sc, by - 5.2 * sc, 1.2 * sc, 2.2 * sc, -0.3, 0, Math.PI * 2);
+    ctx.fill();
+    const tailWag = Math.sin(time * 18) * 2.2 * sc;
+    ctx.strokeStyle = '#d99b66';
+    ctx.lineWidth = 1.8 * sc;
+    ctx.beginPath();
+    ctx.moveTo(pos.sx - 4.0 * sc, by - 2.0 * sc);
+    ctx.lineTo(pos.sx - 6.5 * sc, by - 5.0 * sc + tailWag);
+    ctx.stroke();
+    ctx.restore();
+    return;
+  }
+
   let yOffset = 0;
-  if (isHero) {
+  if (isHero && !walkingActive) {
     ctx.fillStyle = '#d99560';
     ctx.strokeStyle = '#211d1d';
     ctx.lineWidth = 1;
-    ctx.fillRect(pos.sx - 4.8 * z, pos.sy - 5.5 * z, 9.6 * z, 5.5 * z);
-    ctx.strokeRect(pos.sx - 4.8 * z, pos.sy - 5.5 * z, 9.6 * z, 5.5 * z);
-    yOffset = -5.5 * z;
+    ctx.fillRect(pos.sx - 5.5 * sc, pos.sy - 6.0 * sc, 11.0 * sc, 6.0 * sc);
+    ctx.strokeRect(pos.sx - 5.5 * sc, pos.sy - 6.0 * sc, 11.0 * sc, 6.0 * sc);
+    yOffset = -6.0 * sc;
   }
 
-  const bob = Math.abs(Math.sin(time * 6 + wx)) * 1.8 * z;
-  ctx.fillStyle = shirtColor;
+  const baseFootY = pos.sy + yOffset;
+  const hipY = baseFootY - 5.2 * sc - bob;
+  const shoulderY = hipY - 6.8 * sc;
+  const headY = shoulderY - 3.6 * sc;
+
+  // 1. Animated Walking Legs & Shoes
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = c.pantsColor || '#2c3e50';
+  ctx.lineWidth = 2.2 * sc;
   ctx.beginPath();
-  ctx.roundRect(pos.sx - 2.8 * z, pos.sy + yOffset - 8.5 * z - bob, 5.6 * z, 6.5 * z, 2 * z);
+  ctx.moveTo(pos.sx - 1.5 * sc, hipY);
+  ctx.lineTo(pos.sx - 1.6 * sc - legSwing * 0.6, baseFootY - Math.max(0, legSwing * 0.35));
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(pos.sx + 1.5 * sc, hipY);
+  ctx.lineTo(pos.sx + 1.6 * sc + legSwing * 0.6, baseFootY - Math.max(0, -legSwing * 0.35));
+  ctx.stroke();
+
+  // 2. Torso / Jacket / Dress
+  ctx.fillStyle = c.shirtColor || '#db6a41';
+  ctx.strokeStyle = 'rgba(33, 29, 29, 0.35)';
+  ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  if (arch === 'mom_sunhat' || arch === 'girl_ponytail') {
+    ctx.moveTo(pos.sx - 2.8 * sc, shoulderY);
+    ctx.lineTo(pos.sx + 2.8 * sc, shoulderY);
+    ctx.lineTo(pos.sx + 3.8 * sc, hipY + 1.2 * sc);
+    ctx.lineTo(pos.sx - 3.8 * sc, hipY + 1.2 * sc);
+    ctx.closePath();
+  } else {
+    ctx.roundRect(pos.sx - 3.2 * sc, shoulderY, 6.4 * sc, 7.2 * sc, 2.2 * sc);
+  }
+  ctx.fill();
+  ctx.stroke();
+
+  // White collar accent
+  ctx.fillStyle = '#fff8f4';
+  ctx.beginPath();
+  ctx.arc(pos.sx, shoulderY + 1.2 * sc, 1.8 * sc, 0, Math.PI);
   ctx.fill();
 
-  ctx.fillStyle = '#f7d3ba';
-  ctx.beginPath();
-  ctx.arc(pos.sx, pos.sy + yOffset - 11.5 * z - bob, 3.0 * z, 0, Math.PI * 2);
-  ctx.fill();
-
-  if (isHero) {
-    ctx.fillStyle = '#211d1d';
+  if (arch === 'youth_cap' || arch === 'single_cool') {
+    ctx.fillStyle = '#e2a03f';
     ctx.beginPath();
-    ctx.arc(pos.sx, pos.sy + yOffset - 13.0 * z - bob, 3.4 * z, Math.PI, 0, false);
+    ctx.roundRect(pos.sx - 4.4 * sc, shoulderY + 1.0 * sc, 2.0 * sc, 5.0 * sc, 1 * sc);
     ctx.fill();
   }
 
-  if (layerState.badges && badgeText) {
-    ctx.font = `700 ${Math.max(8, Math.round(8.5 * z))}px ui-monospace, monospace`;
-    const tw = ctx.measureText(badgeText).width + 7 * z;
+  // 3. Swinging Arms & Handheld Props
+  ctx.strokeStyle = c.shirtColor || '#db6a41';
+  ctx.lineWidth = 1.9 * sc;
+  ctx.beginPath();
+  ctx.moveTo(pos.sx - 3.2 * sc, shoulderY + 1.2 * sc);
+  ctx.lineTo(pos.sx - 4.2 * sc, shoulderY + 5.2 * sc + armSwing * 0.5);
+  ctx.stroke();
+  const rHandX = pos.sx + 4.4 * sc;
+  const rHandY = shoulderY + 4.8 * sc - armSwing * 0.5;
+  ctx.beginPath();
+  ctx.moveTo(pos.sx + 3.2 * sc, shoulderY + 1.2 * sc);
+  ctx.lineTo(rHandX, rHandY);
+  ctx.stroke();
+
+  if (arch === 'kid_balloon' || c.propType === 'balloon') {
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+    ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.moveTo(rHandX, rHandY);
+    ctx.lineTo(rHandX + 2.5 * sc, headY - 9.5 * sc);
+    ctx.stroke();
+    ctx.fillStyle = '#ff6b8b';
+    ctx.beginPath();
+    ctx.arc(rHandX + 2.5 * sc, headY - 12.0 * sc, 3.4 * sc, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (c.propType === 'tea' || isHero) {
+    ctx.fillStyle = '#fff8f4';
+    ctx.strokeStyle = '#db6a41';
+    ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.roundRect(rHandX - 1.2 * sc, rHandY - 2.0 * sc, 3.0 * sc, 3.2 * sc, 0.8 * sc);
+    ctx.fill();
+    ctx.stroke();
+  } else if (arch === 'youth_cap' || c.propType === 'switch') {
+    ctx.fillStyle = '#00c3e3';
+    ctx.fillRect(rHandX - 1.5 * sc, rHandY - 1.2 * sc, 2.0 * sc, 2.2 * sc);
+    ctx.fillStyle = '#ff4554';
+    ctx.fillRect(rHandX + 0.5 * sc, rHandY - 1.2 * sc, 2.0 * sc, 2.2 * sc);
+  }
+
+  // 4. Head & Facial Expression
+  ctx.fillStyle = '#fbdcc4';
+  ctx.strokeStyle = 'rgba(33, 29, 29, 0.25)';
+  ctx.lineWidth = 0.7;
+  ctx.beginPath();
+  ctx.arc(pos.sx, headY, 3.5 * sc, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#211d1d';
+  ctx.beginPath();
+  ctx.arc(pos.sx - 1.2 * sc, headY - 0.3 * sc, 0.55 * sc, 0, Math.PI * 2);
+  ctx.arc(pos.sx + 1.2 * sc, headY - 0.3 * sc, 0.55 * sc, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(235, 110, 110, 0.45)';
+  ctx.beginPath();
+  ctx.arc(pos.sx - 2.1 * sc, headY + 0.7 * sc, 0.75 * sc, 0, Math.PI * 2);
+  ctx.arc(pos.sx + 2.1 * sc, headY + 0.7 * sc, 0.75 * sc, 0, Math.PI * 2);
+  ctx.fill();
+
+  if (arch === 'dad_glasses' || isHero) {
+    ctx.strokeStyle = '#211d1d';
+    ctx.lineWidth = 0.75 * sc;
+    ctx.strokeRect(pos.sx - 2.4 * sc, headY - 1.2 * sc, 2.0 * sc, 1.5 * sc);
+    ctx.strokeRect(pos.sx + 0.4 * sc, headY - 1.2 * sc, 2.0 * sc, 1.5 * sc);
+  }
+
+  // 5. Hairstyles & Hats
+  ctx.fillStyle = c.hairColor || '#2b221e';
+  if (arch === 'mom_sunhat') {
+    ctx.fillStyle = '#f5e1be';
+    ctx.strokeStyle = '#c99b68';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.ellipse(pos.sx, headY - 2.4 * sc, 5.5 * sc, 1.8 * sc, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(pos.sx, headY - 2.6 * sc, 3.1 * sc, Math.PI, 0, false);
+    ctx.fill();
+  } else if (arch === 'youth_cap') {
+    ctx.fillStyle = '#3f6fb5';
+    ctx.beginPath();
+    ctx.arc(pos.sx, headY - 1.2 * sc, 3.6 * sc, Math.PI, 0, false);
+    ctx.fill();
+    ctx.fillRect(pos.sx, headY - 1.8 * sc, 4.8 * sc, 1.1 * sc);
+  } else if (arch === 'girl_ponytail') {
+    ctx.beginPath();
+    ctx.arc(pos.sx, headY - 1.2 * sc, 3.6 * sc, Math.PI, 0, false);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(pos.sx - 3.8 * sc, headY - 1.5 * sc + bob * 0.4, 1.9 * sc, 0, Math.PI * 2);
+    ctx.fill();
+  } else {
+    ctx.beginPath();
+    ctx.arc(pos.sx, headY - 1.3 * sc, 3.8 * sc, Math.PI * 0.95, Math.PI * 0.05, false);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(pos.sx - 2.2 * sc, headY - 3.2 * sc, 1.8 * sc, 0, Math.PI * 2);
+    ctx.arc(pos.sx + 0.5 * sc, headY - 3.6 * sc, 2.0 * sc, 0, Math.PI * 2);
+    ctx.arc(pos.sx + 2.4 * sc, headY - 2.8 * sc, 1.6 * sc, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 6. Floating Speech / Item Badge
+  if (layerState.badges && c.badge) {
+    ctx.font = `700 ${Math.max(8, Math.round(8.5 * cam.zoom))}px ui-monospace, monospace`;
+    const tw = ctx.measureText(c.badge).width + 8 * cam.zoom;
     const bx = pos.sx - tw / 2;
-    const by = pos.sy + yOffset - 25 * z - bob;
-    ctx.fillStyle = isHero ? '#211d1d' : '#fff8f4eb';
-    ctx.strokeStyle = isHero ? '#db6a41' : '#211d1d33';
+    const by = headY - 16.5 * sc;
+    ctx.fillStyle = isHero ? '#211d1d' : '#fff8f4f0';
+    ctx.strokeStyle = isHero ? '#db6a41' : '#211d1d38';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(bx, by, tw, 11.5 * z, 4 * z);
+    ctx.roundRect(bx, by, tw, 12 * cam.zoom, 4 * cam.zoom);
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = isHero ? '#fcea8b' : '#211d1d';
     ctx.textAlign = 'center';
-    ctx.fillText(badgeText, pos.sx, by + 8.5 * z);
+    ctx.fillText(c.badge, pos.sx, by + 8.8 * cam.zoom);
   }
   ctx.restore();
 }
@@ -2106,17 +2612,68 @@ function renderScene() {
 
   ctx.clearRect(0, 0, W, H);
 
-  // Water ripples
+  // 1. Rich HEART Ocean Currents, Atmospheric Glow, Waves & Sailboats
   ctx.save();
-  ctx.strokeStyle = timeMode === 'night' ? 'rgba(255,255,255,0.06)' : 'rgba(120, 104, 94, 0.12)';
-  ctx.lineWidth = 1.2;
-  for (let i = 1; i <= 3; i++) {
+  const skyGlow = ctx.createRadialGradient(W * 0.45, H * 0.38, 20, W * 0.45, H * 0.45, Math.max(W, H) * 0.65);
+  if (timeMode === 'night') {
+    skyGlow.addColorStop(0, 'rgba(56, 189, 248, 0.10)');
+    skyGlow.addColorStop(1, 'rgba(15, 23, 42, 0)');
+  } else if (timeMode === 'dusk') {
+    skyGlow.addColorStop(0, 'rgba(255, 180, 120, 0.28)');
+    skyGlow.addColorStop(1, 'rgba(219, 106, 65, 0)');
+  } else {
+    skyGlow.addColorStop(0, 'rgba(255, 250, 235, 0.55)');
+    skyGlow.addColorStop(1, 'rgba(154, 208, 220, 0)');
+  }
+  ctx.fillStyle = skyGlow;
+  ctx.fillRect(0, 0, W, H);
+
+  for (let i = 1; i <= 5; i++) {
     const c = project3D(0, -14, 0);
-    const rx = (265 + i * 50 + Math.sin(animClock * 1.5 + i) * 5) * cam.zoom;
+    const rx = (240 + i * 55 + Math.sin(animClock * 1.4 + i) * 6) * cam.zoom;
     const ry = rx * cam.pitch;
+    ctx.strokeStyle = timeMode === 'night' ? `rgba(148, 210, 235, ${0.14 - i * 0.02})` : `rgba(255, 255, 255, ${0.42 - i * 0.06})`;
+    ctx.lineWidth = (2.2 - i * 0.25) * cam.zoom;
     ctx.beginPath();
     ctx.ellipse(c.sx, c.sy, rx, ry, 0, 0, Math.PI * 2);
     ctx.stroke();
+  }
+
+  for (let wIdx = 0; wIdx < 24; wIdx++) {
+    const ang = (wIdx / 24) * Math.PI * 2 + animClock * 0.04;
+    const dist = 260 + (wIdx % 4) * 52;
+    const wp = project3D(Math.cos(ang) * dist, -12, Math.sin(ang) * dist);
+    const waveLen = (10 + Math.sin(animClock * 2 + wIdx) * 4) * cam.zoom;
+    ctx.strokeStyle = timeMode === 'night' ? 'rgba(186, 230, 253, 0.22)' : 'rgba(255, 255, 255, 0.55)';
+    ctx.lineWidth = 1.6 * cam.zoom;
+    ctx.beginPath();
+    ctx.moveTo(wp.sx - waveLen, wp.sy);
+    ctx.quadraticCurveTo(wp.sx, wp.sy - 2.5 * cam.zoom, wp.sx + waveLen, wp.sy);
+    ctx.stroke();
+  }
+
+  for (let bIdx = 0; bIdx < 4; bIdx++) {
+    const bAng = animClock * 0.12 * (bIdx % 2 === 0 ? 1 : -1) + bIdx * 1.57;
+    const bRad = 295 + (bIdx % 2) * 42;
+    const bx = Math.cos(bAng) * bRad;
+    const bz = Math.sin(bAng) * bRad;
+    const bp = project3D(bx, -10, bz);
+    const bsc = cam.zoom * 0.95;
+    ctx.fillStyle = '#b8532e';
+    ctx.beginPath();
+    ctx.moveTo(bp.sx - 8 * bsc, bp.sy);
+    ctx.lineTo(bp.sx + 8 * bsc, bp.sy);
+    ctx.lineTo(bp.sx + 5 * bsc, bp.sy + 4 * bsc);
+    ctx.lineTo(bp.sx - 5 * bsc, bp.sy + 4 * bsc);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#fffdf9';
+    ctx.beginPath();
+    ctx.moveTo(bp.sx, bp.sy - 1 * bsc);
+    ctx.lineTo(bp.sx, bp.sy - 14 * bsc);
+    ctx.lineTo(bp.sx + 7 * bsc, bp.sy - 3 * bsc);
+    ctx.closePath();
+    ctx.fill();
   }
   ctx.restore();
 
@@ -2233,9 +2790,26 @@ function renderScene() {
     ctx.closePath();
     ctx.stroke();
 
+    // White coastal shoreline foam ring at the base of the island
+    ctx.strokeStyle = timeMode === 'night' ? 'rgba(186, 230, 253, 0.28)' : 'rgba(255, 255, 255, 0.68)';
+    ctx.lineWidth = (2.2 + Math.sin(animClock * 2.5 + isl.q) * 0.8) * cam.zoom;
+    ctx.beginPath();
+    botVerts.forEach((v, i) => i === 0 ? ctx.moveTo(v.sx, v.sy + 2) : ctx.lineTo(v.sx, v.sy + 2));
+    ctx.closePath();
+    ctx.stroke();
+
+    // Custom per-island ground scenery (MRT train, cafe parasols, Switch joy-cons, pumpkin patch, banquet table, garden pond!)
+    drawIslandCustomScenery(isl, topY, R);
+
+    // Distinct tree species per island theme (fruit trees on 07/02, sakura on 08/13, autumn maple on 05/12, pine on 11/04!)
+    const treeStyle = ['dsp', 'pfc'].includes(isl.id) ? 'fruit'
+                    : ['aux', 'agent4', 'bus'].includes(isl.id) ? 'sakura'
+                    : ['mag', 'agent3', 'sr'].includes(isl.id) ? 'autumn'
+                    : ['agent2', 'llc'].includes(isl.id) ? 'pine' : 'oak';
+
     const treeOffsets = [[-0.58, -0.35], [0.58, -0.32], [-0.52, 0.45], [0.52, 0.48]];
     treeOffsets.forEach(([tx, tz], tidx) => {
-      drawLowPolyTree(isl.wx + tx * R, topY, isl.wz + tz * R, 0.72 + (tidx % 2) * 0.14);
+      drawLowPolyTree(isl.wx + tx * R, topY, isl.wz + tz * R, 0.74 + (tidx % 2) * 0.15, treeStyle);
     });
 
     isl.buildings.forEach(b => {
@@ -2243,22 +2817,6 @@ function renderScene() {
       const bz = isl.wz + b.dz * R * 0.85;
       const isBldSel = (selectedBuildingId === b.id);
       drawPolicyBuilding(b, bx, topY, bz, isl.roofColor, isBldSel);
-    });
-
-    citizens.forEach(c => {
-      if (c.isHero) {
-        const heroIsl = ISLANDS[c.islandIdx];
-        if (heroIsl && heroIsl.id === isl.id) {
-          drawMiniPerson(isl.wx + 8, topY, isl.wz + 12, c.shirtColor, true, c.badge, animClock);
-        }
-      } else if (c.islandId === isl.id) {
-        if (!layerState.freeze) {
-          c.angle += c.speed * (dayPlaying ? 1.0 : 0.6);
-        }
-        const cx = isl.wx + Math.cos(c.angle) * c.dist;
-        const cz = isl.wz + Math.sin(c.angle) * c.dist;
-        drawMiniPerson(cx, topY, cz, c.shirtColor, false, c.badge, animClock);
-      }
     });
 
     ctx.restore();
@@ -2275,6 +2833,82 @@ function renderScene() {
         lblEl.classList.toggle('selected', isl.isSel || masterStarburstActive);
         lblEl.classList.toggle('dim', isl.isDim);
       }
+    }
+  });
+
+  // Render All Citizens (Both Local Strollers AND Cross-Island Bridge Travelers!)
+  citizens.forEach(c => {
+    if (c.isHero) {
+      const fromIsl = islandWorldMap.get(c.fromId || 'dsp') || islandWorldMap.get('dsp');
+      const toIsl = islandWorldMap.get(c.toId || 'gate1') || fromIsl;
+      if (!fromIsl) return;
+      let wx = fromIsl.wx + 8, wz = fromIsl.wz + 12, wy = 12 + fromIsl.elev;
+      let walking = false;
+      if (!layerState.freeze && !masterStarburstActive) {
+        if (c.pauseTimer > 0) {
+          c.pauseTimer--;
+          walking = false;
+        } else {
+          walking = true;
+          c.walkT += c.walkSpeed;
+          if (c.walkT >= 1.0) {
+            c.walkT = 0;
+            c.fromId = c.toId;
+            c.toId = pickNeighborIsland(c.fromId);
+            c.pauseTimer = 65;
+            const idx = ISLANDS.findIndex(x => x.id === c.fromId);
+            if (idx >= 0) c.islandIdx = idx;
+          }
+        }
+      }
+      if (walking && toIsl) {
+        const t = c.walkT;
+        wx = fromIsl.wx + (toIsl.wx - fromIsl.wx) * t;
+        wz = fromIsl.wz + (toIsl.wz - fromIsl.wz) * t;
+        wy = 12 + fromIsl.elev * (1 - t) + toIsl.elev * t + Math.sin(t * Math.PI) * 2.5;
+      }
+      drawMiniPerson(wx, wy, wz, c, animClock, walking);
+    } else if (c.isTraveler) {
+      // Cross-Island Traveler walking across wooden bridges from island to island!
+      const fromIsl = islandWorldMap.get(c.fromId);
+      const toIsl = islandWorldMap.get(c.toId);
+      if (!fromIsl || !toIsl || (fromIsl.isDim && toIsl.isDim)) return;
+
+      if (!layerState.freeze) {
+        if (c.pauseTimer > 0) {
+          c.pauseTimer--;
+        } else {
+          c.walkT += c.walkSpeed * (dayPlaying ? 1.35 : 1.0);
+          if (c.walkT >= 1.0) {
+            c.walkT = 0;
+            c.fromId = c.toId;
+            c.toId = pickNeighborIsland(c.fromId);
+            c.pauseTimer = 15 + Math.floor(Math.random() * 30);
+          }
+        }
+      }
+      const t = c.walkT;
+      const dx = toIsl.wx - fromIsl.wx;
+      const dz = toIsl.wz - fromIsl.wz;
+      const len = Math.hypot(dx, dz) || 1;
+      const nx = -dz / len;
+      const nz = dx / len;
+      const side = Math.sin(t * Math.PI) * (c.offsetSide || 0);
+
+      const wx = fromIsl.wx + dx * t + nx * side;
+      const wz = fromIsl.wz + dz * t + nz * side;
+      const wy = 12 + fromIsl.elev * (1 - t) + toIsl.elev * t;
+      drawMiniPerson(wx, wy, wz, c, animClock, c.pauseTimer === 0);
+    } else {
+      // Local island stroller
+      const isl = islandWorldMap.get(c.islandId);
+      if (!isl || isl.isDim) return;
+      if (!layerState.freeze) {
+        c.angle += c.speed * (dayPlaying ? 1.25 : 0.85);
+      }
+      const cx = isl.wx + Math.cos(c.angle) * c.dist;
+      const cz = isl.wz + Math.sin(c.angle) * c.dist;
+      drawMiniPerson(cx, 12 + isl.elev, cz, c, animClock, true);
     }
   });
 
@@ -2973,9 +3607,13 @@ window.addEventListener('DOMContentLoaded', () => {
     const hero = citizens[0];
     hero.islandIdx = (hero.islandIdx + 1) % ISLANDS.length;
     const targetIsl = ISLANDS[hero.islandIdx];
+    hero.fromId = targetIsl.id;
+    hero.toId = pickNeighborIsland(targetIsl.id);
+    hero.walkT = 0;
+    hero.pauseTimer = 100;
     document.getElementById('char-modal').hidden = true;
     selectIsland(targetIsl.id, true);
-    addLogEntry(`${hero.name} 走訪至 ${targetIsl.num} ${targetIsl.name} 站上肥皂箱開講！`);
+    addLogEntry(`${hero.name} 走訪至 ${targetIsl.num} ${targetIsl.name} 與老友串門子！`);
   });
 
   document.querySelectorAll('#time-seg button').forEach(btn => {
