@@ -1901,7 +1901,7 @@ function resizeWorld() {
 window.addEventListener('resize', resizeWorld);
 
 function hexToWorldXZ(q, r) {
-  const R = cam.hexRadius * 1.035;
+  const R = cam.hexRadius * 1.18;
   const x = R * Math.sqrt(3) * (q + r / 2);
   const z = R * (3 / 2) * r;
   return { x, z };
@@ -2306,6 +2306,114 @@ function drawPolicyBuilding(b, wx, wy, wz, roofColor, isHighlighted) {
   }
 }
 
+
+// Draw a 3D Arched Wooden Plank Bridge with Handrails & Lantern Posts between two adjacent islands!
+function draw3DBridge(a, b) {
+  const z = cam.zoom;
+  const dx = b.wx - a.wx;
+  const dz = b.wz - a.wz;
+  const dist = Math.hypot(dx, dz);
+  if (dist < 1 || dist > cam.hexRadius * 2.45) return;
+
+  const ux = dx / dist;
+  const uz = dz / dist;
+  const nx = -uz;
+  const nz = ux;
+
+  // Start and end at the edges of the two hex islands (at top surface height ~12)
+  const edgeOffset = cam.hexRadius * 0.74;
+  const sx = a.wx + ux * edgeOffset;
+  const sz = a.wz + uz * edgeOffset;
+  const ex = b.wx - ux * edgeOffset;
+  const ez = b.wz - uz * edgeOffset;
+  const sy = 12 + (a.elev || 0);
+  const ey = 12 + (b.elev || 0);
+
+  const halfW = 7.2; // Bridge half-width in world units
+  const steps = 8;
+
+  ctx.save();
+
+  // 1. Water shadow under the bridge
+  const sh1 = project3D(sx, -4, sz);
+  const sh2 = project3D(ex, -4, ez);
+  ctx.strokeStyle = 'rgba(12, 45, 68, 0.28)';
+  ctx.lineWidth = 13 * z;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(sh1.sx, sh1.sy);
+  ctx.lineTo(sh2.sx, sh2.sy);
+  ctx.stroke();
+
+  // 2. Bridge wooden deck base & individual planks
+  for (let i = 0; i < steps; i++) {
+    const t0 = i / steps;
+    const t1 = (i + 0.82) / steps;
+    const x0 = sx + (ex - sx) * t0, z0 = sz + (ez - sz) * t0;
+    const x1 = sx + (ex - sx) * t1, z1 = sz + (ez - sz) * t1;
+    const arch0 = Math.sin(t0 * Math.PI) * 4.5;
+    const arch1 = Math.sin(t1 * Math.PI) * 4.5;
+    const y0 = sy + (ey - sy) * t0 + arch0;
+    const y1 = sy + (ey - sy) * t1 + arch1;
+
+    const p0L = project3D(x0 + nx * halfW, y0, z0 + nz * halfW);
+    const p0R = project3D(x0 - nx * halfW, y0, z0 - nz * halfW);
+    const p1R = project3D(x1 - nx * halfW, y1, z1 - nz * halfW);
+    const p1L = project3D(x1 + nx * halfW, y1, z1 + nz * halfW);
+
+    ctx.fillStyle = (i % 2 === 0) ? '#d99b66' : '#c4834e';
+    ctx.strokeStyle = '#5c3818';
+    ctx.lineWidth = 0.9 * z;
+    ctx.beginPath();
+    ctx.moveTo(p0L.sx, p0L.sy);
+    ctx.lineTo(p0R.sx, p0R.sy);
+    ctx.lineTo(p1R.sx, p1R.sy);
+    ctx.lineTo(p1L.sx, p1L.sy);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  // 3. Red & Gold Bridge Handrails + Posts on both sides
+  [-halfW, halfW].forEach(sideOffset => {
+    ctx.strokeStyle = '#b84228';
+    ctx.lineWidth = 2.0 * z;
+    ctx.beginPath();
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const wx = sx + (ex - sx) * t + nx * sideOffset;
+      const wz = sz + (ez - sz) * t + nz * sideOffset;
+      const wy = sy + (ey - sy) * t + Math.sin(t * Math.PI) * 4.5 + 5.2;
+      const pt = project3D(wx, wy, wz);
+      i === 0 ? ctx.moveTo(pt.sx, pt.sy) : ctx.lineTo(pt.sx, pt.sy);
+    }
+    ctx.stroke();
+
+    // Vertical posts at ends and middle
+    [0, 0.5, 1].forEach(t => {
+      const wx = sx + (ex - sx) * t + nx * sideOffset;
+      const wz = sz + (ez - sz) * t + nz * sideOffset;
+      const baseWy = sy + (ey - sy) * t + Math.sin(t * Math.PI) * 4.5;
+      const pBot = project3D(wx, baseWy, wz);
+      const pTop = project3D(wx, baseWy + 6.2, wz);
+      ctx.strokeStyle = '#7a2e18';
+      ctx.lineWidth = 2.2 * z;
+      ctx.beginPath();
+      ctx.moveTo(pBot.sx, pBot.sy);
+      ctx.lineTo(pTop.sx, pTop.sy);
+      ctx.stroke();
+
+      // Golden lantern post cap
+      ctx.fillStyle = '#ffdf6b';
+      ctx.beginPath();
+      ctx.arc(pTop.sx, pTop.sy, 1.8 * z, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  });
+
+  ctx.restore();
+}
+
 function drawMiniPerson(wx, wy, wz, c, time, walkingActive = true) {
   const pos = project3D(wx, wy, wz);
   const sc = (c.scale || 1.0) * cam.zoom;
@@ -2612,66 +2720,152 @@ function renderScene() {
 
   ctx.clearRect(0, 0, W, H);
 
-  // 1. Rich HEART Ocean Currents, Atmospheric Glow, Waves & Sailboats
+  // 1. VIVID TURQUOISE OCEAN BAY, SHALLOW LAGOONS, WHITE FOAM WAVES & SAILBOATS
   ctx.save();
-  const skyGlow = ctx.createRadialGradient(W * 0.45, H * 0.38, 20, W * 0.45, H * 0.45, Math.max(W, H) * 0.65);
+  // Full canvas ocean & horizon sky backdrop painted directly on Canvas!
+  const seaGrad = ctx.createLinearGradient(0, 0, 0, H);
   if (timeMode === 'night') {
-    skyGlow.addColorStop(0, 'rgba(56, 189, 248, 0.10)');
-    skyGlow.addColorStop(1, 'rgba(15, 23, 42, 0)');
+    seaGrad.addColorStop(0, '#0b192c');
+    seaGrad.addColorStop(0.28, '#132a46');
+    seaGrad.addColorStop(0.62, '#164265');
+    seaGrad.addColorStop(1, '#0d2b45');
   } else if (timeMode === 'dusk') {
-    skyGlow.addColorStop(0, 'rgba(255, 180, 120, 0.28)');
-    skyGlow.addColorStop(1, 'rgba(219, 106, 65, 0)');
+    seaGrad.addColorStop(0, '#f7a379');
+    seaGrad.addColorStop(0.25, '#fbd2a6');
+    seaGrad.addColorStop(0.52, '#4ba3b8');
+    seaGrad.addColorStop(1, '#26738c');
+  } else if (timeMode === 'dawn') {
+    seaGrad.addColorStop(0, '#ffd4c2');
+    seaGrad.addColorStop(0.25, '#fff0d9');
+    seaGrad.addColorStop(0.52, '#64bed1');
+    seaGrad.addColorStop(1, '#3492ab');
   } else {
-    skyGlow.addColorStop(0, 'rgba(255, 250, 235, 0.55)');
-    skyGlow.addColorStop(1, 'rgba(154, 208, 220, 0)');
+    // Signature Bright Turquoise Ocean Bay!
+    seaGrad.addColorStop(0, '#c8eef9');
+    seaGrad.addColorStop(0.24, '#e6f8fc');
+    seaGrad.addColorStop(0.48, '#5bc4d8');
+    seaGrad.addColorStop(0.78, '#329eb8');
+    seaGrad.addColorStop(1, '#1e7b96');
   }
-  ctx.fillStyle = skyGlow;
+  ctx.fillStyle = seaGrad;
   ctx.fillRect(0, 0, W, H);
 
-  for (let i = 1; i <= 5; i++) {
-    const c = project3D(0, -14, 0);
-    const rx = (240 + i * 55 + Math.sin(animClock * 1.4 + i) * 6) * cam.zoom;
+  // Turquoise Emerald Shallow Lagoon Glow beneath the archipelago
+  const lagoonCenter = project3D(0, -10, 0);
+  const lagoonRad = 360 * cam.zoom;
+  const lagoonGrad = ctx.createRadialGradient(lagoonCenter.sx, lagoonCenter.sy, 20 * cam.zoom, lagoonCenter.sx, lagoonCenter.sy, lagoonRad);
+  if (timeMode === 'night') {
+    lagoonGrad.addColorStop(0, 'rgba(56, 189, 248, 0.25)');
+    lagoonGrad.addColorStop(0.65, 'rgba(20, 110, 140, 0.15)');
+    lagoonGrad.addColorStop(1, 'rgba(13, 43, 69, 0)');
+  } else {
+    lagoonGrad.addColorStop(0, 'rgba(122, 235, 220, 0.75)');
+    lagoonGrad.addColorStop(0.55, 'rgba(72, 202, 218, 0.48)');
+    lagoonGrad.addColorStop(1, 'rgba(50, 158, 184, 0)');
+  }
+  ctx.fillStyle = lagoonGrad;
+  ctx.beginPath();
+  ctx.ellipse(lagoonCenter.sx, lagoonCenter.sy, lagoonRad * 1.15, lagoonRad * cam.pitch * 1.15, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Concentric White Ocean Current Ripples
+  for (let i = 1; i <= 6; i++) {
+    const c = project3D(0, -12, 0);
+    const rx = (225 + i * 48 + Math.sin(animClock * 1.6 + i) * 7) * cam.zoom;
     const ry = rx * cam.pitch;
-    ctx.strokeStyle = timeMode === 'night' ? `rgba(148, 210, 235, ${0.14 - i * 0.02})` : `rgba(255, 255, 255, ${0.42 - i * 0.06})`;
-    ctx.lineWidth = (2.2 - i * 0.25) * cam.zoom;
+    ctx.strokeStyle = timeMode === 'night' ? `rgba(148, 225, 255, ${0.28 - i * 0.035})` : `rgba(255, 255, 255, ${0.65 - i * 0.08})`;
+    ctx.lineWidth = (2.6 - i * 0.25) * cam.zoom;
     ctx.beginPath();
     ctx.ellipse(c.sx, c.sy, rx, ry, 0, 0, Math.PI * 2);
     ctx.stroke();
   }
 
-  for (let wIdx = 0; wIdx < 24; wIdx++) {
-    const ang = (wIdx / 24) * Math.PI * 2 + animClock * 0.04;
-    const dist = 260 + (wIdx % 4) * 52;
-    const wp = project3D(Math.cos(ang) * dist, -12, Math.sin(ang) * dist);
-    const waveLen = (10 + Math.sin(animClock * 2 + wIdx) * 4) * cam.zoom;
-    ctx.strokeStyle = timeMode === 'night' ? 'rgba(186, 230, 253, 0.22)' : 'rgba(255, 255, 255, 0.55)';
-    ctx.lineWidth = 1.6 * cam.zoom;
+  // Animated White-Cap Ocean Waves across the sea
+  for (let wIdx = 0; wIdx < 32; wIdx++) {
+    const ang = (wIdx / 32) * Math.PI * 2 + animClock * 0.05;
+    const dist = 245 + (wIdx % 5) * 46;
+    const wp = project3D(Math.cos(ang) * dist, -10, Math.sin(ang) * dist);
+    const waveLen = (13 + Math.sin(animClock * 2.2 + wIdx) * 4) * cam.zoom;
+    ctx.strokeStyle = timeMode === 'night' ? 'rgba(186, 230, 253, 0.45)' : 'rgba(255, 255, 255, 0.85)';
+    ctx.lineWidth = 2.2 * cam.zoom;
+    ctx.lineCap = 'round';
     ctx.beginPath();
     ctx.moveTo(wp.sx - waveLen, wp.sy);
-    ctx.quadraticCurveTo(wp.sx, wp.sy - 2.5 * cam.zoom, wp.sx + waveLen, wp.sy);
+    ctx.quadraticCurveTo(wp.sx - waveLen * 0.3, wp.sy - 4 * cam.zoom, wp.sx, wp.sy);
+    ctx.quadraticCurveTo(wp.sx + waveLen * 0.4, wp.sy - 3.5 * cam.zoom, wp.sx + waveLen, wp.sy);
     ctx.stroke();
   }
 
-  for (let bIdx = 0; bIdx < 4; bIdx++) {
-    const bAng = animClock * 0.12 * (bIdx % 2 === 0 ? 1 : -1) + bIdx * 1.57;
-    const bRad = 295 + (bIdx % 2) * 42;
+  // 6 Detailed Sailboats with Wake Trails, Wooden Hulls, Dual White Sails & Red Pennants!
+  for (let bIdx = 0; bIdx < 6; bIdx++) {
+    const dir = (bIdx % 2 === 0 ? 1 : -1);
+    const bAng = animClock * 0.14 * dir + bIdx * 1.05;
+    const bRad = 275 + (bIdx % 3) * 38;
     const bx = Math.cos(bAng) * bRad;
     const bz = Math.sin(bAng) * bRad;
-    const bp = project3D(bx, -10, bz);
-    const bsc = cam.zoom * 0.95;
-    ctx.fillStyle = '#b8532e';
+    const bp = project3D(bx, -8, bz);
+    const bsc = cam.zoom * 1.35;
+    const bobY = Math.sin(animClock * 3.5 + bIdx) * 2.2 * bsc;
+
+    // White V-wake foam behind the boat
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.78)';
+    ctx.lineWidth = 2.0 * bsc;
     ctx.beginPath();
-    ctx.moveTo(bp.sx - 8 * bsc, bp.sy);
-    ctx.lineTo(bp.sx + 8 * bsc, bp.sy);
-    ctx.lineTo(bp.sx + 5 * bsc, bp.sy + 4 * bsc);
-    ctx.lineTo(bp.sx - 5 * bsc, bp.sy + 4 * bsc);
+    ctx.moveTo(bp.sx - 12 * bsc * dir, bp.sy + bobY + 3 * bsc);
+    ctx.lineTo(bp.sx - 24 * bsc * dir, bp.sy + bobY + 7 * bsc);
+    ctx.moveTo(bp.sx - 10 * bsc * dir, bp.sy + bobY + 4 * bsc);
+    ctx.lineTo(bp.sx - 21 * bsc * dir, bp.sy + bobY + 1 * bsc);
+    ctx.stroke();
+
+    // Boat Wooden Hull with White Trim
+    ctx.fillStyle = '#b84a27';
+    ctx.strokeStyle = '#fffdf9';
+    ctx.lineWidth = 1.2 * bsc;
+    ctx.beginPath();
+    ctx.moveTo(bp.sx - 12 * bsc, bp.sy + bobY);
+    ctx.lineTo(bp.sx + 12 * bsc, bp.sy + bobY);
+    ctx.lineTo(bp.sx + 8 * bsc, bp.sy + bobY + 5.5 * bsc);
+    ctx.lineTo(bp.sx - 8 * bsc, bp.sy + bobY + 5.5 * bsc);
     ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = '#fffdf9';
+    ctx.stroke();
+
+    // Mast
+    ctx.strokeStyle = '#5c3818';
+    ctx.lineWidth = 1.8 * bsc;
     ctx.beginPath();
-    ctx.moveTo(bp.sx, bp.sy - 1 * bsc);
-    ctx.lineTo(bp.sx, bp.sy - 14 * bsc);
-    ctx.lineTo(bp.sx + 7 * bsc, bp.sy - 3 * bsc);
+    ctx.moveTo(bp.sx, bp.sy + bobY);
+    ctx.lineTo(bp.sx, bp.sy + bobY - 21 * bsc);
+    ctx.stroke();
+
+    // Main White Sail
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = 'rgba(33, 29, 29, 0.25)';
+    ctx.lineWidth = 0.9 * bsc;
+    ctx.beginPath();
+    ctx.moveTo(bp.sx, bp.sy + bobY - 20 * bsc);
+    ctx.lineTo(bp.sx + 11 * bsc * dir, bp.sy + bobY - 3 * bsc);
+    ctx.lineTo(bp.sx, bp.sy + bobY - 3 * bsc);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Secondary Jib Sail
+    ctx.fillStyle = '#fff8eb';
+    ctx.beginPath();
+    ctx.moveTo(bp.sx, bp.sy + bobY - 18 * bsc);
+    ctx.lineTo(bp.sx - 7 * bsc * dir, bp.sy + bobY - 4 * bsc);
+    ctx.lineTo(bp.sx, bp.sy + bobY - 4 * bsc);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Coral Red Pennant Flag at Mast Top
+    ctx.fillStyle = '#db6a41';
+    ctx.beginPath();
+    ctx.moveTo(bp.sx, bp.sy + bobY - 21 * bsc);
+    ctx.lineTo(bp.sx - 6 * bsc * dir, bp.sy + bobY - 19 * bsc);
+    ctx.lineTo(bp.sx, bp.sy + bobY - 17 * bsc);
     ctx.closePath();
     ctx.fill();
   }
@@ -2689,47 +2883,10 @@ function renderScene() {
     return data;
   }).sort((a, b) => a.depth - b.depth);
 
-  // Bridges (Draw wooden bridges across ALL adjacent flows, plus connect the 09-10-11-12-13 Friend Chain!)
-  ctx.save();
-  FLOWS.slice(1).forEach(f => {
-    const a = islandWorldMap.get(f.from);
-    const b = islandWorldMap.get(f.to);
-    if (!a || !b) return;
-    const dist = Math.hypot(a.wx - b.wx, a.wz - b.wz);
-    if (dist < cam.hexRadius * 2.2) {
-      const p1 = project3D(a.wx * 0.65 + b.wx * 0.35, 2, a.wz * 0.65 + b.wz * 0.35);
-      const p2 = project3D(b.wx * 0.65 + a.wx * 0.35, 2, b.wz * 0.65 + a.wz * 0.35);
-      ctx.strokeStyle = '#c99768';
-      ctx.lineWidth = 7.5 * cam.zoom;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(p1.sx, p1.sy);
-      ctx.lineTo(p2.sx, p2.sy);
-      ctx.stroke();
-    }
-  });
-  // Also draw direct wooden walkways between (08 aux <-> 09 gate1), (07 dsp <-> 10 agent1), (07 dsp <-> 11 agent2), (08 aux <-> 12 agent3), (09 gate1 <-> 13 agent4) so the bottom row 10-11-12-13 and 09 are physically bridged!
-  const extraBridgePairs = [['aux', 'gate1'], ['dsp', 'agent1'], ['dsp', 'agent2'], ['aux', 'agent3'], ['gate1', 'agent4']];
-  extraBridgePairs.forEach(([idA, idB]) => {
-    const a = islandWorldMap.get(idA);
-    const b = islandWorldMap.get(idB);
-    if (!a || !b) return;
-    const p1 = project3D(a.wx * 0.65 + b.wx * 0.35, 2, a.wz * 0.65 + b.wz * 0.35);
-    const p2 = project3D(b.wx * 0.65 + a.wx * 0.35, 2, b.wz * 0.65 + a.wz * 0.35);
-    ctx.strokeStyle = '#c99768';
-    ctx.lineWidth = 7.0 * cam.zoom;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(p1.sx, p1.sy);
-    ctx.lineTo(p2.sx, p2.sy);
-    ctx.stroke();
-  });
-  ctx.restore();
-
   hitHexPolys = [];
 
   sortedIslands.forEach(isl => {
-    const R = cam.hexRadius * 0.94;
+    const R = cam.hexRadius * 0.86;
     const topY = 12 + isl.elev;
     const botY = -8;
 
@@ -2836,6 +2993,23 @@ function renderScene() {
     }
   });
 
+
+  // Draw 3D Arched Wooden Bridges with Red/Gold Handrails & Lantern Posts across all connected neighbor islands!
+  const allBridgePairs = [
+    ['emi','pfc'], ['pfc','bus'], ['bus','llc'], ['llc','mag'],
+    ['emi','sr'], ['pfc','dsp'], ['bus','dsp'], ['bus','aux'], ['llc','gate1'], ['mag','agent5'],
+    ['sr','dsp'], ['dsp','aux'], ['aux','gate1'], ['gate1','agent5'],
+    ['dsp','agent1'], ['dsp','agent2'], ['aux','agent3'], ['gate1','agent4'], ['agent4','agent5'],
+    ['agent1','agent2'], ['agent2','agent3'], ['agent3','agent4']
+  ];
+  allBridgePairs.forEach(([idA, idB]) => {
+    const a = islandWorldMap.get(idA);
+    const b = islandWorldMap.get(idB);
+    if (a && b && !(a.isDim && b.isDim)) {
+      draw3DBridge(a, b);
+    }
+  });
+
   // Render All Citizens (Both Local Strollers AND Cross-Island Bridge Travelers!)
   citizens.forEach(c => {
     if (c.isHero) {
@@ -2919,7 +3093,7 @@ function renderScene() {
       return;
     }
     el.style.display = 'block';
-    const R = cam.hexRadius * 0.94;
+    const R = cam.hexRadius * 0.86;
     const bx = islData.wx + b.dx * R * 0.85;
     const bz = islData.wz + b.dz * R * 0.85;
     const sp = project3D(bx, 12 + islData.elev + 24, bz);
