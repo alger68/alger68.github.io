@@ -138,8 +138,8 @@
 
         <!-- Music Toggle -->
         <button id="musicToggleBtn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-700/80 hover:bg-emerald-600 text-emerald-50 border border-emerald-400/40 transition shadow-sm">
-          <span id="musicIcon">🔊</span>
-          <span id="musicLabel">暫停音樂 (Pause)</span>
+          <span id="musicIcon">🎵</span>
+          <span id="musicLabel">播放八音盒 (Musik)</span>
         </button>
 
         <!-- Song Selector -->
@@ -1061,7 +1061,40 @@ Wir wünschen Dir eine schöne Adventszeit, Frohe Weihnachten und ein glücklich
       ]
     };
 
+    // iOS: a looping silent <audio> switches the audio session to "playback",
+    // so Web Audio is heard even when the ringer/silent switch is on.
+    let silentAudioEl = null;
+    function makeSilentWavUrl() {
+      const sr = 8000, n = 4000; // 0.5 s mono 8-bit silence
+      const buf = new ArrayBuffer(44 + n);
+      const v = new DataView(buf);
+      const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+      w(0, 'RIFF'); v.setUint32(4, 36 + n, true); w(8, 'WAVE'); w(12, 'fmt ');
+      v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+      v.setUint32(24, sr, true); v.setUint32(28, sr, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true);
+      w(36, 'data'); v.setUint32(40, n, true);
+      for (let i = 0; i < n; i++) v.setUint8(44 + i, 128);
+      return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+    }
+    function unlockMediaSession() {
+      try {
+        if (navigator.audioSession) navigator.audioSession.type = 'playback';
+      } catch (e) {}
+      try {
+        if (!silentAudioEl) {
+          silentAudioEl = document.createElement('audio');
+          silentAudioEl.src = makeSilentWavUrl();
+          silentAudioEl.loop = true;
+          silentAudioEl.setAttribute('playsinline', '');
+          silentAudioEl.volume = 0.01;
+        }
+        const p = silentAudioEl.play();
+        if (p && p.catch) p.catch(() => {});
+      } catch (e) {}
+    }
+
     function initAudio() {
+      unlockMediaSession();
       try {
         if (!audioCtx) {
           const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -1733,16 +1766,29 @@ Wir wünschen Dir eine schöne Adventszeit, Frohe Weihnachten und ein glücklich
       requestAnimationFrame(renderMovieStage);
 
       // Start music automatically on first user click anywhere if not already playing
+      // iOS/Android only allow audio inside touchend/click (not pointerdown),
+      // so unlock there and keep trying until the AudioContext is running.
       let firstGestureDone = false;
-      document.addEventListener('pointerdown', () => {
+      const unlockOnGesture = (ev) => {
+        initAudio();
         if (!firstGestureDone) {
           firstGestureDone = true;
-          initAudio();
-          if (!isPlayingMusic) {
+          const t = ev.target;
+          const onMusicControl = t && t.closest && t.closest('#musicToggleBtn, #songSelect');
+          if (!isPlayingMusic && !onMusicControl) {
             toggleMusic();
           }
         }
-      }, { once: true });
+        if (audioCtx && audioCtx.state === 'running') {
+          document.removeEventListener('touchend', unlockOnGesture, true);
+          document.removeEventListener('click', unlockOnGesture, true);
+        }
+      };
+      document.addEventListener('touchend', unlockOnGesture, true);
+      document.addEventListener('click', unlockOnGesture, true);
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && audioCtx && audioCtx.state !== 'running') audioCtx.resume();
+      });
 
       // Theater controls
       const replayBtn = document.getElementById('replayAnimBtn');
