@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-Hant"><head>
+  <script>
+    // LINE's in-app browser blocks web audio: reopen this page in the phone's default browser.
+    (function () {
+      try {
+        var ua = navigator.userAgent || '';
+        if (/\bLine\//i.test(ua) && location.search.indexOf('openExternalBrowser=1') === -1) {
+          var sep = location.search ? '&' : '?';
+          location.replace(location.pathname + location.search + sep + 'openExternalBrowser=1' + location.hash);
+        }
+      } catch (e) {}
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Danke, Sandy! 來自水果家的聖誕感謝賀卡 | Adventskalender Dankeskarte</title>
