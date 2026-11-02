@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026/7/2–7/4 高雄三日專業導覽頁</title>
+  <style>
+    :root {
+      --navy: #16324f;
+      --teal: #0f8b8d;
+      --sky: #b7e3f4;
+      --sand: #f7d9a7;
+      --coral: #f25f5c;
+      --ink: #243447;
+      --muted: #667085;
+      --bg: #f4f8fb;
+      --card: #ffffff;
+      --line: #d7e3ea;
+      --shadow: 0 22px 60px rgba(22, 50, 79, .16);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(183, 227, 244, .7), transparent 28rem),
+        linear-gradient(180deg, #eef8fc 0%, var(--bg) 40%, #fff7ea 100%);
+      line-height: 1.65;
+    }
+
+    a { color: inherit; }
+
+    .hero {
+      min-height: 92vh;
+      padding: 28px clamp(18px, 5vw, 72px) 54px;
+      color: white;
+      background:
+        linear-gradient(115deg, rgba(22, 50, 79, .95), rgba(15, 139, 141, .82)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='800' viewBox='0 0 1200 800'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%230c5f79'/%3E%3Cstop offset='1' stop-color='%23f7b267'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='800' fill='url(%23g)'/%3E%3Cpath d='M0 630 C180 560 286 705 465 620 C660 528 745 660 920 590 C1040 542 1125 565 1200 520 L1200 800 L0 800 Z' fill='%23ffffff' opacity='.22'/%3E%3Ccircle cx='980' cy='160' r='88' fill='%23ffd166' opacity='.78'/%3E%3Cpath d='M112 486h210l72-116 82 116h186l94-172 106 172h226' fill='none' stroke='%23fff' stroke-width='12' opacity='.22' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/cover;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -12rem -10%;
+      height: 22rem;
+      background: white;
+      transform: rotate(-4deg);
+      transform-origin: left center;
+    }
+
+    .topbar,
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 70px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: .06em;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .16);
+      border: 1px solid rgba(255, 255, 255, .28);
+      backdrop-filter: blur(10px);
+      font-size: 1.45rem;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    nav a, .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .13);
+      border: 1px solid rgba(255, 255, 255, .22);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: .92rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
+      gap: clamp(26px, 5vw, 64px);
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .15);
+      border: 1px solid rgba(255, 255, 255, .24);
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: clamp(2.6rem, 7vw, 6.4rem);
+      line-height: .95;
+      letter-spacing: -.06em;
+    }
+
+    .subtitle {
+      max-width: 680px;
+      margin: 0 0 28px;
+      font-size: clamp(1.05rem, 2.1vw, 1.35rem);
+      color: rgba(255, 255, 255, .88);
+    }
+
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 15px;
+      font-weight: 900;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, .14);
+    }
+
+    .btn.primary { background: #fff; color: var(--navy); }
+    .btn.secondary { background: var(--coral); color: #fff; }
+
+    .brief-card {
+      background: rgba(255, 255, 255, .14);
+      border: 1px solid rgba(255, 255, 255, .24);
+      border-radius: 34px;
+      padding: 24px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, .22);
+    }
+
+    .brief-card h2 { margin: 0 0 16px; font-size: 1.35rem; }
+
+    .quick-facts {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .quick-facts li {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 13px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .12);
+    }
+
+    .fact-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .18);
+      font-size: 1.25rem;
+    }
+
+    main {
+      position: relative;
+      z-index: 2;
+      max-width: 1180px;
+      margin: -64px auto 0;
+      padding: 0 clamp(18px, 5vw, 72px) 72px;
+    }
+
+    section {
+      margin: 28px 0;
+      background: rgba(255, 255, 255, .82);
+      border: 1px solid rgba(215, 227, 234, .9);
+      border-radius: 30px;
+      padding: clamp(22px, 4vw, 38px);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(1.65rem, 3.4vw, 2.45rem);
+      letter-spacing: -.03em;
+      line-height: 1.12;
+    }
+
+    .section-kicker {
+      margin: 0 0 8px;
+      color: var(--teal);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: .82rem;
+    }
+
+    .notice {
+      border-left: 6px solid var(--coral);
+      background: #fff8f4;
+      border-radius: 18px;
+      padding: 16px 18px;
+      margin: 18px 0 0;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--card);
+    }
+
+    .card h3 { margin: 0 0 8px; color: var(--navy); }
+    .card p { margin: 0; color: var(--muted); }
+
+    .hotel-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+      gap: 18px;
+    }
+
+    .status-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: .85rem;
+      font-weight: 900;
+      background: #fff0e9;
+      color: #a83a23;
+    }
+
+    .field-list {
+      display: grid;
+      gap: 10px;
+      margin: 14px 0 0;
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px dashed var(--line);
+    }
+
+    .field strong { color: var(--navy); }
+    .field span { color: var(--muted); }
+
+    .timeline { position: relative; display: grid; gap: 18px; }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 14px;
+      bottom: 14px;
+      left: 90px;
+      width: 3px;
+      background: linear-gradient(var(--teal), var(--sand));
+      border-radius: 999px;
+    }
+
+    .day {
+      position: relative;
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .date-badge {
+      position: sticky;
+      top: 14px;
+      z-index: 1;
+      padding: 16px;
+      border-radius: 22px;
+      color: white;
+      background: linear-gradient(135deg, var(--navy), var(--teal));
+      box-shadow: 0 16px 38px rgba(15, 139, 141, .24);
+    }
+
+    .date-badge b { display: block; font-size: 1.55rem; line-height: 1.1; }
+    .date-badge span { opacity: .88; font-weight: 700; }
+
+    .events {
+      display: grid;
+      gap: 12px;
+    }
+
+    .event {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 14px;
+      padding: 16px;
+      border-radius: 22px;
+      background: white;
+      border: 1px solid var(--line);
+    }
+
+    .time {
+      color: var(--teal);
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .event h3 { margin: 0 0 6px; color: var(--navy); }
+    .event p { margin: 0 0 8px; color: var(--muted); }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #eef8fb;
+      color: #176d72;
+      font-size: .82rem;
+      font-weight: 800;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .guide-card {
+      border-radius: 24px;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .guide-image {
+      min-height: 128px;
+      display: grid;
+      place-items: center;
+      font-size: 3.2rem;
+      background: linear-gradient(135deg, rgba(15,139,141,.16), rgba(247,217,167,.55));
+    }
+
+    .guide-body { padding: 18px; }
+    .guide-body h3 { margin: 0 0 8px; color: var(--navy); }
+    .guide-body p { margin: 0 0 12px; color: var(--muted); }
+
+    .source-list, .check-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .source-list a, .check-list li {
+      display: flex;
+      gap: 10px;
+      align-items: start;
+      min-height: 48px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #f6fafc;
+      border: 1px solid var(--line);
+      text-decoration: none;
+    }
+
+    .map-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .map-link {
+      text-decoration: none;
+      text-align: center;
+      padding: 16px 12px;
+      border-radius: 18px;
+      background: var(--navy);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .print-note {
+      display: none;
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      color: var(--muted);
+    }
+
+    footer {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 clamp(18px, 5vw, 72px) 50px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 880px) {
+      .topbar, .section-head { align-items: flex-start; flex-direction: column; }
+      nav { justify-content: flex-start; }
+      .hero-grid, .hotel-grid, .day, .guide-grid { grid-template-columns: 1fr; }
+      .timeline::before { display: none; }
+      .date-badge { position: static; }
+      .cards, .source-list, .check-list, .map-row { grid-template-columns: 1fr; }
+      .event { grid-template-columns: 74px 1fr; }
+      main { margin-top: -34px; }
+    }
+
+    @media print {
+      body { background: white; color: #111; }
+      .hero { min-height: auto; padding-bottom: 34px; }
+      .hero::after, nav, .hero-actions { display: none; }
+      main { margin: 0; max-width: none; padding: 18px; }
+      section { box-shadow: none; break-inside: avoid; border-color: #bbb; }
+      .print-note { display: block; }
+      a { text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="topbar">
+      <div class="brand"><span class="brand-mark">港</span><span>KAOHSIUNG PRIVATE TOUR DESK</span></div>
+      <nav aria-label="頁面導覽">
+        <a href="#hotel">飯店資訊</a>
+        <a href="#itinerary">三日行程</a>
+        <a href="#guide">專業導覽</a>
+        <a href="#prep">出發前確認</a>
+      </nav>
+    </div>
+
+    <div class="hero-content hero-grid">
+      <div>
+        <div class="eyebrow">2026 夏季港都小旅行｜7/2（四）– 7/4（六）</div>
+        <h1>高雄三日<br>專業導覽頁</h1>
+        <p class="subtitle">以旅行社行前手冊規格整理：每日動線、交通提醒、重點景點導覽、飯店欄位與出發前檢核。Gmail 訂房與行程信件尚未連接到此工作環境，頁面已預留可直接補入的欄位。</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#itinerary">查看每日行程</a>
+          <button class="btn secondary" onclick="window.print()">列印 / 存成 PDF</button>
+        </div>
+      </div>
+
+      <aside class="brief-card" aria-label="行程快覽">
+        <h2>行程快覽</h2>
+        <ul class="quick-facts">
+          <li><span class="fact-icon">📅</span><span><b>日期</b><br>2026/7/2（四）抵達、7/4（六）返程，共 3 天 2 夜。</span></li>
+          <li><span class="fact-icon">🚇</span><span><b>建議交通</b><br>以高雄捷運紅橘線＋環狀輕軌＋短程計程車串接，夏季減少烈日步行。</span></li>
+          <li><span class="fact-icon">🏨</span><span><b>飯店</b><br>待由 Gmail 訂房確認信補入：飯店名稱、地址、入住時間、訂房編號。</span></li>
+          <li><span class="fact-icon">🌊</span><span><b>主題</b><br>港灣藝術、旗津海線、左營蓮池潭與夜市美食。</span></li>
+        </ul>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section id="gmail">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Gmail extraction status</p>
+          <h2>Gmail 行程信件狀態</h2>
+        </div>
+        <span class="status-tag">⚠️ 尚未連接 Gmail</span>
+      </div>
+      <p>目前這個執行環境沒有 Gmail 連接器或信件資料可讀取，因此無法真正「找出」你的訂房信、車票或旅行社通知。為了不耽誤頁面製作，我先建立專業導覽頁與可替換欄位；你只要把 Gmail 內的訂房確認信、交通票券或旅行社行程貼上來，我就能把以下「待補」內容改成正式資料。</p>
+      <div class="notice"><b>請補充的 Gmail 關鍵資料：</b>飯店名稱、地址、入住/退房時間、訂房編號、付款狀態、旅客姓名、交通班次、集合地點、旅行社聯絡電話。</div>
+    </section>
+
+    <section id="hotel">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Hotel voucher</p>
+          <h2>飯店資訊與入住備忘</h2>
+        </div>
+      </div>
+      <div class="hotel-grid">
+        <div class="card">
+          <span class="status-tag">待 Gmail 補入</span>
+          <h3 style="margin-top:14px;">高雄住宿確認單</h3>
+          <p>此卡片設計成旅行社 voucher 版型，補入訂房信後即可列印給同行者使用。</p>
+        </div>
+        <div class="card">
+          <div class="field-list">
+            <div class="field"><strong>飯店名稱</strong><span>待補：請貼上 Gmail 訂房確認信</span></div>
+            <div class="field"><strong>地址</strong><span>待補：建議同步加入 Google Maps 連結</span></div>
+            <div class="field"><strong>入住時間</strong><span>2026/7/2（四）｜待補實際 check-in 時間</span></div>
+            <div class="field"><strong>退房時間</strong><span>2026/7/4（六）｜待補實際 check-out 時間</span></div>
+            <div class="field"><strong>訂房編號</strong><span>待補：Confirmation / Booking ID</span></div>
+            <div class="field"><strong>注意事項</strong><span>確認是否含早餐、是否已付款、是否需押金與兒童/加床規則。</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="itinerary">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Day-by-day plan</p>
+          <h2>7/2–7/4 每日建議行程</h2>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <article class="day">
+          <div class="date-badge"><b>7/2</b><span>週四｜抵達港都</span></div>
+          <div class="events">
+            <div class="event"><div class="time">14:00</div><div><h3>抵達高雄・前往飯店寄放行李</h3><p>若搭高鐵建議由左營站轉捷運；若搭台鐵可依飯店位置轉捷運或計程車。夏季午後炎熱，先寄放行李再輕裝出發。</p><div class="chips"><span class="chip">行李寄放</span><span class="chip">捷運優先</span></div></div></div>
+            <div class="event"><div class="time">15:30</div><div><h3>美麗島站・光之穹頂</h3><p>高雄捷運紅線與橘線交會點，適合作為第一站快速進入城市節奏，也方便銜接鹽埕與西子灣方向。</p><div class="chips"><span class="chip">室內避暑</span><span class="chip">拍照點</span></div></div></div>
+            <div class="event"><div class="time">17:00</div><div><h3>駁二藝術特區・哈瑪星散步</h3><p>倉庫群改造的藝文街區，安排傍晚前往可避開正午日曬，順遊大義倉庫、蓬萊倉庫與哈瑪星鐵道園區。</p><div class="chips"><span class="chip">輕軌 C12/C13/C14</span><span class="chip">文創商店</span></div></div></div>
+            <div class="event"><div class="time">19:00</div><div><h3>愛河灣・高雄流行音樂中心夜景</h3><p>港灣燈光、音樂場館建築與水岸步道是高雄夜間最有代表性的景觀軸線。</p><div class="chips"><span class="chip">夜景</span><span class="chip">親水步道</span></div></div></div>
+            <div class="event"><div class="time">20:30</div><div><h3>六合夜市或鹽埕小吃</h3><p>若同行者想吃夜市選六合；若想走在地小吃與甜品，可留在鹽埕區覓食後回飯店。</p><div class="chips"><span class="chip">晚餐</span><span class="chip">彈性安排</span></div></div></div>
+          </div>
+        </article>
+
+        <article class="day">
+          <div class="date-badge"><b>7/3</b><span>週五｜旗津海線</span></div>
+          <div class="events">
+            <div class="event"><div class="time">09:30</div><div><h3>鼓山輪渡站・搭船前往旗津</h3><p>從西子灣/哈瑪星一帶銜接渡輪最順，假日與暑期請預留排隊時間。</p><div class="chips"><span class="chip">渡輪</span><span class="chip">防曬</span></div></div></div>
+            <div class="event"><div class="time">10:15</div><div><h3>旗後燈塔・旗後砲台</h3><p>登高看高雄港入港線與旗津海岸，是理解港都地形最直觀的導覽點；建議早上完成爬坡行程。</p><div class="chips"><span class="chip">城市制高點</span><span class="chip">歷史導覽</span></div></div></div>
+            <div class="event"><div class="time">12:00</div><div><h3>旗津老街海鮮午餐</h3><p>以共享餐方式點海產、烤小卷、番茄切盤與海之冰類甜品，避開重複排隊。</p><div class="chips"><span class="chip">午餐</span><span class="chip">海鮮</span></div></div></div>
+            <div class="event"><div class="time">14:00</div><div><h3>旗津星空隧道・海岸步道</h3><p>連接海岸視野與打卡點，夏季午後請安排補水與室內休息。</p><div class="chips"><span class="chip">海景</span><span class="chip">輕鬆散步</span></div></div></div>
+            <div class="event"><div class="time">17:30</div><div><h3>西子灣夕照・英國領事館外觀</h3><p>返程後若體力足夠，可銜接西子灣看夕陽；若炎熱或下雨則改回飯店休息。</p><div class="chips"><span class="chip">夕陽備選</span><span class="chip">天候彈性</span></div></div></div>
+            <div class="event"><div class="time">19:30</div><div><h3>瑞豐夜市或巨蛋商圈</h3><p>週五夜市人潮較多，建議分工排隊、設定集合點；若想舒服用餐可改漢神巨蛋/巨蛋商圈。</p><div class="chips"><span class="chip">晚餐</span><span class="chip">人潮提醒</span></div></div></div>
+          </div>
+        </article>
+
+        <article class="day">
+          <div class="date-badge"><b>7/4</b><span>週六｜左營文化返程</span></div>
+          <div class="events">
+            <div class="event"><div class="time">09:00</div><div><h3>退房・寄放行李</h3><p>先確認退房時間、行李寄放與發票/收據。若返程班次較早，可刪減上午景點。</p><div class="chips"><span class="chip">退房</span><span class="chip">行李</span></div></div></div>
+            <div class="event"><div class="time">10:00</div><div><h3>蓮池潭・龍虎塔周邊</h3><p>以左營文化地景作為收尾，環潭包含春秋閣、玄天上帝像、龍虎塔等視覺亮點，適合半日慢遊。</p><div class="chips"><span class="chip">左營</span><span class="chip">文化景觀</span></div></div></div>
+            <div class="event"><div class="time">12:30</div><div><h3>左營午餐・眷村風味或百貨美食</h3><p>依返程交通選擇：若搭高鐵，建議回左營站周邊用餐，避免錯過班次。</p><div class="chips"><span class="chip">午餐</span><span class="chip">高鐵銜接</span></div></div></div>
+            <div class="event"><div class="time">14:30</div><div><h3>取行李・返程</h3><p>返程前 60–90 分鐘回飯店或車站周邊，暑期週六交通較容易壅塞。</p><div class="chips"><span class="chip">返程緩衝</span><span class="chip">票券確認</span></div></div></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="guide">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Professional guiding notes</p>
+          <h2>導遊式景點重點</h2>
+        </div>
+      </div>
+      <div class="guide-grid">
+        <article class="guide-card"><div class="guide-image">🎨</div><div class="guide-body"><h3>駁二藝術特區</h3><p>以港口倉庫再生為核心，串聯展覽、文創商店、輕軌與哈瑪星鐵道文化園區。導覽時可用「舊港區轉型」作為主軸。</p><div class="chips"><span class="chip">建議 90–150 分鐘</span><span class="chip">傍晚佳</span></div></div></article>
+        <article class="guide-card"><div class="guide-image">🎵</div><div class="guide-body"><h3>高雄流行音樂中心・愛河灣</h3><p>以海洋意象建築與港灣夜景聞名，適合安排在第一晚，讓旅程一開始就有「港都夜色」記憶點。</p><div class="chips"><span class="chip">夜景</span><span class="chip">步道</span></div></div></article>
+        <article class="guide-card"><div class="guide-image">⛴️</div><div class="guide-body"><h3>旗津</h3><p>用渡輪跨越港灣，串接燈塔、砲台、老街、星空隧道與海岸。夏季重點是補水、防曬與避開午後高溫。</p><div class="chips"><span class="chip">海線一日</span><span class="chip">渡輪體驗</span></div></div></article>
+        <article class="guide-card"><div class="guide-image">🐉</div><div class="guide-body"><h3>蓮池潭・左營</h3><p>高雄宗教與眷村文化地景集中區，收尾日安排於左營，方便銜接高鐵與台鐵返程。</p><div class="chips"><span class="chip">半日</span><span class="chip">返程友善</span></div></div></article>
+      </div>
+    </section>
+
+    <section id="transport">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Transport & maps</p>
+          <h2>交通與地圖捷徑</h2>
+        </div>
+      </div>
+      <div class="map-row">
+        <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E9%A7%81%E4%BA%8C%E8%97%9D%E8%A1%93%E7%89%B9%E5%8D%80" target="_blank" rel="noreferrer">駁二地圖</a>
+        <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E9%BC%93%E5%B1%B1%E8%BC%AA%E6%B8%A1%E7%AB%99" target="_blank" rel="noreferrer">鼓山輪渡站</a>
+        <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E6%97%97%E6%B4%A5%E8%80%81%E8%A1%97" target="_blank" rel="noreferrer">旗津老街</a>
+        <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E8%93%AE%E6%B1%A0%E6%BD%AD" target="_blank" rel="noreferrer">蓮池潭</a>
+      </div>
+      <div class="notice"><b>交通策略：</b>7 月高雄炎熱潮濕，請以捷運/輕軌靠近景點後再短步行；中午時段安排室內、餐廳或飯店休息，避免整天戶外曝曬。</div>
+    </section>
+
+    <section id="prep">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Pre-departure checklist</p>
+          <h2>出發前確認清單</h2>
+        </div>
+      </div>
+      <ul class="check-list">
+        <li>✅ 身分證件、健保卡、信用卡與少量現金。</li>
+        <li>✅ Gmail 訂房確認信截圖：飯店、訂房編號、付款狀態。</li>
+        <li>✅ 交通票券：高鐵/台鐵/客運班次、座位、取票方式。</li>
+        <li>✅ 防曬用品：帽子、陽傘、防曬乳、薄外套。</li>
+        <li>✅ 雨天備案：輕便雨具、室內景點、百貨餐廳名單。</li>
+        <li>✅ 同行者集合點：夜市或商圈務必先設定走散集合位置。</li>
+      </ul>
+    </section>
+
+    <section id="sources">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Reference links</p>
+          <h2>官方與實用參考連結</h2>
+        </div>
+      </div>
+      <div class="source-list">
+        <a href="https://khh.travel/" target="_blank" rel="noreferrer">🔗 高雄旅遊網</a>
+        <a href="https://www.krtc.com.tw/" target="_blank" rel="noreferrer">🔗 高雄捷運公司</a>
+        <a href="https://pier2.org/" target="_blank" rel="noreferrer">🔗 駁二藝術特區</a>
+        <a href="https://kpmc.com.tw/" target="_blank" rel="noreferrer">🔗 高雄流行音樂中心</a>
+      </div>
+      <div class="print-note">列印提醒：請在補入 Gmail 訂房/交通資訊後，再將本頁另存 PDF 分送同行者。</div>
+    </section>
+  </main>
+
+  <footer>
+    <p>製作日期：2026/6/3｜版本：Gmail 待補資料版。補入訂房信後可升級為正式旅行社行前手冊。</p>
+  </footer>
+</body>
+</html>
