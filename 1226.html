@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>聖誕聚聚會 MERRY GATHERING｜12/26 水果家・30年老友聖誕雪島</title>
+<meta name="description" content="12/26（六）16:00 水果家聖誕聚聚會：茶會、晚宴、跨世代尋寶、交換禮物" />
+<meta property="og:title" content="🎄 12/26 水果家聖誕聚聚會" />
+<meta property="og:description" content="16:00 下午茶會・18:00 晚宴・跨世代聖誕尋寶・交換禮物" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#1F3B2D" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --coral: #db6a41; --ink: #211d1d; --cream: #fff8f4; --yellow: #fcea8b; --line: #211d1d; --muted: #78685e;
+    --green: #708f68; --teal: #3e7c8c; --blue: #3f6fb5; --pine: #1F3B2D; --red: #c23b32; --snow: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+  a { color: inherit; }
+  #snow { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; background: linear-gradient(180deg, #16301f 0%, var(--pine) 55%, #2c4f3b 100%); color: var(--cream); padding: calc(env(safe-area-inset-top) + 22px) 18px 0; overflow: hidden; border-bottom: 3px solid var(--line); }
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { display: inline-block; border: 2px solid var(--cream); border-radius: 999px; padding: 4px 11px; font-size: 12px; font-weight: 900; letter-spacing: .08em; }
+  .tag.y { background: var(--yellow); color: var(--ink); border-color: var(--ink); }
+  .hero h1 { font-size: 44px; line-height: .98; font-weight: 900; letter-spacing: -.02em; margin: 16px 0 8px; }
+  .hero h1 span { color: var(--yellow); }
+  .hero .sub { font-size: 15.5px; line-height: 1.7; opacity: .92; max-width: 420px; }
+  .hero .when { margin-top: 14px; display: inline-flex; gap: 10px; align-items: center; background: var(--cream); color: var(--ink); border: 2.5px solid var(--line); border-radius: 14px; padding: 10px 14px; box-shadow: 4px 4px 0 var(--line); font-weight: 900; }
+  .hero .when b { color: var(--red); font-size: 22px; }
+  .island-wrap { position: relative; margin: 18px -18px 0; }
+  .island-wrap svg { display: block; width: 100%; height: auto; }
+  .hex { cursor: pointer; transition: transform .25s; transform-box: fill-box; transform-origin: center; }
+  .hex:active { transform: translateY(-4px); }
+  .hex.lit .roof { filter: brightness(1.15); }
+  .hint { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); font-size: 12px; background: rgba(33,29,29,.7); padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
+
+  /* ===== 區塊 ===== */
+  main { max-width: 560px; margin: 0 auto; padding: 8px 16px calc(env(safe-area-inset-bottom) + 40px); position: relative; z-index: 6; }
+  section { margin-top: 30px; }
+  .sec-no { font-family: ui-monospace, monospace; font-size: 12px; font-weight: 700; color: var(--coral); letter-spacing: .12em; }
+  h2 { font-size: 25px; font-weight: 900; margin: 2px 0 12px; letter-spacing: -.01em; }
+  .card { background: #fff; border: 2.5px solid var(--line); border-radius: 16px; padding: 16px; box-shadow: 5px 5px 0 var(--line); }
+  .card + .card { margin-top: 14px; }
+  .info-row { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1.5px dashed #e3d3c6; font-size: 15px; line-height: 1.55; }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .k { flex: 0 0 64px; font-weight: 900; color: var(--muted); }
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .btn { display: block; text-align: center; text-decoration: none; border: 2.5px solid var(--line); border-radius: 12px; padding: 11px 8px; font-weight: 900; font-size: 14px; background: var(--yellow); box-shadow: 3px 3px 0 var(--line); cursor: pointer; font-family: inherit; color: var(--ink); }
+  .btn.coral { background: var(--coral); color: #fff; }
+  .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--line); }
+
+  .timeline { list-style: none; position: relative; padding-left: 22px; }
+  .timeline::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 3px; background: var(--line); border-radius: 2px; }
+  .timeline li { position: relative; padding: 0 0 16px; }
+  .timeline li::before { content: ""; position: absolute; left: -21px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--cream); border: 3px solid var(--line); }
+  .timeline li.hot::before { background: var(--red); }
+  .timeline .t { font-family: ui-monospace, monospace; font-weight: 700; font-size: 14px; color: var(--coral); }
+  .timeline .d { font-weight: 900; font-size: 16px; margin-top: 1px; }
+  .timeline .s { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  .games { display: grid; gap: 14px; }
+  .game { display: grid; grid-template-columns: 54px 1fr; gap: 12px; align-items: start; }
+  .game .ico { width: 54px; height: 54px; border: 2.5px solid var(--line); border-radius: 14px; display: grid; place-items: center; font-size: 28px; background: var(--yellow); }
+  .game:nth-child(2) .ico { background: #cfe0c8; } .game:nth-child(3) .ico { background: #f8d3c4; }
+  .game h3 { font-size: 17px; font-weight: 900; }
+  .game .when { font-family: ui-monospace, monospace; font-size: 12px; color: var(--coral); font-weight: 700; }
+  .game p { font-size: 14px; line-height: 1.7; color: #4a3f38; margin-top: 3px; }
+  .new { display: inline-block; background: var(--red); color: #fff; font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 999px; margin-left: 6px; vertical-align: 2px; }
+
+  .gift { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .gift div { border: 2.5px solid var(--line); border-radius: 14px; padding: 12px; text-align: center; background: var(--cream); }
+  .gift b { display: block; font-size: 24px; color: var(--red); }
+  .gift span { font-size: 13px; color: var(--muted); }
+  .rules { font-size: 14px; line-height: 1.8; margin-top: 12px; padding-left: 20px; }
+
+  .photo-call { background: var(--pine); color: var(--cream); }
+  .photo-call p { font-size: 14.5px; line-height: 1.8; }
+
+  /* RSVP */
+  .field { margin-bottom: 11px; }
+  .field label { display: block; font-weight: 900; font-size: 13.5px; margin-bottom: 4px; color: #5a4a40; }
+  .field select, .field input { width: 100%; padding: 10px; border-radius: 10px; border: 2px solid var(--line); font-size: 15px; font-family: inherit; background: #fff; font-weight: 700; color: var(--ink); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  pre#preview { margin: 6px 0 12px; padding: 12px; background: var(--cream); border: 2px dashed var(--coral); border-radius: 10px; font-size: 13.5px; line-height: 1.65; white-space: pre-wrap; font-family: inherit; }
+  .ok { text-align: center; color: #2b9348; font-weight: 900; font-size: 13.5px; margin-top: 8px; display: none; }
+
+  /* 島嶼卡 */
+  .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; transform: translateY(110%); transition: transform .4s cubic-bezier(.22,1,.36,1); padding: 0 12px calc(env(safe-area-inset-bottom) + 12px); }
+  .sheet.open { transform: none; }
+  .sheet .card { max-width: 520px; margin: 0 auto; position: relative; }
+  .sheet .x { position: absolute; right: 12px; top: 10px; font-size: 20px; cursor: pointer; background: none; border: none; }
+  .sheet h3 { font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+  .sheet .dot { width: 14px; height: 14px; border-radius: 4px; border: 2px solid var(--line); }
+  .sheet p { font-size: 14.5px; line-height: 1.75; margin-top: 6px; color: #4a3f38; }
+
+  footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 34px; line-height: 1.8; }
+</style>
+</head>
+<body>
+<canvas id="snow"></canvas>
+
+<header class="hero">
+  <div class="badge-row"><span class="tag y">12/26 SAT</span><span class="tag">水果家主揪</span><span class="tag">30 年老友</span></div>
+  <h1>MERRY<br>GATHER<span>!</span></h1>
+  <p class="sub">10/31 聚得太開心，聖誕節再來一場！<br>同一座老友島，這次下雪了 ❄️ 加碼聖誕樹、跨世代尋寶和交換禮物。</p>
+  <div class="when"><b>12/26</b> 星期六 16:00 — 21:00</div>
+  <div class="island-wrap">
+    <svg id="isle" viewBox="0 0 400 330" aria-label="聖誕雪島：六個家庭戰隊"></svg>
+    <div class="hint">👆 點一座島看看各家戰隊</div>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="sec-no">01 · WHEN & WHERE</div>
+    <h2>時間地點</h2>
+    <div class="card">
+      <div class="info-row"><span class="k">日期</span><span>2026/12/26（六）</span></div>
+      <div class="info-row"><span class="k">時間</span><span>16:00 下午茶會・18:00 晚宴・21:00 賦歸<br><small style="color:var(--muted)">只能來晚餐也沒問題，報名時選 18:00 就好</small></span></div>
+      <div class="info-row"><span class="k">地點</span><span>水果家：新北市中和區景新街 210 巷 15 號 3 樓</span></div>
+      <div class="info-row"><span class="k">服裝</span><span>❤️💚 穿一件紅色或綠色</span></div>
+      <div class="info-row"><span class="k">餐點</span><span>水果家請客；想帶一道菜或小點心隨喜就好</span></div>
+      <div class="btn-row">
+        <a class="btn" href="https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E6%99%AF%E6%96%B0%E8%A1%97210%E5%B7%B715%E8%99%9F" target="_blank" rel="noopener">📍 Google 地圖</a>
+        <a class="btn" href="https://www.google.com/maps/search/?api=1&query=%E4%B8%AD%E5%92%8C%E5%8D%80%E5%85%AC%E6%9C%89%E6%99%AF%E6%96%B0%E5%81%9C%E8%BB%8A%E5%A0%B4" target="_blank" rel="noopener">🅿️ 附近停車場</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-no">02 · THE DAY</div>
+    <h2>當天流程</h2>
+    <div class="card">
+      <ul class="timeline">
+        <li><div class="t">16:00</div><div class="d">☕ 下午茶會開席</div><div class="s">茶飲配小點心，大螢幕輪播「老照片猜猜誰」</div></li>
+        <li class="hot"><div class="t">17:00</div><div class="d">🔍 跨世代聖誕尋寶</div><div class="s">抽籤混隊，大人小孩一起找遍全屋</div></li>
+        <li><div class="t">18:00</div><div class="d">🍗 聖誕晚宴</div><div class="s">烤雞、熱食、熱紅酒，一起舉杯</div></li>
+        <li><div class="t">19:15</div><div class="d">🎨 你畫我猜對抗賽</div><div class="s">BB.Call 對上 IG 限動，看哪一代贏</div></li>
+        <li class="hot"><div class="t">19:45</div><div class="d">🎁 交換禮物</div><div class="s">依尋寶名次決定拆禮物順序</div></li>
+        <li><div class="t">20:30</div><div class="d">🎂 聖誕蛋糕＋大合照</div><div class="s">聖誕樹前，一個都不能少</div></li>
+        <li><div class="t">21:00</div><div class="d">🏠 賦歸</div><div class="s">明年見！</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-no">03 · NEW GAMES</div>
+    <h2>這次玩新的 <span class="new">NEW</span></h2>
+    <div class="card games">
+      <div class="game"><div class="ico">📸</div><div><div class="when">16:00 茶會中</div><h3>老照片猜猜誰</h3><p>各家先傳一張大人年輕時的照片，孩子們來猜是哪位叔叔阿姨。猜對最多的有獎！</p></div></div>
+      <div class="game"><div class="ico">🔍</div><div><div class="when">17:00 · 約 40 分鐘</div><h3>跨世代聖誕尋寶</h3><p>全屋藏了 12 個聖誕小盒。題目只有老友答得出來，藏點只有孩子跑得快，兩代合作才破得了關！</p></div></div>
+      <div class="game"><div class="ico">🎨</div><div><div class="when">19:15</div><h3>你畫我猜：世代對決</h3><p>一半題目來自大人的年代（錄音帶、BB.Call），一半來自孩子的世界（限動、電競）。</p></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-no">04 · GIFT SWAP</div>
+    <h2>交換禮物</h2>
+    <div class="card">
+      <div class="gift"><div><b>NT$500</b><span>大人・每家一份</span></div><div><b>NT$200</b><span>孩子・每人一份</span></div></div>
+      <ol class="rules">
+        <li>禮物包好、不寫名字，到場放聖誕樹下。</li>
+        <li>大人、孩子分兩輪，依尋寶名次輪流上場。</li>
+        <li>輪到你可以拆新的，或搶走別人已拆的。</li>
+        <li>同一份最多被搶 2 次就鎖定！</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="card photo-call">
+      <div class="sec-no" style="color:var(--yellow)">📮 行前任務</div>
+      <h2 style="margin-bottom:6px">傳一張老照片給水果家</h2>
+      <p>請各家在 <b style="color:var(--yellow)">12/12 前</b> 私訊水果家一張「大人年輕時的照片」，越青澀越好 😆 當天茶會會輪播，給孩子們猜！</p>
+    </div>
+  </section>
+
+  <section id="rsvp">
+    <div class="sec-no">05 · RSVP</div>
+    <h2>報名接龍</h2>
+    <div class="card">
+      <div class="field"><label>① 你是哪一家？</label>
+        <select id="r-fam" onchange="onFam()">
+          <option value="阿伯家" data-a="2" data-k="2">👑 阿伯家</option>
+          <option value="阿冠家" data-a="2" data-k="2">⚡ 阿冠家</option>
+          <option value="余老闆家" data-a="2" data-k="2">🌲 余老闆家</option>
+          <option value="老呂家" data-a="2" data-k="1">🛡️ 老呂家</option>
+          <option value="中和老友" data-a="1" data-k="0">🍵 中和單身老友</option>
+          <option value="水果家" data-a="2" data-k="2">🍎 水果家（主人）</option>
+        </select></div>
+      <div class="field"><label>② 幾點到？</label>
+        <select id="r-slot" onchange="render()">
+          <option value="16:00 茶會就到（全程參加）">☕ 16:00 茶會就到（全程參加）</option>
+          <option value="18:00 晚宴再到">🍗 18:00 晚宴再到</option>
+        </select></div>
+      <div class="two">
+        <div class="field"><label>③ 大人</label><select id="r-a" onchange="render()"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
+        <div class="field"><label>④ 孩子／青年</label><select id="r-k" onchange="render()"><option>0</option><option>1</option><option selected>2</option><option>3</option></select></div>
+      </div>
+      <div class="field"><label>⑤ 帶點什麼或留言（選填）</label><input id="r-note" oninput="render()" placeholder="例如：帶一盒滷味！老照片已傳 ✅" /></div>
+      <pre id="preview"></pre>
+      <button class="btn coral" style="width:100%" onclick="copyRSVP()">👉 複製報名文字，貼回 LINE 群組</button>
+      <div class="ok" id="ok">✅ 已複製！到 LINE 群組長按貼上就好</div>
+    </div>
+  </section>
+
+  <footer>聖誕聚聚會 MERRY GATHERING · 2026/12/26（六）<br>新北市中和區景新街 210 巷 15 號 3 樓（水果家）<br>請在 12/12 前接龍報名 🎄</footer>
+</main>
+
+<div class="sheet" id="sheet"><div class="card"><button class="x" onclick="closeSheet()">✕</button><h3><span class="dot" id="sh-dot"></span><span id="sh-title"></span></h3><p id="sh-body"></p></div></div>
+
+<script>
+/* ========== 聖誕雪島（7 格六角島）========== */
+const TEAMS = [
+  { id: "fruit", name: "島主・水果家", color: "#db6a41", q: 0, r: 0, icon: "🎄", body: "12/26 聚聚會主島！聖誕樹、茶飲吧、晚宴長桌和尋寶起點都在這裡。16:00 準時開門。" },
+  { id: "abo", name: "阿伯家戰隊", color: "#3f6fb5", q: 1, r: -1, icon: "👑", body: "幽默開講擔當。尋寶題目裡，阿伯當年的綽號可能會出現喔……" },
+  { id: "aguan", name: "阿冠家戰隊", color: "#708f68", q: 1, r: 0, icon: "⚡", body: "特調茶飲擔當。你畫我猜的世代對決，科技戰隊準備好了嗎？" },
+  { id: "yu", name: "余老闆家戰隊", color: "#3e7c8c", q: 0, r: 1, icon: "🌲", body: "精美點心擔當。溫文儒雅的森林戰隊，交換禮物最會挑！" },
+  { id: "lu", name: "老呂家戰隊", color: "#c97a3e", q: -1, r: 1, icon: "🛡️", body: "青春相機擔當。今晚的大合照，就交給元氣戰隊了！" },
+  { id: "single", name: "中和單身老友", color: "#6b5280", q: -1, r: 0, icon: "🍵", body: "中和 5 分鐘直達。一個人也能扛起一整隊的 30 年老友代表！" },
+  { id: "kids", name: "孩子青年團", color: "#b84b4b", q: 0, r: -1, icon: "🔍", body: "這次不打 Switch 了！尋寶要靠你們跑，猜老照片要靠你們眼力。" },
+];
+const svg = document.getElementById("isle"), NS = "http://www.w3.org/2000/svg";
+const S = 58, CX = 200, CY = 150;
+const SHORT = { fruit: "水果家", abo: "阿伯家", aguan: "阿冠家", yu: "余老闆家", lu: "老呂家", single: "中和老友", kids: "青年團" };
+const labels = [];
+const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); (parent || svg).appendChild(e); return e; };
+function hexPts(x, y, s, squash = 0.58) { const p = []; for (let i = 0; i < 6; i++) { const a = Math.PI / 180 * (60 * i); p.push([x + s * Math.cos(a), y + s * Math.sin(a) * squash]); } return p; }
+function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const r = Math.min(255, (n >> 16) * f), g = Math.min(255, ((n >> 8) & 255) * f), b = Math.min(255, (n & 255) * f); return `rgb(${r|0},${g|0},${b|0})`; }
+el("ellipse", { cx: CX, cy: CY + 74, rx: 196, ry: 60, fill: "rgba(0,0,0,.25)" });
+const order = [...TEAMS].sort((a, b) => (a.r * 2 + a.q) - (b.r * 2 + b.q));
+order.forEach((t) => {
+  const x = CX + S * 1.5 * t.q, y = CY + S * Math.sqrt(3) * (t.r + t.q / 2) * 0.58;
+  const g = el("g", { class: "hex", "data-id": t.id });
+  const top = hexPts(x, y, S - 3), depth = 18;
+  // 側面（懸崖）
+  [[0, 1], [1, 2], [2, 3]].forEach(([i, j]) => { const a = top[i], b = top[j];
+    el("polygon", { points: `${a[0]},${a[1]} ${b[0]},${b[1]} ${b[0]},${b[1] + depth} ${a[0]},${a[1] + depth}`, fill: shade(t.color, 0.62), stroke: "#211d1d", "stroke-width": 2 }, g); });
+  // 雪地頂面
+  el("polygon", { points: top.map((p) => p.join(",")).join(" "), fill: "#f4f7fb", stroke: "#211d1d", "stroke-width": 2.2 }, g);
+  el("polygon", { points: hexPts(x, y, S - 12).map((p) => p.join(",")).join(" "), fill: shade(t.color, 1.0), opacity: .18 }, g);
+  if (t.id === "fruit") {
+    // 中央聖誕樹
+    el("polygon", { points: `${x},${y - 52} ${x - 20},${y - 14} ${x + 20},${y - 14}`, fill: "#2f6b3d", stroke: "#211d1d", "stroke-width": 2 }, g);
+    el("polygon", { points: `${x},${y - 38} ${x - 25},${y + 2} ${x + 25},${y + 2}`, fill: "#3a7d48", stroke: "#211d1d", "stroke-width": 2 }, g);
+    el("rect", { x: x - 4, y: y + 2, width: 8, height: 8, fill: "#7a5236", stroke: "#211d1d", "stroke-width": 1.5 }, g);
+    el("text", { x, y: y - 50, "text-anchor": "middle", "font-size": 14 }, g).textContent = "⭐";
+    [[-10, -22, "#fcea8b"], [8, -26, "#c23b32"], [-14, -6, "#c23b32"], [12, -8, "#fcea8b"], [0, -12, "#fff"]].forEach(([dx, dy, c]) => el("circle", { cx: x + dx, cy: y + dy, r: 2.6, fill: c, class: "light" }, g));
+  } else {
+    // 小屋（屋頂顏色 = 戰隊色）
+    el("rect", { x: x - 13, y: y - 14, width: 26, height: 18, fill: "#fff8f4", stroke: "#211d1d", "stroke-width": 2 }, g);
+    el("polygon", { class: "roof", points: `${x - 18},${y - 13} ${x},${y - 30} ${x + 18},${y - 13}`, fill: t.color, stroke: "#211d1d", "stroke-width": 2 }, g);
+    el("path", { d: `M${x - 15},${y - 15} L${x},${y - 28} L${x + 15},${y - 15}`, stroke: "#fff", "stroke-width": 3, fill: "none", opacity: .9 }, g);
+    el("rect", { x: x - 4, y: y - 6, width: 8, height: 10, fill: "#fcea8b", stroke: "#211d1d", "stroke-width": 1.5 }, g);
+  }
+  labels.push({ t, x, y, g });
+  g.addEventListener("click", () => openSheet(t, g));
+});
+// 名牌畫在最上層，不會被別的島蓋住
+labels.forEach(({ t, x, y, g }) => {
+  const name = SHORT[t.id], lw = name.length * 12 + 14, lg = el("g", { style: "cursor:pointer" });
+  el("rect", { x: x - lw / 2, y: y + 10, width: lw, height: 19, rx: 9.5, fill: t.id === "fruit" ? "#c23b32" : "#211d1d", stroke: "#fff8f4", "stroke-width": 1.2 }, lg);
+  el("text", { x, y: y + 23.5, "text-anchor": "middle", "font-size": 12, "font-weight": 900, fill: "#fff8f4", "font-family": "Noto Sans TC, sans-serif" }, lg).textContent = name;
+  lg.addEventListener("click", () => openSheet(t, g));
+});
+// 燈串閃爍
+setInterval(() => document.querySelectorAll(".light").forEach((l) => l.setAttribute("opacity", Math.random() > .35 ? 1 : .25)), 500);
+
+function openSheet(t, g) {
+  document.querySelectorAll(".hex").forEach((h) => h.classList.remove("lit")); g.classList.add("lit");
+  document.getElementById("sh-dot").style.background = t.color;
+  document.getElementById("sh-title").textContent = t.icon + " " + t.name;
+  document.getElementById("sh-body").textContent = t.body;
+  document.getElementById("sheet").classList.add("open");
+}
+function closeSheet() { document.getElementById("sheet").classList.remove("open"); }
+
+/* ========== 報名接龍 ========== */
+const $ = (id) => document.getElementById(id);
+function onFam() { const o = $("r-fam").selectedOptions[0]; $("r-a").value = o.dataset.a; $("r-k").value = o.dataset.k; render(); }
+function rsvpText() {
+  const note = $("r-note").value.trim();
+  return `《12/26 水果家聖誕聚聚會 報名》\n🎄 ${$("r-fam").value} +1\n⏰ ${$("r-slot").value}\n👨‍👩‍👧 大人 ${$("r-a").value} 位・孩子 ${$("r-k").value} 位` + (note ? `\n💬 ${note}` : "");
+}
+function render() { $("preview").textContent = rsvpText(); }
+async function copyRSVP() {
+  const t = rsvpText();
+  try { await navigator.clipboard.writeText(t); }
+  catch (e) { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove(); }
+  $("ok").style.display = "block"; setTimeout(() => ($("ok").style.display = "none"), 3500);
+}
+render();
+
+/* ========== 下雪 ========== */
+const cv = $("snow"), ctx = cv.getContext("2d"); let W, H; const flakes = [];
+function resize() { const d = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); }
+resize(); addEventListener("resize", resize);
+for (let i = 0; i < 70; i++) flakes.push({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: 1 + Math.random() * 2.6, v: .4 + Math.random() * 1.1, w: Math.random() * 6 });
+(function loop() { ctx.clearRect(0, 0, W, H); ctx.fillStyle = "rgba(255,255,255,.85)";
+  flakes.forEach((f) => { f.y += f.v; f.w += .02; f.x += Math.sin(f.w) * .4; if (f.y > H + 5) { f.y = -5; f.x = Math.random() * W; }
+    ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 7); ctx.fill(); });
+  requestAnimationFrame(loop); })();
+</script>
+</body>
+</html>
