@@ -1109,6 +1109,7 @@
       envelopeOpened = true;
       document.getElementById("envelope-el").classList.add("opening");
       startMusic();
+      setTimeout(() => showToast("🔊 沒聽到鋼琴聲？把手機音量調大一點喔"), 1200);
       spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 42);
       setTimeout(() => {
         switchAct(2);
@@ -1210,10 +1211,30 @@
       { n: 349.23, d: 1.80, c: [174.61, 220.0, 261.63] }
     ];
 
-    function ensureAudio() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === "suspended") audioCtx.resume();
+    /* iPhone 靜音模式也能出聲：把音訊切到 playback，並在第一次點擊時播放一段無聲 <audio> 解鎖 */
+    let silentEl = null;
+    function unlockIOSAudio() {
+      try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
+      if (silentEl) return;
+      const sr = 8000, n = sr / 2, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+      const w = (o, str) => [...str].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+      w(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); w(8, "WAVE"); w(12, "fmt ");
+      v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+      v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+      w(36, "data"); v.setUint32(40, n * 2, true);
+      silentEl = document.createElement("audio");
+      silentEl.src = URL.createObjectURL(new Blob([buf], { type: "audio/wav" }));
+      silentEl.loop = true; silentEl.setAttribute("playsinline", ""); silentEl.setAttribute("x-webkit-airplay", "deny");
+      silentEl.play().catch(() => {});
     }
+    function ensureAudio() {
+      unlockIOSAudio();
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended" || audioCtx.state === "interrupted") audioCtx.resume();
+    }
+    // 切回 App / 鎖屏回來時恢復聲音
+    document.addEventListener("visibilitychange", () => { if (!document.hidden && musicPlaying && audioCtx) { audioCtx.resume(); silentEl && silentEl.play().catch(() => {}); } });
+    document.addEventListener("touchend", () => { if (musicPlaying && audioCtx && audioCtx.state !== "running") audioCtx.resume(); }, { passive: true });
 
     function playPianoNote(freq, dur, vol = 0.08) {
       if (!audioCtx) return;
