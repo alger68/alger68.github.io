@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>水蜜桃偵探事務所 · 13 歲生日事件簿</title>
+<meta name="description" content="一份給名偵探水蜜桃的機密委託 🔍" />
+<meta property="og:title" content="🔍 機密委託：致名偵探 水蜜桃" />
+<meta property="og:description" content="11/23 凌晨，生日蛋糕離奇失蹤了……" />
+<meta name="theme-color" content="#0F1B2D" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&family=Special+Elite&display=swap" rel="stylesheet" />
+<script>
+  // LINE 內建瀏覽器會擋聲音 → 改用手機預設瀏覽器開啟
+  (function () {
+    if (/\bLine\//i.test(navigator.userAgent) && !/openExternalBrowser=1/.test(location.search)) {
+      var u = new URL(location.href); u.searchParams.set("openExternalBrowser", "1"); location.replace(u.toString());
+    }
+  })();
+</script>
+<style>
+  :root {
+    --night: #0F1B2D; --night-2: #1A2C46; --ink: #F6F1E7; --muted: #A9B6C8;
+    --red: #D64545; --red-deep: #A8302F; --gold: #F2C14E; --peach: #FF9E8A; --peach-soft: #FFD6C9;
+    --paper: #F7F0E1; --paper-ink: #2B2420; --green: #3BB27A;
+    --ease: cubic-bezier(.22,1,.36,1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; background: var(--night); color: var(--ink); font-family: 'Noto Sans TC', system-ui, sans-serif; overflow-x: hidden; }
+  body { background: radial-gradient(ellipse at 50% -10%, #2A4468 0%, var(--night) 60%) fixed; }
+  button { font-family: inherit; }
+
+  #fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+
+  .topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; justify-content: space-between; align-items: center;
+    padding: calc(env(safe-area-inset-top) + 8px) 14px 8px; background: linear-gradient(180deg, rgba(15,27,45,.95), rgba(15,27,45,0)); }
+  .case-no { font-family: 'Special Elite', monospace; font-size: 12px; letter-spacing: .12em; color: var(--muted); }
+  .chip { border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.06); color: var(--ink); border-radius: 999px; padding: 6px 12px; font-size: 12.5px; cursor: pointer; }
+  .chip.on { background: var(--gold); color: var(--night); border-color: var(--gold); font-weight: 700; }
+  .egg-chip { margin-right: 6px; opacity: .85; }
+
+  main { min-height: 100%; display: flex; justify-content: center; padding: calc(env(safe-area-inset-top) + 58px) 16px calc(env(safe-area-inset-bottom) + 30px); }
+  .scene { width: 100%; max-width: 460px; display: none; flex-direction: column; align-items: center; text-align: center; }
+  .scene.active { display: flex; animation: sceneIn .7s var(--ease) both; }
+  @keyframes sceneIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+  .kicker { font-family: 'Special Elite', monospace; letter-spacing: .22em; font-size: 12px; color: var(--gold); margin-bottom: 8px; }
+  h1, h2 { font-family: 'Noto Serif TC', serif; font-weight: 900; line-height: 1.3; }
+  h1 { font-size: 30px; } h2 { font-size: 24px; margin-bottom: 10px; }
+  .lead { color: var(--muted); font-size: 15px; line-height: 1.85; }
+  .btn { margin-top: 22px; border: none; border-radius: 999px; padding: 14px 28px; font-size: 16px; font-weight: 700; letter-spacing: .04em; cursor: pointer;
+    background: linear-gradient(135deg, var(--red), var(--red-deep)); color: #fff; box-shadow: 0 10px 26px rgba(214,69,69,.35); transition: transform .2s; }
+  .btn:active { transform: scale(.96); }
+  .btn.gold { background: linear-gradient(135deg, #FFD777, var(--gold)); color: var(--night); box-shadow: 0 10px 26px rgba(242,193,78,.35); }
+  .progress { display: flex; gap: 6px; margin: 4px 0 16px; }
+  .progress i { width: 26px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.15); }
+  .progress i.done { background: var(--gold); }
+
+  /* ===== 封面：機密檔案 ===== */
+  .detective { width: 170px; height: 170px; margin: 6px 0 4px; cursor: pointer; animation: bob 3s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
+  .folder { position: relative; width: 100%; margin-top: 14px; background: #D9B77C; border-radius: 6px 18px 10px 10px; padding: 26px 20px 22px; color: var(--paper-ink);
+    box-shadow: 0 20px 50px rgba(0,0,0,.45); text-align: left; transform: rotate(-1.2deg); }
+  .folder::before { content: ""; position: absolute; top: -16px; left: 0; width: 42%; height: 22px; background: #D9B77C; border-radius: 8px 12px 0 0; }
+  .stamp { position: absolute; right: 14px; top: 16px; border: 3px solid var(--red); color: var(--red); font-family: 'Special Elite', monospace; font-weight: 700;
+    padding: 4px 10px; transform: rotate(10deg); font-size: 15px; letter-spacing: .1em; border-radius: 4px; opacity: .9; }
+  .folder .to { font-family: 'Special Elite', monospace; font-size: 13px; letter-spacing: .08em; opacity: .75; }
+  .folder .name { font-family: 'Noto Serif TC', serif; font-size: 26px; font-weight: 900; margin: 4px 0 10px; }
+  .folder p { font-size: 14.5px; line-height: 1.8; }
+  .seal { width: 64px; height: 64px; border-radius: 50%; margin: -10px auto 0; position: relative; z-index: 2; display: grid; place-items: center;
+    background: radial-gradient(circle at 35% 30%, #F27070, var(--red) 55%, var(--red-deep)); color: #fff; font-family: 'Noto Serif TC', serif; font-weight: 900; font-size: 22px;
+    box-shadow: 0 8px 20px rgba(168,48,47,.5); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 8px 20px rgba(168,48,47,.5), 0 0 0 0 rgba(214,69,69,.5); } 50% { box-shadow: 0 8px 20px rgba(168,48,47,.5), 0 0 0 16px rgba(214,69,69,0); } }
+
+  /* ===== 案件簡報：報紙 ===== */
+  .news { width: 100%; background: var(--paper); color: var(--paper-ink); border-radius: 4px; padding: 18px 18px 20px; text-align: left; box-shadow: 0 16px 40px rgba(0,0,0,.4); transform: rotate(.8deg); }
+  .news .mast { font-family: 'Noto Serif TC', serif; font-weight: 900; font-size: 20px; border-bottom: 3px double var(--paper-ink); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: baseline; }
+  .news .mast small { font-family: 'Special Elite', monospace; font-size: 11px; font-weight: 400; }
+  .news .head { font-family: 'Noto Serif TC', serif; font-weight: 900; font-size: 24px; line-height: 1.35; margin: 12px 0 8px; }
+  .news p { font-size: 14.5px; line-height: 1.85; }
+  .news .redline { background: linear-gradient(transparent 60%, rgba(214,69,69,.28) 60%); font-weight: 700; }
+
+  /* ===== 現場勘查：手電筒 ===== */
+  .room { position: relative; width: 100%; aspect-ratio: 3 / 4; border-radius: 18px; overflow: hidden; touch-action: none; box-shadow: 0 16px 40px rgba(0,0,0,.5); background: #2A3A55; }
+  .room svg.bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .clue { position: absolute; width: 58px; height: 58px; margin: -29px 0 0 -29px; display: grid; place-items: center; font-size: 34px; border: none; background: transparent; cursor: pointer; z-index: 3; transition: transform .3s; }
+  .clue.found { transform: scale(1.25); filter: drop-shadow(0 0 10px var(--gold)); }
+  .clue.found::after { content: "✓"; position: absolute; right: -2px; top: -4px; font-size: 14px; background: var(--green); color: #fff; border-radius: 50%; width: 20px; height: 20px; display: grid; place-items: center; }
+  .dark { position: absolute; inset: 0; z-index: 4; pointer-events: none; transition: opacity 1s;
+    background: radial-gradient(circle 82px at var(--x, 24%) var(--y, 18%), rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(5,10,20,.9) 100%); }
+  .dark.off { opacity: 0; }
+  .room-tip { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 5; font-size: 12.5px; background: rgba(15,27,45,.8); padding: 6px 12px; border-radius: 999px; white-space: nowrap; pointer-events: none; }
+  .clue-tray { display: flex; gap: 10px; margin-top: 14px; }
+  .clue-tray div { width: 54px; height: 54px; border-radius: 12px; border: 1.5px dashed rgba(255,255,255,.3); display: grid; place-items: center; font-size: 26px; }
+  .clue-tray div.got { border-style: solid; border-color: var(--gold); background: rgba(242,193,78,.12); }
+
+  /* 線索卡 / 通用彈窗 */
+  .modal { position: fixed; inset: 0; z-index: 70; display: none; align-items: center; justify-content: center; padding: 22px; background: rgba(5,10,20,.6); backdrop-filter: blur(4px); }
+  .modal.open { display: flex; }
+  .card { width: min(380px, 100%); background: var(--paper); color: var(--paper-ink); border-radius: 16px; padding: 22px 20px 18px; text-align: center; animation: pop .45s var(--ease) both; box-shadow: 0 20px 50px rgba(0,0,0,.5); }
+  @keyframes pop { from { opacity: 0; transform: scale(.88); } to { opacity: 1; transform: none; } }
+  .card .big { font-size: 54px; }
+  .card h3 { font-family: 'Noto Serif TC', serif; font-weight: 900; font-size: 20px; margin: 6px 0 8px; }
+  .card p { font-size: 14.5px; line-height: 1.8; color: #5A4E44; white-space: pre-line; }
+  .card .k { font-family: 'Special Elite', monospace; font-size: 11.5px; letter-spacing: .18em; color: var(--red); }
+  .card .btn { margin-top: 14px; padding: 11px 22px; font-size: 14.5px; }
+
+  /* ===== 密碼鎖 ===== */
+  .note { width: 100%; background: var(--paper); color: var(--paper-ink); padding: 18px; border-radius: 4px; transform: rotate(-1.5deg); clip-path: polygon(0 0, 100% 0, 100% 86%, 92% 100%, 80% 88%, 64% 100%, 50% 90%, 34% 100%, 20% 88%, 8% 100%, 0 90%); padding-bottom: 32px; }
+  .note p { font-family: 'Special Elite', monospace; font-size: 15px; line-height: 1.8; }
+  .note b { color: var(--red); }
+  .lock { margin-top: 18px; background: #26344D; border-radius: 22px; padding: 18px 16px; width: 100%; box-shadow: inset 0 2px 0 rgba(255,255,255,.08), 0 14px 30px rgba(0,0,0,.4); }
+  .lock.shake { animation: shake .45s; }
+  @keyframes shake { 20%,60% { transform: translateX(-9px); } 40%,80% { transform: translateX(9px); } }
+  .dials { display: flex; justify-content: center; gap: 10px; margin-bottom: 14px; }
+  .dials span { width: 52px; height: 62px; border-radius: 12px; background: #0F1B2D; display: grid; place-items: center; font-family: 'Special Elite', monospace; font-size: 32px; color: var(--gold); border: 1.5px solid rgba(242,193,78,.35); }
+  .keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+  .keys button { height: 52px; border-radius: 14px; border: none; background: rgba(255,255,255,.08); color: var(--ink); font-size: 22px; font-weight: 700; cursor: pointer; }
+  .keys button:active { background: rgba(242,193,78,.35); }
+  .hint-link { margin-top: 12px; font-size: 13px; color: var(--muted); text-decoration: underline; cursor: pointer; background: none; border: none; }
+
+  /* ===== 推理問答 ===== */
+  .quiz { width: 100%; text-align: left; }
+  .q { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 16px; padding: 16px; }
+  .q .num { font-family: 'Special Elite', monospace; font-size: 12px; color: var(--gold); letter-spacing: .15em; }
+  .q .text { font-size: 17px; font-weight: 700; margin: 6px 0 12px; line-height: 1.55; }
+  .opt { display: block; width: 100%; text-align: left; margin-top: 8px; padding: 13px 14px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,.18); background: rgba(255,255,255,.04); color: var(--ink); font-size: 15.5px; cursor: pointer; }
+  .opt.right { border-color: var(--green); background: rgba(59,178,122,.18); }
+  .opt.wrong { border-color: var(--red); background: rgba(214,69,69,.15); animation: shake .4s; }
+  .feedback { min-height: 26px; margin-top: 10px; font-size: 14px; color: var(--gold); }
+
+  /* ===== 嫌疑人 ===== */
+  .suspects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 8px; }
+  .suspect { background: var(--paper); color: var(--paper-ink); border-radius: 10px; padding: 10px 6px 12px; cursor: pointer; position: relative; transition: transform .25s var(--ease); box-shadow: 0 10px 24px rgba(0,0,0,.35); }
+  .suspect:nth-child(1) { transform: rotate(-3deg); } .suspect:nth-child(3) { transform: rotate(3deg); }
+  .suspect:active { transform: scale(.95); }
+  .suspect .face { font-size: 44px; filter: brightness(0); opacity: .8; transition: filter .6s, opacity .6s; }
+  .suspect.reveal .face { filter: none; opacity: 1; }
+  .suspect .who { font-family: 'Noto Serif TC', serif; font-weight: 900; font-size: 16px; margin-top: 4px; }
+  .suspect .alibi { font-size: 11.5px; color: #7A6E62; margin-top: 2px; line-height: 1.4; }
+  .suspect .guilty { position: absolute; left: 6px; right: 6px; top: 22px; border: 2.5px solid var(--red); color: var(--red); font-family: 'Special Elite', monospace; font-weight: 700; font-size: 13px; transform: rotate(-14deg) scale(0); transition: transform .4s var(--ease); background: rgba(247,240,225,.85); border-radius: 4px; }
+  .suspect.reveal .guilty { transform: rotate(-14deg) scale(1); }
+  .twist { margin-top: 18px; font-family: 'Noto Serif TC', serif; font-weight: 900; font-size: 22px; line-height: 1.5; min-height: 66px; }
+
+  /* ===== 結案：蛋糕 ===== */
+  .cake-wrap { position: relative; width: 300px; height: 250px; margin: 10px auto 0; }
+  .candles { position: absolute; left: 34px; right: 34px; top: 30px; height: 70px; }
+  .candle { position: absolute; bottom: 0; width: 10px; height: 46px; margin-left: -5px; border-radius: 3px; background: repeating-linear-gradient(45deg, #fff 0 5px, var(--peach) 5px 10px); cursor: pointer; }
+  .candle::before { content: ""; position: absolute; left: 50%; bottom: 100%; width: 1.5px; height: 6px; background: #333; transform: translateX(-50%); }
+  .flame { position: absolute; left: 50%; bottom: calc(100% + 4px); width: 12px; height: 20px; margin-left: -6px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: radial-gradient(circle at 50% 70%, #FFF7C2 0%, #FFC94A 45%, #FF7A2E 100%); box-shadow: 0 0 14px 4px rgba(255,190,80,.6); animation: flick .8s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+  @keyframes flick { from { transform: rotate(-4deg) scaleY(1); } to { transform: rotate(4deg) scaleY(1.12); } }
+  .candle.out .flame { animation: none; opacity: 0; transform: scale(.2); transition: all .35s; }
+  .candle.out::after { content: ""; position: absolute; left: 50%; bottom: calc(100% + 8px); width: 6px; height: 18px; margin-left: -3px; border-radius: 50%; background: rgba(200,200,200,.4); animation: smoke 1.2s forwards; }
+  @keyframes smoke { to { transform: translateY(-26px) scale(1.8); opacity: 0; } }
+  .count { font-family: 'Special Elite', monospace; color: var(--gold); margin-top: 6px; font-size: 14px; letter-spacing: .1em; }
+
+  .letter { width: 100%; background: var(--paper); color: var(--paper-ink); border-radius: 14px; padding: 22px 20px; text-align: left; margin-top: 6px; box-shadow: 0 16px 40px rgba(0,0,0,.4);
+    background-image: repeating-linear-gradient(transparent 0 33px, rgba(43,36,32,.08) 33px 34px); }
+  .letter .k { font-family: 'Special Elite', monospace; font-size: 12px; letter-spacing: .18em; color: var(--red); }
+  .letter h3 { font-family: 'Noto Serif TC', serif; font-weight: 900; font-size: 22px; margin: 4px 0 10px; }
+  .letter p { font-size: 15.5px; line-height: 2.15; }
+  .wish-list { list-style: none; margin: 8px 0; }
+  .wish-list li { font-size: 15.5px; line-height: 1.9; padding-left: 4px; }
+  .wish-list li.top { background: rgba(255,158,138,.25); border-radius: 8px; padding: 4px 8px; margin-top: 4px; font-weight: 700; }
+  .letter .sign { text-align: right; font-family: 'Noto Serif TC', serif; font-weight: 900; margin-top: 12px; font-size: 16px; color: var(--red-deep); }
+
+  .cert { width: 100%; margin-top: 18px; border-radius: 14px; padding: 6px; background: linear-gradient(135deg, var(--gold), #FFE6A3, var(--gold)); box-shadow: 0 16px 40px rgba(0,0,0,.45); }
+  .cert-in { background: #FFFBF0; color: var(--paper-ink); border-radius: 10px; padding: 18px 16px; border: 1.5px solid rgba(168,48,47,.3); position: relative; }
+  .cert .k { font-family: 'Special Elite', monospace; letter-spacing: .25em; font-size: 11.5px; color: var(--red); }
+  .cert h3 { font-family: 'Noto Serif TC', serif; font-weight: 900; font-size: 26px; margin: 4px 0 2px; }
+  .cert .sub { font-size: 13.5px; color: #6B5F55; }
+  .cert .badge { width: 74px; height: 74px; border-radius: 50%; margin: 12px auto 8px; display: grid; place-items: center; font-size: 36px; background: radial-gradient(circle at 35% 30%, #FFE6A3, var(--gold)); box-shadow: 0 0 0 4px #fff, 0 0 0 6px var(--gold); cursor: pointer; }
+  .cert .meta { display: flex; justify-content: space-between; font-size: 12px; color: #6B5F55; margin-top: 12px; border-top: 1px dashed #CDBFA8; padding-top: 8px; }
+  .shot-tip { margin-top: 10px; font-size: 13px; color: var(--muted); }
+
+  .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 24px); transform: translate(-50%, 20px); opacity: 0; z-index: 80; background: var(--gold); color: var(--night); font-weight: 700; font-size: 14px; padding: 10px 18px; border-radius: 999px; transition: all .35s var(--ease); pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+
+<div class="topbar">
+  <div class="case-no">CASE No. 1123</div>
+  <div>
+    <span class="chip egg-chip" id="egg-chip" onclick="eggHint()">🍑 0/3</span>
+    <button class="chip" id="music-btn" onclick="toggleMusic()">♪ 音樂</button>
+  </div>
+</div>
+
+<main>
+  <!-- 0 封面 -->
+  <section class="scene active" id="s0">
+    <div class="kicker">TOP SECRET · 機密委託</div>
+    <svg class="detective" id="peach-detective" viewBox="0 0 200 200" onclick="peachTap()" aria-label="水蜜桃偵探">
+      <defs>
+        <radialGradient id="pg" cx="38%" cy="35%" r="70%"><stop offset="0%" stop-color="#FFE3D6"/><stop offset="55%" stop-color="#FFAA92"/><stop offset="100%" stop-color="#F27C6A"/></radialGradient>
+      </defs>
+      <ellipse cx="100" cy="186" rx="52" ry="8" fill="rgba(0,0,0,.25)"/>
+      <path d="M100 52 C 54 52 40 92 46 124 C 54 166 86 178 100 178 C 114 178 146 166 154 124 C 160 92 146 52 100 52 Z" fill="url(#pg)"/>
+      <path d="M100 58 C 94 90 96 140 100 176" stroke="#E8735F" stroke-width="3" fill="none" opacity=".45"/>
+      <!-- 偵探帽 -->
+      <path d="M50 66 C 60 30 140 30 150 66 Z" fill="#8B6A4A"/>
+      <path d="M44 66 L 156 66 Q 150 76 100 76 Q 50 76 44 66 Z" fill="#6E5338"/>
+      <path d="M62 50 L 138 50" stroke="#A88660" stroke-width="3"/><path d="M70 40 L 130 40" stroke="#A88660" stroke-width="2"/>
+      <!-- 葉子 -->
+      <path d="M104 30 C 120 14 140 18 142 24 C 130 34 116 34 104 30 Z" fill="#5DBB7A"/>
+      <!-- 臉 -->
+      <ellipse cx="82" cy="112" rx="6" ry="8" fill="#3A2A25"/><ellipse cx="118" cy="112" rx="6" ry="8" fill="#3A2A25"/>
+      <circle cx="84" cy="109" r="2" fill="#fff"/><circle cx="120" cy="109" r="2" fill="#fff"/>
+      <ellipse cx="70" cy="128" rx="9" ry="5" fill="#FF7F7F" opacity=".5"/><ellipse cx="130" cy="128" rx="9" ry="5" fill="#FF7F7F" opacity=".5"/>
+      <path d="M90 130 Q 100 140 110 130" stroke="#3A2A25" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- 放大鏡 -->
+      <g transform="rotate(-25 160 140)"><circle cx="160" cy="132" r="20" fill="rgba(200,230,255,.35)" stroke="#F2C14E" stroke-width="6"/><rect x="156" y="152" width="8" height="30" rx="4" fill="#7A5A3A"/></g>
+    </svg>
+    <h1>水蜜桃偵探事務所</h1>
+    <p class="lead" style="margin-top:6px">一份署名給你的機密檔案，剛剛送到了。</p>
+    <div class="folder">
+      <div class="stamp">URGENT</div>
+      <div class="to">TO · 名偵探</div>
+      <div class="name">水蜜桃 小姐</div>
+      <p>本事務所接獲一起離奇案件，<br>全城只有你能破解。<br>請拆開封印，接下委託。</p>
+    </div>
+    <div class="seal" onclick="startCase()">13</div>
+    <button class="btn" onclick="startCase()">🔍 拆開封印，接下委託</button>
+  </section>
+
+  <!-- 1 案件簡報 -->
+  <section class="scene" id="s1">
+    <div class="progress"><i class="done"></i><i></i><i></i><i></i><i></i></div>
+    <div class="news">
+      <div class="mast">水果幫日報 <small>2026.11.23 · 號外</small></div>
+      <div class="head">生日蛋糕離奇失蹤！<br>現場只留下三條線索</div>
+      <p>11 月 23 日凌晨，一顆準備給 <span class="redline">13 歲壽星</span> 的生日蛋糕，從冰箱裡憑空消失。</p>
+      <p style="margin-top:6px">警方毫無頭緒，只好緊急委託<b>名偵探水蜜桃</b>出馬。據說犯人就藏在……<span class="redline">你最熟悉的地方</span>。</p>
+    </div>
+    <button class="btn" onclick="goScene(2)">🔦 前往案發現場</button>
+  </section>
+
+  <!-- 2 現場勘查 -->
+  <section class="scene" id="s2">
+    <div class="progress"><i class="done"></i><i class="done"></i><i></i><i></i><i></i></div>
+    <h2>案發現場</h2>
+    <p class="lead" style="margin-bottom:12px">燈被關掉了！手指在畫面上滑動當手電筒，<br>找出 3 條線索。</p>
+    <div class="room" id="room">
+      <svg class="bg" viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+        <rect width="300" height="400" fill="#33476A"/>
+        <rect y="300" width="300" height="100" fill="#5A4636"/>
+        <path d="M0 300 L300 300" stroke="#3E3026" stroke-width="4"/>
+        <!-- 窗戶與月亮 -->
+        <rect x="30" y="40" width="110" height="120" rx="6" fill="#1B2A44" stroke="#8B6A4A" stroke-width="6"/>
+        <path d="M85 40 V160 M30 100 H140" stroke="#8B6A4A" stroke-width="4"/>
+        <circle cx="112" cy="70" r="16" fill="#FFF4C7"/><circle cx="118" cy="66" r="14" fill="#1B2A44"/>
+        <circle cx="50" cy="132" r="1.6" fill="#fff"/><circle cx="70" cy="120" r="1.2" fill="#fff"/><circle cx="125" cy="140" r="1.4" fill="#fff"/>
+        <!-- 冰箱（打開，空的） -->
+        <rect x="200" y="120" width="80" height="180" rx="8" fill="#DDE6EE"/>
+        <rect x="200" y="120" width="80" height="70" rx="8" fill="#C9D4DE"/>
+        <rect x="206" y="196" width="68" height="98" rx="4" fill="#F6FAFF"/>
+        <path d="M206 236 H274 M206 266 H274" stroke="#B8C6D3" stroke-width="2"/>
+        <text x="240" y="230" font-size="11" text-anchor="middle" fill="#8A9AAB">？</text>
+        <!-- 桌子 -->
+        <rect x="20" y="236" width="150" height="12" rx="3" fill="#8B6A4A"/>
+        <rect x="30" y="248" width="10" height="56" fill="#6E5338"/><rect x="150" y="248" width="10" height="56" fill="#6E5338"/>
+        <!-- 盤子 + 奶油 -->
+        <ellipse cx="95" cy="232" rx="40" ry="7" fill="#fff"/><ellipse cx="95" cy="230" rx="30" ry="4" fill="#F2E9DC"/>
+        <circle cx="80" cy="229" r="3" fill="#FFD6C9"/><circle cx="110" cy="231" r="2" fill="#FFD6C9"/>
+        <!-- 腳印 -->
+        <g fill="#FFE3D6" opacity=".65"><ellipse cx="60" cy="340" rx="7" ry="11"/><ellipse cx="95" cy="362" rx="7" ry="11"/><ellipse cx="130" cy="338" rx="7" ry="11"/><ellipse cx="165" cy="360" rx="7" ry="11"/><ellipse cx="200" cy="336" rx="7" ry="11"/></g>
+        <!-- 書架 -->
+        <rect x="160" y="40" width="120" height="8" fill="#8B6A4A"/>
+        <rect x="166" y="14" width="12" height="26" fill="#D64545"/><rect x="180" y="18" width="10" height="22" fill="#F2C14E"/><rect x="192" y="10" width="14" height="30" fill="#3BB27A"/><rect x="208" y="20" width="10" height="20" fill="#FF9E8A"/>
+      </svg>
+      <button class="clue" id="c-japan" style="left:76%;top:9%" onclick="foundClue('japan', this)">🎫</button>
+      <button class="clue" id="c-shoes" style="left:22%;top:86%" onclick="foundClue('shoes', this)">👟</button>
+      <button class="clue" id="c-pig" style="left:44%;top:53%" onclick="foundClue('pig', this)">🐷</button>
+      <div class="dark" id="dark"></div>
+      <div class="room-tip" id="room-tip">👆 滑動找線索 · 找到就點它</div>
+    </div>
+    <div class="clue-tray"><div id="t-japan">？</div><div id="t-shoes">？</div><div id="t-pig">？</div></div>
+    <button class="hint-link" onclick="roomHint()">找不到？給我一點提示</button>
+  </section>
+
+  <!-- 3 密碼鎖 -->
+  <section class="scene" id="s3">
+    <div class="progress"><i class="done"></i><i class="done"></i><i class="done"></i><i></i><i></i></div>
+    <h2>上鎖的證物箱</h2>
+    <div class="note">
+      <p>「想打開箱子？<br>密碼就是……<b>今天這個特別的日子</b>。<br>月份兩碼 ＋ 日期兩碼。」<br>—— 神秘人留</p>
+    </div>
+    <div class="lock" id="lock">
+      <div class="dials"><span id="d0">_</span><span id="d1">_</span><span id="d2">_</span><span id="d3">_</span></div>
+      <div class="keys">
+        <button onclick="press(1)">1</button><button onclick="press(2)">2</button><button onclick="press(3)">3</button>
+        <button onclick="press(4)">4</button><button onclick="press(5)">5</button><button onclick="press(6)">6</button>
+        <button onclick="press(7)">7</button><button onclick="press(8)">8</button><button onclick="press(9)">9</button>
+        <button onclick="clearCode()">⌫</button><button onclick="press(0)">0</button><button onclick="checkCode()" style="background:rgba(242,193,78,.25)">🔓</button>
+      </div>
+    </div>
+    <button class="hint-link" onclick="toast('💡 今天是 11 月 23 日喔')">需要提示</button>
+  </section>
+
+  <!-- 4 推理問答 -->
+  <section class="scene" id="s4">
+    <div class="progress"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i></i></div>
+    <h2>推理時間</h2>
+    <p class="lead" style="margin-bottom:14px">箱子裡是三份證物報告。<br>只有真正的水蜜桃答得出來。</p>
+    <div class="quiz">
+      <div class="q" id="quiz-box">
+        <div class="num" id="q-num">EVIDENCE 1 / 3</div>
+        <div class="text" id="q-text"></div>
+        <div id="q-opts"></div>
+        <div class="feedback" id="q-fb"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 指認犯人 -->
+  <section class="scene" id="s5">
+    <div class="progress"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i></div>
+    <h2>指認犯人</h2>
+    <p class="lead">證據都到齊了。<br>名偵探，偷走蛋糕的人是誰？</p>
+    <div class="suspects">
+      <div class="suspect" onclick="accuse(this)"><div class="face">👨</div><div class="who">爸爸</div><div class="alibi">說自己整晚<br>都在「加班」</div><div class="guilty">GUILTY</div></div>
+      <div class="suspect" onclick="accuse(this)"><div class="face">👩</div><div class="who">媽媽</div><div class="alibi">手上有<br>可疑的奶油</div><div class="guilty">GUILTY</div></div>
+      <div class="suspect" onclick="accuse(this)"><div class="face">👦</div><div class="who">哥哥</div><div class="alibi">半夜被看到<br>躡手躡腳</div><div class="guilty">GUILTY</div></div>
+    </div>
+    <div class="twist" id="twist"></div>
+    <button class="btn gold" id="to-final" style="display:none" onclick="goScene(6)">🎂 找回蛋糕！</button>
+  </section>
+
+  <!-- 6 結案 -->
+  <section class="scene" id="s6">
+    <div class="kicker">CASE CLOSED · 結案</div>
+    <h2>蛋糕找到了！</h2>
+    <p class="lead">一根一根點蠟燭吹熄，<br>或按下面按鈕一口氣吹。</p>
+    <div class="cake-wrap">
+      <div class="candles" id="candles"></div>
+      <svg viewBox="0 0 300 250" width="300" height="250" style="position:absolute;inset:0;pointer-events:none">
+        <ellipse cx="150" cy="232" rx="135" ry="14" fill="rgba(0,0,0,.3)"/>
+        <ellipse cx="150" cy="222" rx="130" ry="16" fill="#E9E1D3"/>
+        <rect x="40" y="150" width="220" height="70" rx="10" fill="#FFF3EC"/>
+        <path d="M40 160 Q 60 178 80 160 Q 100 178 120 160 Q 140 178 160 160 Q 180 178 200 160 Q 220 178 240 160 Q 250 170 260 160 L 260 150 L 40 150 Z" fill="#FF9E8A"/>
+        <rect x="52" y="100" width="196" height="56" rx="10" fill="#FFF8F2"/>
+        <path d="M52 108 Q 70 124 88 108 Q 106 124 124 108 Q 142 124 160 108 Q 178 124 196 108 Q 214 124 232 108 Q 240 116 248 108 L 248 100 L 52 100 Z" fill="#FFB9A8"/>
+        <text x="150" y="196" text-anchor="middle" font-family="Noto Serif TC, serif" font-weight="900" font-size="22" fill="#D64545">水蜜桃 13</text>
+        <circle cx="70" cy="142" r="7" fill="#FF7A8A"/><circle cx="230" cy="142" r="7" fill="#FF7A8A"/>
+        <text x="150" y="140" text-anchor="middle" font-size="18">🍑</text>
+      </svg>
+    </div>
+    <div class="count" id="count">13 / 13 根還亮著</div>
+    <button class="btn" id="blow-all" onclick="blowAll()">🌬 一口氣吹熄！</button>
+
+    <div id="ending" style="display:none;width:100%">
+      <div class="letter" style="margin-top:22px">
+        <div class="k">FINAL REPORT · 結案報告</div>
+        <h3>給 13 歲的水蜜桃：</h3>
+        <p>恭喜破案！犯人就是我們——因為想給你一個驚喜 😆<br>13 歲了，我們最想對你說：</p>
+        <ul class="wish-list">
+          <li>🗾 願你有一天，站在<b>日本</b>的街頭，看見自己一直想看的風景。</li>
+          <li>👟 願你在<b>競走</b>場上一步一步，走出屬於自己的理想成績。</li>
+          <li>💰 願你努力的每一分，都換來<b>賺大錢</b>的那一天（記得請客）。</li>
+          <li class="top">❤️ 但最重要的是：好好休養、保護好自己的身體。<br>身體顧好了，夢想才跑得遠。我們永遠是你最大的啦啦隊！</li>
+        </ul>
+        <p>生日快樂，我們的名偵探。</p>
+        <div class="sign">—— 愛你的 爸爸、媽媽、哥哥</div>
+      </div>
+
+      <div class="cert" id="cert">
+        <div class="cert-in">
+          <div class="k">CERTIFICATE · 偵探證書</div>
+          <div class="badge" onclick="badgeTap()">🍑</div>
+          <h3>名偵探 水蜜桃</h3>
+          <div class="sub">成功破解「11/23 生日蛋糕失蹤事件」<br>即日起正式升格為 <b>13 歲 · 一級偵探</b></div>
+          <div class="meta"><span>CASE No. 1123</span><span>2026.11.23</span><span>水蜜桃偵探事務所</span></div>
+        </div>
+      </div>
+      <div class="shot-tip">📸 截圖留念這張證書吧！</div>
+      <button class="btn gold" onclick="celebrate()">🎆 再放一次煙火</button>
+      <div><button class="hint-link" onclick="restart()">↺ 從頭再玩一次</button></div>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="modal" onclick="if(event.target===this) closeModal()">
+  <div class="card"><div class="k" id="m-k"></div><div class="big" id="m-big"></div><h3 id="m-title"></h3><p id="m-body"></p><button class="btn" id="m-btn" onclick="closeModal()">收進證物袋</button></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========== 共用 ========== */
+const $ = (id) => document.getElementById(id);
+let modalNext = null;
+function toast(msg, ms = 2600) { const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), ms); }
+function openModal({ k = "", big = "", title = "", body = "", btn = "收進證物袋", next = null }) {
+  $("m-k").textContent = k; $("m-big").textContent = big; $("m-title").textContent = title; $("m-body").textContent = body; $("m-btn").textContent = btn;
+  modalNext = next; $("modal").classList.add("open");
+}
+function closeModal() { $("modal").classList.remove("open"); if (modalNext) { const n = modalNext; modalNext = null; n(); } }
+function goScene(n) {
+  document.querySelectorAll(".scene").forEach((s) => s.classList.remove("active"));
+  $("s" + n).classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  if (n === 4) renderQuestion();
+  if (n === 6) buildCandles();
+}
+
+/* ========== 音樂（MP3，手機最穩）+ 音效 ========== */
+const bgm = new Audio("./theme.mp3"); bgm.loop = true; bgm.volume = 0.7; bgm.setAttribute("playsinline", "");
+let musicOn = false, actx = null;
+function startMusic() { try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
+  musicOn = true; $("music-btn").classList.add("on"); bgm.play().catch(() => {}); }
+function toggleMusic() { if (musicOn) { bgm.pause(); musicOn = false; $("music-btn").classList.remove("on"); } else startMusic(); }
+document.addEventListener("visibilitychange", () => { if (!document.hidden && musicOn) bgm.play().catch(() => {}); });
+function sfx(type) {
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state !== "running") actx.resume();
+    const seq = { ok: [784, 1047], bad: [220, 180], ding: [1047, 1319, 1568], tap: [660] }[type] || [660];
+    seq.forEach((f, i) => { const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime + i * 0.09;
+      o.type = type === "bad" ? "square" : "triangle"; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.12, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + 0.4); });
+  } catch (e) {}
+}
+
+/* ========== 0 → 1 ========== */
+function startCase() { startMusic(); sfx("ding"); burst(innerWidth / 2, innerHeight * 0.6, 40, ["#D64545", "#F2C14E", "#FF9E8A"]); setTimeout(() => goScene(1), 350); }
+
+/* ========== 2 手電筒找線索 ========== */
+const CLUES = {
+  japan: { big: "🎫", title: "線索 1：一張去日本的機票", body: "目的地：日本。\n犯人似乎很清楚，\n這是水蜜桃最想去的國家。" },
+  shoes: { big: "👟⏱", title: "線索 2：競走鞋與碼錶", body: "鞋底磨得好認真，\n碼錶上還停著一個好成績。\n犯人很了解水蜜桃在田徑場上的努力。" },
+  pig:   { big: "🐷", title: "線索 3：沉甸甸的撲滿", body: "上面貼著紙條：「未來的大富翁」。\n看來有人知道，\n水蜜桃想要賺大錢！" },
+};
+const got = new Set();
+const room = $("room"), dark = $("dark");
+function moveLight(e) {
+  const r = room.getBoundingClientRect(); const p = e.touches ? e.touches[0] : e;
+  dark.style.setProperty("--x", ((p.clientX - r.left) / r.width * 100) + "%");
+  dark.style.setProperty("--y", ((p.clientY - r.top) / r.height * 100) + "%");
+  $("room-tip").style.opacity = 0;
+}
+room.addEventListener("pointermove", moveLight); room.addEventListener("touchmove", moveLight, { passive: true });
+room.addEventListener("pointerdown", moveLight);
+function foundClue(id, el) {
+  if (got.has(id)) return;
+  got.add(id); el.classList.add("found"); $("t-" + id).textContent = CLUES[id].big.slice(0, 2); $("t-" + id).classList.add("got");
+  sfx("ok"); const r = el.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, 20);
+  const last = got.size === 3;
+  openModal({ k: `EVIDENCE ${got.size} / 3`, ...CLUES[id], btn: last ? "三條線索都到手了 →" : "收進證物袋",
+    next: last ? () => { dark.classList.add("off"); setTimeout(() => goScene(3), 700); } : null });
+}
+function roomHint() {
+  const left = Object.keys(CLUES).find((k) => !got.has(k)); if (!left) return;
+  const el = $("c-" + left); const r = room.getBoundingClientRect(), e = el.getBoundingClientRect();
+  dark.style.setProperty("--x", ((e.left + e.width / 2 - r.left) / r.width * 100) + "%");
+  dark.style.setProperty("--y", ((e.top + e.height / 2 - r.top) / r.height * 100) + "%");
+  toast("💡 手電筒幫你照到一條了，點它！");
+}
+
+/* ========== 3 密碼鎖 ========== */
+let code = "";
+function showCode() { for (let i = 0; i < 4; i++) $("d" + i).textContent = code[i] || "_"; }
+function press(n) { if (code.length >= 4) return; code += n; sfx("tap"); showCode(); if (code.length === 4) setTimeout(checkCode, 250); }
+function clearCode() { code = code.slice(0, -1); showCode(); }
+function checkCode() {
+  if (code === "1123") {
+    sfx("ding"); burst(innerWidth / 2, innerHeight / 2, 50);
+    openModal({ k: "UNLOCKED", big: "🔓", title: "證物箱打開了！", body: "11 月 23 日——\n當然是水蜜桃的生日！\n箱子裡有三份證物報告……", btn: "開始推理 →", next: () => goScene(4) });
+  } else if (code.length) {
+    sfx("bad"); const l = $("lock"); l.classList.remove("shake"); void l.offsetWidth; l.classList.add("shake");
+    toast(code === "1313" || code === "0013" ? "13 很接近了！是哪一天呢？" : "密碼錯誤……再想想今天是幾月幾號？"); code = ""; setTimeout(showCode, 300);
+  }
+}
+
+/* ========== 4 推理問答 ========== */
+const QUIZ = [
+  { q: "證物 1：機票上的目的地，是水蜜桃最想去的國家。是哪裡？", opts: ["🇫🇷 法國", "🇯🇵 日本", "🇰🇷 韓國"], a: 1, ok: "答對！總有一天要去日本 🗾" },
+  { q: "證物 2：這雙鞋屬於一位認真的運動員。水蜜桃專攻的田徑項目是？", opts: ["🏃 百米短跑", "🦘 跳遠", "🚶‍♀️ 競走"], a: 2, ok: "答對！競走選手水蜜桃，加油 👟" },
+  { q: "證物 3：犯人留下最後一句話，哪一句才是他們最想說的？", opts: ["💰 快點賺大錢", "❤️ 照顧好身體，比什麼都重要", "📚 功課寫完了沒"], a: 1, ok: "完全正確。這就是家人最想說的話 ❤️" },
+];
+let qi = 0;
+function renderQuestion() {
+  const it = QUIZ[qi]; $("q-num").textContent = `EVIDENCE ${qi + 1} / ${QUIZ.length}`; $("q-text").textContent = it.q; $("q-fb").textContent = "";
+  $("q-opts").innerHTML = ""; it.opts.forEach((o, i) => { const b = document.createElement("button"); b.className = "opt"; b.textContent = o; b.onclick = () => answer(i, b); $("q-opts").appendChild(b); });
+}
+function answer(i, b) {
+  const it = QUIZ[qi];
+  if (i === it.a) {
+    b.classList.add("right"); $("q-fb").textContent = "✅ " + it.ok; sfx("ok");
+    const r = b.getBoundingClientRect(); burst(r.left + r.width / 2, r.top, 24);
+    document.querySelectorAll(".opt").forEach((x) => (x.onclick = null));
+    setTimeout(() => { qi++; if (qi < QUIZ.length) renderQuestion(); else goScene(5); }, 1500);
+  } else {
+    b.classList.remove("wrong"); void b.offsetWidth; b.classList.add("wrong"); sfx("bad");
+    $("q-fb").textContent = qi === 2 && i === 0 ? "這也是真心話啦……但還有更重要的 😉" : "嗯……名偵探再想想？";
+  }
+}
+
+/* ========== 5 指認犯人：大反轉 ========== */
+let accused = false;
+function accuse(el) {
+  if (accused) return; accused = true; el.classList.add("reveal"); sfx("tap");
+  const name = el.querySelector(".who").textContent;
+  $("twist").textContent = `「犯人就是${name}！」`;
+  setTimeout(() => { $("twist").textContent = "等等……證據還指向另外兩個人……"; sfx("bad"); }, 1400);
+  setTimeout(() => {
+    document.querySelectorAll(".suspect").forEach((s) => s.classList.add("reveal"));
+    $("twist").innerHTML = "真相是——<br><span style='color:var(--gold)'>全家人一起把蛋糕藏起來了！</span>";
+    sfx("ding"); celebrate(); $("to-final").style.display = "inline-block";
+  }, 3000);
+}
+
+/* ========== 6 13 根蠟燭 ========== */
+let lit = 13;
+function buildCandles() {
+  const box = $("candles"); if (box.children.length) return;
+  for (let i = 0; i < 13; i++) {
+    const c = document.createElement("div"); c.className = "candle";
+    const row = i < 7 ? 0 : 1, idx = row ? i - 7 : i, n = row ? 6 : 7;
+    c.style.left = (row ? 12 : 4) + idx * ((row ? 76 : 92) / (n - 1)) + "%";
+    c.style.bottom = row ? "-26px" : "0px"; c.style.height = row ? "40px" : "46px";
+    c.innerHTML = '<div class="flame"></div>'; c.onclick = () => blow(c); box.appendChild(c);
+  }
+}
+function blow(c) {
+  if (c.classList.contains("out")) return; c.classList.add("out"); lit--; sfx("tap");
+  $("count").textContent = lit ? `${lit} / 13 根還亮著` : "🎉 13 根全部吹熄！";
+  if (lit === 0) finale();
+}
+function blowAll() { [...document.querySelectorAll(".candle:not(.out)")].forEach((c, i) => setTimeout(() => blow(c), i * 70)); }
+function finale() {
+  $("blow-all").style.display = "none"; sfx("ding"); celebrate(); setTimeout(celebrate, 900); setTimeout(celebrate, 1800);
+  setTimeout(() => { $("ending").style.display = "block"; $("ending").animate([{ opacity: 0, transform: "translateY(20px)" }, { opacity: 1, transform: "none" }], { duration: 800, easing: "ease-out" });
+    setTimeout(() => $("ending").scrollIntoView({ behavior: "smooth", block: "start" }), 300); }, 900);
+}
+function restart() { location.href = location.pathname + (location.search || ""); }
+
+/* ========== 隱藏彩蛋（3 顆）========== */
+const eggs = new Set();
+function egg(id, title, body) {
+  const first = !eggs.has(id); eggs.add(id); $("egg-chip").textContent = `🍑 ${eggs.size}/3`;
+  if (first && eggs.size === 3) { body += "\n\n🏆 3 顆彩蛋全收集！\n獎品：生日當天可以指定一道晚餐菜色 😋"; $("egg-chip").classList.add("on"); }
+  sfx("ding"); openModal({ k: `SECRET ${eggs.size} / 3`, big: "🥚", title, body, btn: "太好了！" });
+}
+let pTaps = 0, pTimer;
+function peachTap() { pTaps++; clearTimeout(pTimer); pTimer = setTimeout(() => (pTaps = 0), 900);
+  $("peach-detective").animate([{ transform: "scale(1)" }, { transform: "scale(1.12)" }, { transform: "scale(1)" }], { duration: 250 });
+  if (pTaps >= 3) { pTaps = 0; rainEmoji("🍑", 50); egg("peach", "🍑 水蜜桃雨！", "連點偵探三下，\n天上就會下起水蜜桃雨。\n這是只有本人才知道的秘密 🤫"); } }
+function badgeTap() { rainEmoji("🌸", 60); egg("sakura", "🌸 日本櫻花", "提前送你一場櫻花雨，\n等你哪天真的站在日本的櫻花樹下，\n記得拍照傳回來給我們看！"); }
+// 第 3 顆：在現場點月亮附近（窗戶）
+room.addEventListener("click", (e) => { const r = room.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+  if (x > 0.3 && x < 0.45 && y > 0.12 && y < 0.25) egg("moon", "🌙 月亮在偷看", "連月亮都知道今天是你的生日。\n不過……今晚記得早點睡，\n選手要好好休息才跑得快 💤"); });
+function eggHint() {
+  const hints = { peach: "回到第一頁，連點水蜜桃偵探三下", moon: "在案發現場，點點看窗外的月亮", sakura: "結案後，點證書上的徽章" };
+  const left = Object.keys(hints).find((k) => !eggs.has(k));
+  toast(left ? "💡 彩蛋提示：" + hints[left] : "3 顆彩蛋都找到了，名偵探果然厲害 🏆", 3200);
+}
+
+/* ========== 煙火 / 雨 ========== */
+const cv = $("fx"), ctx = cv.getContext("2d"); let W, H, DPR = Math.min(devicePixelRatio || 1, 2);
+function resize() { W = innerWidth; H = innerHeight; cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
+resize(); addEventListener("resize", resize);
+const P = [], R = []; const COLS = ["#F2C14E", "#FF9E8A", "#D64545", "#FFFFFF", "#3BB27A", "#FFD6C9"];
+function burst(x, y, n = 36, cols = COLS) { for (let i = 0; i < n; i++) { const a = Math.PI * 2 * i / n + Math.random() * .3, s = 2 + Math.random() * 4.5;
+  P.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 1, life: 1, d: .012 + Math.random() * .012, r: 2 + Math.random() * 2.5, c: cols[i % cols.length] }); } }
+function celebrate() { [[.2, .25], [.8, .22], [.5, .15], [.35, .4], [.65, .38]].forEach(([x, y], i) => setTimeout(() => burst(W * x, H * y, 46), i * 220)); }
+function rainEmoji(ch, n) { for (let i = 0; i < n; i++) R.push({ ch, x: Math.random() * W, y: -30 - Math.random() * H, vy: 2 + Math.random() * 3, rot: Math.random() * 6, vr: (Math.random() - .5) * .12, s: 20 + Math.random() * 16 }); }
+function loop() {
+  ctx.clearRect(0, 0, W, H);
+  for (let i = P.length - 1; i >= 0; i--) { const p = P[i]; p.x += p.vx; p.y += p.vy; p.vy += .05; p.vx *= .985; p.life -= p.d;
+    if (p.life <= 0) { P.splice(i, 1); continue; } ctx.globalAlpha = p.life; ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life + .5, 0, 7); ctx.fill(); }
+  ctx.globalAlpha = 1;
+  for (let i = R.length - 1; i >= 0; i--) { const r = R[i]; r.y += r.vy; r.rot += r.vr; if (r.y > H + 40) { R.splice(i, 1); continue; }
+    ctx.save(); ctx.translate(r.x, r.y); ctx.rotate(r.rot); ctx.font = r.s + "px serif"; ctx.textAlign = "center"; ctx.fillText(r.ch, 0, 0); ctx.restore(); }
+  requestAnimationFrame(loop);
+}
+loop();
+document.addEventListener("click", (e) => { if (e.target.closest("button, .suspect, .opt, .candle, .clue, .room, .card, .badge, .chip, .detective, .seal")) return; burst(e.clientX, e.clientY, 16); });
+</script>
+</body>
+</html>
