@@ -7,6 +7,7 @@
 <meta name="description" content="一份給名偵探水蜜桃的機密委託 🔍" />
 <meta property="og:title" content="🔍 機密委託：致名偵探 水蜜桃" />
 <meta property="og:description" content="11/23 凌晨，生日蛋糕離奇失蹤了……" />
+<meta name="robots" content="noindex, nofollow" />
 <meta name="theme-color" content="#0F1B2D" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -177,6 +178,24 @@
 
   .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 24px); transform: translate(-50%, 20px); opacity: 0; z-index: 80; background: var(--gold); color: var(--night); font-weight: 700; font-size: 14px; padding: 10px 18px; border-radius: 999px; transition: all .35s var(--ease); pointer-events: none; max-width: 90vw; text-align: center; }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  /* ===== 偵探檔案館：照片牆 ===== */
+  .archive { width: 100%; margin-top: 26px; text-align: left; }
+  .archive h3 { font-family: 'Noto Serif TC', serif; font-weight: 900; font-size: 20px; }
+  .archive .sub { color: var(--muted); font-size: 13.5px; margin: 2px 0 12px; }
+  .strip { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px 4px 22px; margin: 0 -16px; padding-left: 16px; padding-right: 16px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .strip::-webkit-scrollbar { display: none; }
+  .polaroid { flex: 0 0 78%; scroll-snap-align: center; background: #fff; padding: 10px 10px 14px; border-radius: 4px; box-shadow: 0 14px 30px rgba(0,0,0,.45); color: var(--paper-ink); position: relative; cursor: zoom-in; }
+  .polaroid:nth-child(odd) { transform: rotate(-2deg); } .polaroid:nth-child(even) { transform: rotate(2deg); }
+  .polaroid img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; border-radius: 2px; }
+  .polaroid .tag { font-family: 'Special Elite', monospace; font-size: 11px; letter-spacing: .14em; color: var(--red); margin-top: 8px; }
+  .polaroid .cap { font-size: 14px; line-height: 1.6; margin-top: 2px; font-weight: 500; }
+  .polaroid::before { content: ""; position: absolute; top: -10px; left: 50%; width: 80px; height: 22px; margin-left: -40px; background: rgba(242,193,78,.55); transform: rotate(-3deg); }
+  .swipe-tip { text-align: center; font-size: 12.5px; color: var(--muted); margin-top: -6px; }
+  .lightbox { position: fixed; inset: 0; z-index: 75; background: rgba(5,10,20,.92); display: none; align-items: center; justify-content: center; flex-direction: column; padding: 20px; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 100%; max-height: 72vh; border: 8px solid #fff; border-radius: 4px; }
+  .lightbox p { margin-top: 14px; font-size: 15px; text-align: center; line-height: 1.7; }
 </style>
 </head>
 <body>
@@ -367,6 +386,19 @@
         <div class="sign">—— 愛你的 爸爸、媽媽、哥哥</div>
       </div>
 
+
+      <div class="archive">
+        <div class="kicker" style="text-align:left">ARCHIVE · 偵探檔案館</div>
+        <h3>📁 歷屆生日證物</h3>
+        <div class="sub">經調查，這群人不是第一次犯案了……</div>
+        <div class="strip" id="strip">
+          <div class="polaroid" onclick="zoom(this)"><img src="./photos/evidence-1.jpg" alt="全家合照" loading="lazy"><div class="tag">EVIDENCE A</div><div class="cap">共犯集團大合照 📸<br>人人有份，誰也跑不掉！</div></div>
+          <div class="polaroid" onclick="zoom(this)"><img src="./photos/evidence-2.jpg" alt="鼻子沾奶油" loading="lazy"><div class="tag">EVIDENCE B</div><div class="cap">鼻子上的奶油——罪證確鑿 🍰<br>後面還有人在比 YA</div></div>
+          <div class="polaroid" onclick="zoom(this)"><img src="./photos/evidence-3.jpg" alt="收到紅包" loading="lazy"><div class="tag">EVIDENCE C</div><div class="cap">紅包一枚 🧧<br>大富翁之路，正式啟動</div></div>
+          <div class="polaroid" onclick="zoom(this)"><img src="./photos/evidence-4.jpg" alt="全家和蛋糕與鈔票串" loading="lazy"><div class="tag">EVIDENCE D</div><div class="cap">鈔票串 + 蛋糕 💰<br>「賺大錢」的夢想，全家都在幫你預演</div></div>
+        </div>
+        <div class="swipe-tip">👈 左右滑動看證物 · 點照片放大 👉</div>
+      </div>
       <div class="cert" id="cert">
         <div class="cert-in">
           <div class="k">CERTIFICATE · 偵探證書</div>
@@ -386,6 +418,7 @@
 <div class="modal" id="modal" onclick="if(event.target===this) closeModal()">
   <div class="card"><div class="k" id="m-k"></div><div class="big" id="m-big"></div><h3 id="m-title"></h3><p id="m-body"></p><button class="btn" id="m-btn" onclick="closeModal()">收進證物袋</button></div>
 </div>
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img id="lb-img" alt=""><p id="lb-cap"></p></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -536,6 +569,10 @@ function finale() {
 }
 function restart() { location.href = location.pathname + (location.search || ""); }
 
+function zoom(el) { $("lb-img").src = el.querySelector("img").src; $("lb-cap").innerHTML = el.querySelector(".cap").innerHTML; $("lightbox").classList.add("open"); sfx("tap"); }
+// 先預載照片，結案時就不會等
+setTimeout(() => [1, 2, 3, 4].forEach((i) => { const im = new Image(); im.src = `./photos/evidence-${i}.jpg`; }), 3000);
+
 /* ========== 隱藏彩蛋（3 顆）========== */
 const eggs = new Set();
 function egg(id, title, body) {
@@ -576,7 +613,7 @@ function loop() {
   requestAnimationFrame(loop);
 }
 loop();
-document.addEventListener("click", (e) => { if (e.target.closest("button, .suspect, .opt, .candle, .clue, .room, .card, .badge, .chip, .detective, .seal")) return; burst(e.clientX, e.clientY, 16); });
+document.addEventListener("click", (e) => { if (e.target.closest(".polaroid, .lightbox, button, .suspect, .opt, .candle, .clue, .room, .card, .badge, .chip, .detective, .seal")) return; burst(e.clientX, e.clientY, 16); });
 </script>
 </body>
 </html>
