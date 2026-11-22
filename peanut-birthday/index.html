@@ -724,6 +724,9 @@
     .voucher-bottom b { color: var(--ink-main); }
     .voucher-serial { font-family: 'Cormorant Garamond', serif; font-size: 15px; letter-spacing: .12em; color: var(--rose); font-weight: 700; }
     .voucher-actions { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
+
+    .egg-glow { animation: eggGlow 1.4s ease-in-out 3; border-radius: 12px; }
+    @keyframes eggGlow { 0%,100% { box-shadow: 0 0 0 0 rgba(196,151,59,0); } 50% { box-shadow: 0 0 0 8px rgba(196,151,59,.45), 0 0 24px rgba(196,151,59,.6); } }
   </style>
 </head>
 <body>
@@ -733,7 +736,7 @@
   <header class="cinema-bar top">
     <div class="cinema-brand">PEANUT CINEMA · V2</div>
     <div class="cinema-controls">
-      <span class="egg-counter" id="egg-counter" title="隱藏彩蛋">🥚 0/5</span>
+      <span class="egg-counter show" id="egg-counter" title="點我看提示" onclick="eggHint()" style="cursor:pointer">🥚 0/5 · 提示</span>
       <button class="pill-btn" id="btn-music" onclick="toggleMusic()">♪ 鋼琴配樂：關閉</button>
       <button class="pill-btn edit-only" onclick="openEditor()">✎ 編輯文案 / JSON</button>
       <button class="pill-btn" onclick="replayCinema()">↺ 重播開場</button>
@@ -1362,7 +1365,7 @@
     function findEgg(id, title, body, kicker = "SECRET FOUND") {
       const first = id !== "all" && !found.has(id); if (id !== "all") found.add(id);
       const c = document.getElementById("egg-counter");
-      c.textContent = `🥚 ${found.size}/${EGGS_TOTAL}`; c.classList.add("show");
+      c.textContent = found.size >= EGGS_TOTAL ? `🥚 ${found.size}/${EGGS_TOTAL} 全收集` : `🥚 ${found.size}/${EGGS_TOTAL} · 提示`; c.classList.add("show");
       document.getElementById("egg-kicker").textContent = first ? `${kicker} · ${found.size}/${EGGS_TOTAL}` : kicker;
       document.getElementById("egg-title").textContent = title;
       document.getElementById("egg-body").textContent = body;
@@ -1454,6 +1457,36 @@
       launchCelebrationFireworks(); playChimeChord();
     }
     function closeVoucher() { document.getElementById("voucher-modal").classList.remove("open"); }
+
+    const HINTS = [
+      { id: "peanut", sel: "#display-headline", side: "front", text: "連點三下明信片的大標題，看看會下什麼雨 ☔" },
+      { id: "wish", sel: "#candle-box", side: "front", text: "先吹熄蠟燭，再按住蠟燭那一格不放 2 秒 🕯️" },
+      { id: "eiffel", sel: ".postage-stamp", side: "back", text: "翻到背面，點一下右上角的鐵塔郵票 🗼" },
+      { id: "owl", sel: ".postmark-circle", side: "back", text: "翻到背面，點那個圓圓的台北郵戳 📮" },
+      { id: "tz", sel: ".dual-clock", side: "any", text: "看看最底下的台北 / Paris 時鐘，點點看 ⏰" },
+    ];
+    function nextHint() { return HINTS.find((h) => !found.has(h.id)); }
+    function eggHint() {
+      const h = nextHint();
+      if (!h) return showToast("5 顆彩蛋都找到了，你最棒 🏆");
+      const act3 = document.getElementById("act-3").classList.contains("visible");
+      showToast(act3 ? `💡 提示：${h.text}` : "💡 先拆開信封，彩蛋都藏在明信片裡喔");
+      if (act3) glowHint(h);
+    }
+    function glowHint(h) {
+      const flipped = document.getElementById("postcard-3d").classList.contains("flipped");
+      if ((h.side === "back" && !flipped) || (h.side === "front" && flipped)) { const fb = flipped ? document.querySelector(".postcard-back .cta-primary") : document.querySelector(".front-actions .cta-primary"); fb.classList.add("egg-glow"); setTimeout(() => fb.classList.remove("egg-glow"), 4300); return; }
+      const el = document.querySelector(h.sel); if (!el) return;
+      el.classList.remove("egg-glow"); void el.offsetWidth; el.classList.add("egg-glow");
+      setTimeout(() => el.classList.remove("egg-glow"), 4300);
+    }
+    // 停著 15 秒沒動作 → 自動輕輕發亮下一顆彩蛋
+    let idleTimer;
+    function resetIdle() { clearTimeout(idleTimer); idleTimer = setTimeout(() => {
+      if (document.getElementById("act-3").classList.contains("entered")) { const h = nextHint(); if (h) glowHint(h); }
+      resetIdle(); }, 15000); }
+    ["click", "touchstart", "keydown", "scroll"].forEach((ev) => document.addEventListener(ev, resetIdle, { passive: true }));
+    resetIdle();
     nightOwlCheck();
     tickClocks(); setInterval(tickClocks, 30000);
     renderConfig();
