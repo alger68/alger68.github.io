@@ -728,8 +728,22 @@
     .egg-glow { animation: eggGlow 1.4s ease-in-out 3; border-radius: 12px; }
     @keyframes eggGlow { 0%,100% { box-shadow: 0 0 0 0 rgba(196,151,59,0); } 50% { box-shadow: 0 0 0 8px rgba(196,151,59,.45), 0 0 24px rgba(196,151,59,.6); } }
   </style>
+  <script>
+    // LINE 內建瀏覽器會擋聲音 → 自動改用手機預設瀏覽器開啟（LINE 官方參數 openExternalBrowser=1）
+    (function () {
+      if (/\bLine\//i.test(navigator.userAgent) && !/openExternalBrowser=1/.test(location.search)) {
+        var u = new URL(location.href); u.searchParams.set("openExternalBrowser", "1");
+        location.replace(u.toString());
+      }
+    })();
+  </script>
 </head>
 <body>
+  <div id="line-banner" style="display:none;position:fixed;left:12px;right:12px;top:46px;z-index:95;background:#2C5A47;color:#fff;border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.6;box-shadow:0 10px 26px rgba(0,0,0,.2)">
+    🔊 在 LINE 裡可能聽不到鋼琴配樂<br>
+    <a id="line-open" href="#" style="display:inline-block;margin-top:6px;background:#fff;color:#2C5A47;font-weight:700;padding:6px 14px;border-radius:999px;text-decoration:none">用瀏覽器打開，聽完整版 ↗</a>
+    <span onclick="this.parentElement.style.display='none'" style="float:right;cursor:pointer;opacity:.8">✕</span>
+  </div>
   <canvas id="fx-canvas"></canvas>
 
   <!-- 頂部電影畫框控制列 -->
@@ -1520,6 +1534,12 @@
       resetIdle(); }, 15000); }
     ["click", "touchstart", "keydown", "scroll"].forEach((ev) => document.addEventListener(ev, resetIdle, { passive: true }));
     resetIdle();
+
+    if (/\bLine\//i.test(navigator.userAgent)) {
+      const u = new URL(location.href); u.searchParams.set("openExternalBrowser", "1");
+      document.getElementById("line-open").href = u.toString();
+      document.getElementById("line-banner").style.display = "block";
+    }
     nightOwlCheck();
     tickClocks(); setInterval(tickClocks, 30000);
     renderConfig();
