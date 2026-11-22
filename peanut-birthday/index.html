@@ -938,7 +938,7 @@
 
               <div class="stamp-column">
                 <div class="stamp-row">
-                  <div class="postmark-circle"><span>TAIPEI</span><strong>2026.11</strong><span>AIRMAIL</span></div>
+                  <div class="postmark-circle" onclick="postmarkEgg()" style="cursor:pointer"><span>TAIPEI</span><strong>2026.11</strong><span>AIRMAIL</span></div>
                   <div class="postage-stamp" onclick="eiffelSparkle()" style="cursor:pointer" title="?"><div class="stamp-art">🗼</div><div class="stamp-label">TW ✈ FR</div></div>
                 </div>
 
@@ -1409,6 +1409,14 @@
     }
 
     // 彩蛋 4：巴黎深夜打開 → 夜貓子
+    function parisHour() { return Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Paris", hour: "2-digit", hour12: false }).format(new Date())); }
+    function postmarkEgg() {
+      const h = parisHour();
+      if (h >= 23 || h < 5) return findEgg("owl", "🌙 夜貓子彩蛋", "巴黎都這麼晚了還沒睡？\n台灣這邊太陽已經出來了，\n看完卡片就乖乖去睡，生日也要好好休息 💤", "PARIS LATE NIGHT");
+      const r = document.querySelector(".postmark-circle").getBoundingClientRect();
+      spawnBurst(r.left + r.width / 2, r.top + r.height / 2, 30);
+      findEgg("owl", "📮 台北郵戳", "這枚郵戳蓋在台北，\n信卻要飛 9,800 公里才到你手上。\n下次換你寄一張巴黎的明信片回來吧！\n\n（偷偷說：半夜打開這張卡，它會說別的話 🌙）", "POSTMARK · TAIPEI");
+    }
     function nightOwlCheck() {
       const h = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Paris", hour: "2-digit", hour12: false }).format(new Date()));
       if (h >= 23 || h < 5) setTimeout(() => findEgg("owl", "🌙 夜貓子彩蛋", "巴黎都這麼晚了還沒睡？\n台灣這邊太陽已經出來了，\n看完卡片就乖乖去睡，生日也要好好休息 💤", "PARIS LATE NIGHT"), 1500);
