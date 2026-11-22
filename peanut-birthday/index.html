@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Joyeux Anniversaire · 豪娃花生哥哥 🎂</title>
+  <meta name="description" content="一封從台灣飛往法國的生日航空信 ✈ 點開蠟封看看吧！" />
+  <meta property="og:title" content="✉️ 你有一封來自台灣的生日航空信" />
+  <meta property="og:description" content="TPE ✈ CDG · 9,800 km · 點開金色蠟封" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-washi: #FAF8F5;
+      --bg-ivory: #FFFDF9;
+      --card-white: #FFFFFF;
+      --ink-main: #1D1C1A;
+      --ink-sub: #5E5952;
+      --ink-muted: #8E877D;
+      --gold: #C4973B;
+      --gold-light: #E8D5A7;
+      --gold-soft: #F7F1E1;
+      --sage: #2C5A47;
+      --sage-soft: #EAF2EE;
+      --rose: #C8797D;
+      --rose-soft: #FBF0F0;
+      --border: #E5DFD5;
+      --shadow-soft: 0 12px 36px rgba(45, 39, 30, 0.07);
+      --shadow-float: 0 24px 60px rgba(45, 39, 30, 0.11);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --ease-cinema: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background-color: var(--bg-washi);
+      color: var(--ink-main);
+      font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 12% 14%, rgba(232, 213, 167, 0.34), transparent 44%),
+        radial-gradient(circle at 88% 18%, rgba(200, 121, 125, 0.16), transparent 42%),
+        radial-gradient(circle at 50% 92%, rgba(44, 90, 71, 0.10), transparent 48%);
+    }
+
+    #fx-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .cinema-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      height: 36px;
+      background: rgba(250, 248, 245, 0.92);
+      backdrop-filter: blur(12px);
+      border-color: var(--border);
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      font-size: 12px;
+      color: var(--ink-sub);
+      letter-spacing: 0.08em;
+    }
+    .cinema-bar.top { top: 0; border-bottom: 1px solid var(--border); }
+    .cinema-bar.bottom { bottom: 0; border-top: 1px solid var(--border); }
+
+    .cinema-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--sage);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .cinema-controls { display: flex; align-items: center; gap: 8px; }
+
+    .pill-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--card-white);
+      color: var(--ink-main);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.25s var(--ease-cinema);
+      font-family: inherit;
+    }
+    .pill-btn:hover { border-color: var(--gold); background: var(--gold-soft); transform: translateY(-1px); }
+    .pill-btn.active { background: var(--sage); color: #FFFFFF; border-color: var(--sage); }
+
+    .stage {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 72px 20px 80px;
+    }
+
+    .act {
+      width: 100%;
+      max-width: 960px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s var(--ease-cinema), transform 0.8s var(--ease-cinema);
+    }
+    .act.visible { display: flex; }
+    .act.entered { opacity: 1; transform: translateY(0); }
+
+    /* ================= ACT 1: AIRMAIL ENVELOPE ================= */
+    .prologue-kicker {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .prologue-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 700;
+      color: var(--ink-main);
+      text-align: center;
+      margin-bottom: 10px;
+      letter-spacing: 0.06em;
+    }
+    .prologue-sub { color: var(--ink-sub); font-size: 14.5px; margin-bottom: 34px; text-align: center; }
+
+    .envelope-scene { perspective: 1200px; cursor: pointer; position: relative; }
+    .envelope {
+      width: min(440px, 88vw);
+      height: 290px;
+      position: relative;
+      background: var(--bg-ivory);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-float);
+      transition: transform 0.5s var(--ease-cinema);
+      overflow: hidden;
+    }
+    .envelope:hover { transform: translateY(-6px) scale(1.01); }
+    .envelope::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 6px;
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(200, 121, 125, 0.45) 0 12px,
+        transparent 12px 22px,
+        rgba(44, 90, 71, 0.35) 22px 34px,
+        transparent 34px 44px
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 160px;
+      background: linear-gradient(180deg, #F5EFE4 0%, #FFFDF9 100%);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center;
+      transition: transform 0.9s var(--ease-cinema);
+      z-index: 4;
+      border-bottom: 1px solid rgba(196, 151, 59, 0.25);
+    }
+    .envelope.opening .envelope-flap { transform: rotateX(175deg); }
+
+    .envelope-inner-letter {
+      position: absolute;
+      left: 24px; right: 24px; bottom: 20px;
+      height: 210px;
+      background: #FFFFFF;
+      border: 1px solid var(--gold-light);
+      border-radius: 10px;
+      padding: 20px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.9s var(--ease-cinema);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+    .envelope.opening .envelope-inner-letter { transform: translateY(-76px); }
+
+    .envelope-pocket {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 253, 249, 0) 42%, #FAF4E8 100%);
+      clip-path: polygon(0 38%, 50% 72%, 100% 38%, 100% 100%, 0 100%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .wax-seal {
+      position: absolute;
+      top: 126px; left: 50%;
+      transform: translateX(-50%);
+      width: 68px; height: 68px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 28%, #E6C16A 0%, #C4973B 58%, #9A7222 100%);
+      box-shadow: 0 8px 22px rgba(154, 114, 34, 0.35), inset 0 2px 5px rgba(255, 255, 255, 0.55);
+      z-index: 6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #FFFDF8;
+      font-family: 'Noto Serif TC', serif;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      transition: all 0.5s var(--ease-cinema);
+      animation: sealPulse 2.6s ease-in-out infinite;
+    }
+    .wax-seal span { font-size: 20px; line-height: 1; }
+    .wax-seal small { font-family: 'Cormorant Garamond', serif; font-size: 9px; opacity: 0.92; margin-top: 3px; letter-spacing: 0.12em; }
+    .envelope.opening .wax-seal { opacity: 0; transform: translateX(-50%) scale(0.7); }
+
+    @keyframes sealPulse {
+      0%, 100% { box-shadow: 0 8px 22px rgba(154, 114, 34, 0.35), 0 0 0 0 rgba(196, 151, 59, 0.35); }
+      50% { box-shadow: 0 8px 26px rgba(154, 114, 34, 0.45), 0 0 0 14px rgba(196, 151, 59, 0); }
+    }
+
+    .airmail-meta {
+      position: absolute;
+      bottom: 18px; left: 24px; right: 24px;
+      z-index: 5;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-size: 11.5px;
+      color: var(--ink-sub);
+    }
+    .airmail-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border: 1px solid var(--sage);
+      color: var(--sage);
+      border-radius: 4px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      font-size: 10px;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .cta-primary {
+      margin-top: 28px;
+      border: none;
+      background: linear-gradient(135deg, var(--sage) 0%, #3A735B 100%);
+      color: #FFFFFF;
+      padding: 13px 30px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      box-shadow: 0 10px 26px rgba(44, 90, 71, 0.24);
+      transition: all 0.3s var(--ease-cinema);
+      font-family: inherit;
+    }
+    .cta-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(44, 90, 71, 0.32); }
+
+    /* ================= ACT 2: TAIWAN -> FRANCE FLIGHT ================= */
+    .flight-card {
+      width: 100%;
+      max-width: 840px;
+      background: var(--card-white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-float);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .flight-route-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 560px;
+      margin: 0 auto 18px;
+    }
+    .airport-code { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 700; color: var(--ink-main); line-height: 1; }
+    .airport-city { font-size: 12px; color: var(--ink-muted); margin-top: 4px; }
+    .flight-distance {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--gold);
+      background: var(--gold-soft);
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--gold-light);
+    }
+
+    .flight-stage-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #FAF4E8;
+      margin: 12px 0 18px;
+    }
+    .flight-bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.92;
+    }
+    .flight-overlay-svg {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .flight-caption { font-family: 'Noto Serif TC', serif; font-size: 18px; color: var(--ink-main); min-height: 28px; transition: opacity 0.4s ease; }
+
+    /* ================= ACT 3: 3D POSTCARD & CAFE ================= */
+    .cinema-stage-wrap {
+      width: 100%;
+      max-width: 920px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .postcard-perspective { width: 100%; perspective: 1800px; }
+    .postcard-3d {
+      width: 100%;
+      min-height: 540px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1s var(--ease-cinema);
+    }
+    .postcard-3d.flipped { transform: rotateY(180deg); }
+
+    .postcard-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: var(--card-white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-float);
+      overflow: hidden;
+      display: grid;
+    }
+
+    .postcard-front { grid-template-columns: 1.15fr 0.85fr; }
+    @media (max-width: 780px) {
+      .postcard-front { grid-template-columns: 1fr; }
+      .postcard-3d { min-height: 760px; }
+    }
+
+    .hero-visual-pane {
+      position: relative;
+      background: linear-gradient(160deg, #FDF8EE 0%, #F7EFE2 55%, #EFF5F1 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .hero-photo-frame {
+      width: 100%;
+      max-width: 440px;
+      aspect-ratio: 4 / 3;
+      border-radius: 18px;
+      background: var(--bg-ivory);
+      border: 6px solid #FFFFFF;
+      box-shadow: 0 14px 36px rgba(45, 39, 30, 0.10);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .upload-overlay-btn {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--ink-sub);
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px dashed var(--gold);
+      padding: 6px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .upload-overlay-btn:hover { background: var(--gold-soft); color: var(--ink-main); }
+
+    .hero-copy-pane {
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--card-white);
+    }
+
+    .badge-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--sage-soft);
+      color: var(--sage);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      width: fit-content;
+      margin-bottom: 14px;
+    }
+
+    .card-headline {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(22px, 2.8vw, 30px);
+      font-weight: 900;
+      line-height: 1.3;
+      color: var(--ink-main);
+      margin-bottom: 8px;
+    }
+    .card-french {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 20px;
+      color: var(--gold);
+      margin-bottom: 18px;
+    }
+    .card-lead { font-size: 14.5px; line-height: 1.85; color: var(--ink-sub); margin-bottom: 20px; }
+
+    .candle-box {
+      background: var(--bg-washi);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-cinema);
+    }
+    .candle-box:hover { border-color: var(--gold); background: var(--gold-soft); }
+    .candle-status-title { font-weight: 700; font-size: 14px; color: var(--ink-main); margin-bottom: 2px; }
+    .candle-status-desc { font-size: 12.5px; color: var(--ink-sub); }
+
+    .flame-group { transform-origin: 24px 18px; animation: flameFlicker 1.2s ease-in-out infinite alternate; }
+    .candle-blown .flame-group { opacity: 0; transform: scale(0.1); transition: all 0.5s ease; }
+    @keyframes flameFlicker {
+      0% { transform: scale(1) rotate(-3deg); }
+      100% { transform: scale(1.08) rotate(3deg); }
+    }
+
+    .front-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+
+    .postcard-back {
+      transform: rotateY(180deg);
+      grid-template-columns: 1.25fr 0.75fr;
+      background: var(--bg-ivory);
+      padding: 36px;
+      gap: 32px;
+    }
+    @media (max-width: 780px) {
+      .postcard-back { grid-template-columns: 1fr; padding: 24px; }
+    }
+
+    .letter-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px dashed var(--border);
+      padding-right: 28px;
+    }
+    @media (max-width: 780px) {
+      .letter-column { border-right: none; border-bottom: 1px dashed var(--border); padding-right: 0; padding-bottom: 20px; }
+    }
+
+    .letter-salutation { font-family: 'Noto Serif TC', serif; font-size: 22px; font-weight: 700; color: var(--ink-main); margin-bottom: 14px; }
+    .letter-body { font-size: 15px; line-height: 2; color: var(--ink-sub); white-space: pre-line; }
+    .letter-sign { margin-top: 22px; text-align: right; font-family: 'Noto Serif TC', serif; font-size: 16px; font-weight: 700; color: var(--sage); }
+
+    .stamp-column { display: flex; flex-direction: column; justify-content: space-between; }
+    .stamp-row { display: flex; justify-content: flex-end; align-items: flex-start; gap: 14px; }
+    .postmark-circle {
+      width: 74px; height: 74px;
+      border-radius: 50%;
+      border: 1.5px dashed var(--ink-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+      transform: rotate(-12deg);
+    }
+    .postage-stamp {
+      width: 82px; height: 98px;
+      background: #FFFFFF;
+      border: 2px dotted var(--gold);
+      border-radius: 6px;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .stamp-art {
+      width: 100%; height: 58px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, var(--sage-soft), var(--gold-soft));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    .stamp-label { font-family: 'Cormorant Garamond', serif; font-size: 10px; font-weight: 700; color: var(--sage); letter-spacing: 0.1em; }
+
+    .address-lines { margin: 24px 0; display: flex; flex-direction: column; gap: 14px; }
+    .address-line {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      font-size: 13.5px;
+      color: var(--ink-main);
+      display: flex;
+      justify-content: space-between;
+    }
+    .address-line span:first-child { color: var(--ink-muted); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .cafe-surprise {
+      width: 100%;
+      background: linear-gradient(135deg, #FFFFFF 0%, #FAF5EA 100%);
+      border: 1px solid var(--gold-light);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-soft);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.7s var(--ease-cinema);
+    }
+    .cafe-surprise.revealed { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .surprise-title { font-family: 'Noto Serif TC', serif; font-size: 17px; font-weight: 700; color: var(--sage); margin-bottom: 4px; }
+    .surprise-text { font-size: 13.5px; color: var(--ink-sub); }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(29, 28, 26, 0.28);
+      backdrop-filter: blur(6px);
+      z-index: 60;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--card-white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-float);
+    }
+    .modal-card h3 { font-family: 'Noto Serif TC', serif; font-size: 20px; margin-bottom: 14px; color: var(--ink-main); }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--ink-sub); margin-bottom: 5px; }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 13.5px;
+      font-family: inherit;
+      color: var(--ink-main);
+      background: var(--bg-washi);
+    }
+    .form-group textarea { min-height: 92px; resize: vertical; }
+    .modal-actions { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+
+    .toast {
+      position: fixed;
+      bottom: 52px; left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--sage);
+      color: #FFFFFF;
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      z-index: 80;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s var(--ease-cinema);
+      box-shadow: 0 8px 24px rgba(44, 90, 71, 0.25);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* 只有網址加 ?edit 才顯示編輯工具，壽星看到的是乾淨版 */
+    body:not(.edit-mode) .edit-only { display: none !important; }
+
+    /* 台北 / 巴黎 雙時鐘 */
+    .dual-clock { display: flex; gap: 14px; font-variant-numeric: tabular-nums; }
+    .dual-clock b { color: var(--sage); font-weight: 700; }
+
+    /* 想家時的台灣味兌換券 */
+    .homesick { width: 100%; margin-top: 14px; display: none; }
+    .cafe-surprise.revealed + .homesick { display: block; animation: fadeUp 0.8s var(--ease-cinema) both 0.3s; }
+    .homesick-title { font-family: 'Noto Serif TC', serif; font-size: 15px; font-weight: 700; color: var(--rose); margin-bottom: 10px; text-align: center; }
+    .coupon-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    @media (max-width: 640px) { .coupon-row { grid-template-columns: repeat(2, 1fr); } }
+    .coupon {
+      background: #FFFFFF; border: 1.5px dashed var(--rose); border-radius: 12px;
+      padding: 12px 8px; text-align: center; cursor: pointer;
+      transition: transform 0.3s var(--ease-cinema), background 0.3s;
+    }
+    .coupon:hover { transform: translateY(-3px) rotate(-1deg); background: var(--rose-soft); }
+    .coupon .emoji { font-size: 26px; }
+    .coupon .name { font-size: 13px; font-weight: 700; margin-top: 4px; }
+    .coupon .note { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+    .coupon.used { opacity: 0.55; }
+    .coupon.used .note::after { content: " · 已預約 ✓"; color: var(--sage); }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+    /* 手機：明信片內容過長時可在卡片內捲動 */
+    @media (max-width: 780px) {
+      .postcard-face { overflow-y: auto; }
+      .cinema-bar { padding: 0 12px; font-size: 11px; }
+      .cinema-brand { display: none; }
+      .cinema-bar.bottom > div:first-child { display: none; }
+    }
+
+    /* ===== 隱藏彩蛋 ===== */
+    .egg-counter { font-size: 12px; color: var(--ink-muted); padding: 4px 10px; border-radius: 999px; border: 1px dashed var(--border); opacity: 0; transition: opacity .5s; }
+    .egg-counter.show { opacity: 1; }
+    .egg-counter.done { color: #fff; background: var(--gold); border-color: var(--gold); }
+    .egg-note {
+      position: fixed; left: 50%; top: 50%; transform: translate(-50%,-46%) scale(.96);
+      width: min(420px, 88vw); background: #FFFDF9; border: 1px solid var(--gold-light);
+      border-radius: 20px; padding: 26px 24px 20px; z-index: 90; text-align: center;
+      box-shadow: var(--shadow-float); opacity: 0; pointer-events: none;
+      transition: all .45s var(--ease-cinema);
+    }
+    .egg-note.show { opacity: 1; pointer-events: auto; transform: translate(-50%,-50%) scale(1); }
+    .egg-note .egg-kicker { font-family: 'Cormorant Garamond', serif; letter-spacing: .2em; color: var(--gold); font-size: 12px; font-weight: 700; }
+    .egg-note h4 { font-family: 'Noto Serif TC', serif; font-size: 20px; margin: 6px 0 10px; }
+    .egg-note p { font-size: 14px; line-height: 1.9; color: var(--ink-sub); white-space: pre-line; }
+    .egg-note button { margin-top: 14px; }
+  </style>
+</head>
+<body>
+  <canvas id="fx-canvas"></canvas>
+
+  <!-- 頂部電影畫框控制列 -->
+  <header class="cinema-bar top">
+    <div class="cinema-brand">PEANUT CINEMA · V2</div>
+    <div class="cinema-controls">
+      <span class="egg-counter" id="egg-counter" title="隱藏彩蛋">🥚 0/5</span>
+      <button class="pill-btn" id="btn-music" onclick="toggleMusic()">♪ 鋼琴配樂：關閉</button>
+      <button class="pill-btn edit-only" onclick="openEditor()">✎ 編輯文案 / JSON</button>
+      <button class="pill-btn" onclick="replayCinema()">↺ 重播開場</button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <!-- 第一幕：航空信封與金色「花」字蠟封 -->
+    <section id="act-1" class="act visible entered">
+      <div class="prologue-kicker">Airmail Cinema Postcard · Taiwan to France</div>
+      <h1 class="prologue-title">一封來自台灣的生日航空信</h1>
+      <p class="prologue-sub">點擊金色蠟封，展開專屬配樂與跨海祝福旅程</p>
+
+      <div class="envelope-scene" onclick="openEnvelope()">
+        <div class="envelope" id="envelope-el">
+          <div class="envelope-flap"></div>
+          <div class="envelope-inner-letter">
+            <div style="font-family:'Cormorant Garamond',serif; color:var(--gold); font-size:13px; letter-spacing:0.18em; font-weight:700;">JOYEUX ANNIVERSAIRE</div>
+            <div style="font-family:'Noto Serif TC',serif; font-size:20px; font-weight:700; margin-top:6px; color:var(--ink-main);" id="env-recipient-preview">To 豪娃花生哥哥</div>
+          </div>
+          <div class="envelope-pocket"></div>
+          <div class="wax-seal"><span>花</span><small>OPEN</small></div>
+          <div class="airmail-meta">
+            <span class="airmail-tag">PAR AVION · 航空</span>
+            <span>TPE ✈ CDG · 9,800 KM</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="cta-primary" onclick="openEnvelope()">拆封並啟動電影模式 ✦</button>
+    </section>
+
+    <!-- 第二幕：台灣飛往法國航線（預留 ./taiwan-france-flight.jpg） -->
+    <section id="act-2" class="act">
+      <div class="flight-card">
+        <div class="prologue-kicker" style="margin-bottom:6px;">Act I · Across 9,800 Kilometers</div>
+        <div class="flight-route-header">
+          <div><div class="airport-code">TPE</div><div class="airport-city">Taipei, Taiwan</div></div>
+          <div class="flight-distance" id="flight-km">0 km</div>
+          <div><div class="airport-code">CDG</div><div class="airport-city">Paris, France</div></div>
+        </div>
+
+        <div class="flight-stage-frame">
+          <img
+            id="flight-bg-img"
+            class="flight-bg-img"
+            src="./taiwan-france-flight.jpg"
+            alt="台北 101 飛往巴黎艾菲爾鐵塔水彩插畫"
+            onerror="this.style.display='none'; document.getElementById('flight-fallback-bg').style.display='block';"
+          />
+          <svg class="flight-overlay-svg" viewBox="0 0 740 416" preserveAspectRatio="xMidYMid slice" aria-label="台灣飛往法國航線動畫">
+            <defs>
+              <linearGradient id="skyGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#FAF4E8" />
+                <stop offset="50%" stop-color="#FFFDF9" />
+                <stop offset="100%" stop-color="#F2F6F3" />
+              </linearGradient>
+              <linearGradient id="trailGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#E8D5A7" stop-opacity="0.2" />
+                <stop offset="100%" stop-color="#C4973B" stop-opacity="0.95" />
+              </linearGradient>
+            </defs>
+
+            <g id="flight-fallback-bg" style="display:none;">
+              <rect x="0" y="0" width="740" height="416" fill="url(#skyGrad)" />
+              <ellipse cx="205" cy="110" rx="76" ry="22" fill="#FFFFFF" opacity="0.85" />
+              <ellipse cx="385" cy="78" rx="92" ry="25" fill="#FFFFFF" opacity="0.8" />
+              <ellipse cx="560" cy="126" rx="78" ry="20" fill="#FFFFFF" opacity="0.85" />
+              <g transform="translate(66, 130)" stroke="#2C5A47" stroke-width="1.8" fill="#EAF2EE">
+                <line x1="22" y1="0" x2="22" y2="24" />
+                <rect x="15" y="24" width="14" height="18" rx="2" />
+                <polygon points="8,42 36,42 32,64 12,64" />
+                <polygon points="6,64 38,64 34,86 10,86" />
+                <polygon points="6,86 38,86 34,108 10,108" />
+                <polygon points="2,108 42,108 46,162 -2,162" />
+              </g>
+              <g transform="translate(620, 120)" stroke="#C8797D" stroke-width="1.8" fill="#FBF0F0">
+                <line x1="28" y1="0" x2="28" y2="20" />
+                <polygon points="24,20 32,20 40,108 16,108" />
+                <line x1="12" y1="108" x2="44" y2="108" stroke-width="2.4" />
+                <polygon points="16,108 40,108 58,176 42,176 28,144 14,176 -2,176" />
+              </g>
+            </g>
+
+            <path id="flight-path-bg" d="M 118 228 Q 370 58 624 214" fill="none" stroke="rgba(196,151,59,0.28)" stroke-width="2" stroke-dasharray="6 6" />
+            <path id="flight-path-active" d="M 118 228 Q 370 58 624 214" fill="none" stroke="url(#trailGrad)" stroke-width="3.5" stroke-linecap="round" />
+
+            <g id="paper-plane" transform="translate(118, 228)">
+              <polygon points="20,0 -14,-10 -7,0 -14,10" fill="#FFFFFF" stroke="#C4973B" stroke-width="2" />
+              <line x1="20" y1="0" x2="-7" y2="0" stroke="#C4973B" stroke-width="1.3" />
+            </g>
+          </svg>
+        </div>
+
+        <p class="flight-caption" id="flight-caption">正將台灣的暖陽與祝福摺成紙飛機…</p>
+      </div>
+    </section>
+
+    <!-- 第三幕：3D 翻轉法式明信片與咖啡館驚喜 -->
+    <section id="act-3" class="act">
+      <div class="cinema-stage-wrap">
+        <div class="postcard-perspective">
+          <div class="postcard-3d" id="postcard-3d">
+            <!-- 明信片正面 -->
+            <div class="postcard-face postcard-front">
+              <div class="hero-visual-pane">
+                <div class="hero-photo-frame" id="hero-frame">
+                  <img
+                    id="hero-custom-img"
+                    src="./peanut-cafe-hero.jpeg"
+                    alt="巴黎街角咖啡館生日主角插畫"
+                    onerror="this.style.display='none'; document.getElementById('hero-default-svg').style.display='block';"
+                  />
+                  <svg id="hero-default-svg" style="display:none;" viewBox="0 0 440 330" width="100%" height="100%" aria-label="法式咖啡館生日插畫">
+                    <defs>
+                      <linearGradient id="sunWash" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#FFF9EB" />
+                        <stop offset="55%" stop-color="#FAF3E3" />
+                        <stop offset="100%" stop-color="#EFF5F1" />
+                      </linearGradient>
+                    </defs>
+                    <rect width="440" height="330" fill="url(#sunWash)" />
+                    <circle cx="348" cy="70" r="54" fill="#F5DFAB" opacity="0.45" />
+                    <circle cx="348" cy="70" r="32" fill="#FFFDF7" opacity="0.7" />
+                    <g stroke="#D5CBB8" stroke-width="1.4" fill="#F7F2E8">
+                      <rect x="20" y="135" width="76" height="110" />
+                      <rect x="108" y="118" width="84" height="127" />
+                      <polygon points="325,84 333,84 352,218 306,218" fill="#F6E9E9" stroke="#D7A7A9" />
+                    </g>
+                    <path d="M 0 0 L 210 0 L 195 44 C 175 56 155 44 135 54 C 115 44 95 56 75 46 C 55 56 35 44 15 54 L 0 46 Z" fill="#C8797D" opacity="0.82" />
+                    <ellipse cx="220" cy="274" rx="146" ry="38" fill="#FFFFFF" stroke="#C4973B" stroke-width="2.5" />
+                    <g transform="translate(174, 178)">
+                      <ellipse cx="46" cy="84" rx="54" ry="13" fill="#F4EFE6" stroke="#D5CBB8" stroke-width="1.4" />
+                      <rect x="10" y="38" width="72" height="44" rx="10" fill="#FFFDF9" stroke="#D8C9B2" stroke-width="1.8" />
+                      <circle cx="26" cy="36" r="8" fill="#C8797D" />
+                      <circle cx="46" cy="33" r="9" fill="#B85F64" />
+                      <circle cx="66" cy="36" r="8" fill="#C8797D" />
+                      <rect x="43" y="8" width="6" height="24" rx="2" fill="#E8D5A7" stroke="#C4973B" stroke-width="1" />
+                      <g class="flame-group" id="hero-svg-flame">
+                        <ellipse cx="46" cy="-1" rx="8" ry="12" fill="#F6D478" opacity="0.45" />
+                        <path d="M 46 -9 Q 52 0 46 6 Q 40 0 46 -9 Z" fill="#E69A28" />
+                      </g>
+                    </g>
+                  </svg>
+                </div>
+
+                <label class="upload-overlay-btn edit-only" for="photo-upload-input">
+                  🖼 臨時替換主角插畫（本機即時預覽）
+                </label>
+                <input type="file" id="photo-upload-input" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)" />
+              </div>
+
+              <div class="hero-copy-pane">
+                <div>
+                  <div class="badge-chip">✦ CINEMA EDITION · PARIS MORNING</div>
+                  <h2 class="card-headline" id="display-headline" onclick="headlineTap()" style="cursor:default">生日快樂，豪娃花生哥哥！</h2>
+                  <div class="card-french">Joyeux Anniversaire · From Taiwan with Love</div>
+                  <p class="card-lead" id="display-lead">
+                    跨越 9,800 公里的時差與雲層，這張明信片帶著台灣的暖陽與溫柔琴聲，在巴黎街角咖啡館的晨光裡，為豪娃花生哥哥點亮今年的生日蠟燭。
+                  </p>
+
+                  <div class="candle-box" id="candle-box" onclick="blowCandle()">
+                    <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true">
+                      <circle cx="24" cy="24" r="22" fill="#FFFDF9" stroke="#E8D5A7" />
+                      <rect x="20" y="21" width="8" height="17" rx="3" fill="#C4973B" />
+                      <g class="flame-group">
+                        <path d="M 24 7 Q 30 15 24 20 Q 18 15 24 7 Z" fill="#E69A28" />
+                        <path d="M 24 11 Q 27 16 24 19 Q 21 16 24 11 Z" fill="#FFF4C2" />
+                      </g>
+                    </svg>
+                    <div>
+                      <div class="candle-status-title" id="candle-title">點擊吹熄生日蠟燭、許下願望 🕯️</div>
+                      <div class="candle-status-desc" id="candle-desc">吹熄後將綻放香檳金煙火並解鎖法式咖啡館彩蛋</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="front-actions">
+                  <button class="cta-primary" style="margin-top:0; padding:11px 22px; font-size:14px;" onclick="flipPostcard()">
+                    翻面閱讀手寫祝福 ↻
+                  </button>
+                  <button class="pill-btn" style="padding:10px 16px;" onclick="launchCelebrationFireworks()">
+                    ✨ 施放慶祝煙火
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 明信片背面 -->
+            <div class="postcard-face postcard-back">
+              <div class="letter-column">
+                <div>
+                  <div class="letter-salutation" id="display-salutation">親愛的 豪娃花生哥哥：</div>
+                  <div class="letter-body" id="display-letter">願你在法國的每一天，都能像清晨的左岸陽光一樣溫柔而耀眼。
+
+無論在異鄉追夢、品嚐一杯熱拿鐵，還是偶爾想起台灣的熟悉滋味，請記得在地球的另一端，永遠有一份跨海的祝福陪著你。
+
+祝豪娃花生哥哥新的一歲平安健康、自由閃耀、每個願望都如期綻放！</div>
+                </div>
+                <div class="letter-sign" id="display-sign">— From Alger · 來自台灣的祝福</div>
+              </div>
+
+              <div class="stamp-column">
+                <div class="stamp-row">
+                  <div class="postmark-circle"><span>TAIPEI</span><strong>2026.11</strong><span>AIRMAIL</span></div>
+                  <div class="postage-stamp" onclick="eiffelSparkle()" style="cursor:pointer" title="?"><div class="stamp-art">🗼</div><div class="stamp-label">TW ✈ FR</div></div>
+                </div>
+
+                <div class="address-lines">
+                  <div class="address-line"><span>TO</span><strong id="addr-to">豪娃花生哥哥 · Paris, France</strong></div>
+                  <div class="address-line"><span>FROM</span><strong id="addr-from">Alger · Taipei, Taiwan</strong></div>
+                  <div class="address-line"><span>SCORE</span><strong>Original Felt Piano in F</strong></div>
+                  <div class="address-line"><span>EDITION</span><strong>Cinema Postcard v2.0</strong></div>
+                </div>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <button class="cta-primary" style="margin-top:0; padding:10px 20px; font-size:13.5px;" onclick="flipPostcard()">↺ 回到正面插畫</button>
+                  <button class="pill-btn" style="padding:10px 14px;" onclick="launchCelebrationFireworks()">🎇 再放一次煙火</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cafe-surprise" id="cafe-surprise">
+          <div>
+            <div class="surprise-title">☕ 法式咖啡館彩蛋已解鎖 · Un Café & Un Gâteau Pour Toi</div>
+            <div class="surprise-text" id="display-surprise">
+              願望已收進巴黎晨光裡！這張「終身有效」的法式咖啡館招待券，隨時可以向台灣兌換一場慶生大餐與滿滿祝福。
+            </div>
+          </div>
+          <button class="pill-btn active" onclick="launchCelebrationFireworks()">收下祝福禮券 ✦</button>
+        </div>
+
+        <div class="homesick">
+          <div class="homesick-title">🇹🇼 想家的時候 · 台灣味兌換券（回台灣時有效）</div>
+          <div class="coupon-row">
+            <div class="coupon" onclick="useCoupon(this)"><div class="emoji">🧋</div><div class="name">珍珠奶茶</div><div class="note">全糖少冰隨你點</div></div>
+            <div class="coupon" onclick="useCoupon(this)"><div class="emoji">🍚</div><div class="name">滷肉飯</div><div class="note">加一顆滷蛋</div></div>
+            <div class="coupon" onclick="useCoupon(this)"><div class="emoji">🍗</div><div class="name">鹽酥雞</div><div class="note">九層塔要多</div></div>
+            <div class="coupon" onclick="useCoupon(this)"><div class="emoji">🏮</div><div class="name">夜市一晚</div><div class="note">我們陪你逛</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="cinema-bar bottom">
+    <div>這張卡裡藏了 5 顆彩蛋 🥚 · 點畫面任意處會放煙火</div>
+    <div class="dual-clock" onclick="timezoneEgg()" style="cursor:pointer"><span>台北 <b id="clk-tpe">--:--</b></span><span>Paris <b id="clk-par">--:--</b></span></div>
+  </footer>
+
+  <!-- 編輯文案與 JSON 匯出/匯入視窗 -->
+  <div class="modal-backdrop" id="editor-modal" onclick="if(event.target===this) closeEditor()">
+    <div class="modal-card">
+      <h3>編輯卡片內容與匯出設定 (JSON)</h3>
+      <div class="form-group"><label>壽星暱稱 / 標題</label><input id="in-headline" type="text" /></div>
+      <div class="form-group"><label>正面導語</label><textarea id="in-lead"></textarea></div>
+      <div class="form-group"><label>背面完整祝福信</label><textarea id="in-letter"></textarea></div>
+      <div class="form-group"><label>署名</label><input id="in-sign" type="text" /></div>
+      <div class="form-group">
+        <label>正面主角插畫路徑（預設 ./peanut-cafe-hero.jpeg）</label>
+        <input id="in-img-url" type="text" placeholder="./peanut-cafe-hero.jpeg" />
+      </div>
+      <div class="modal-actions">
+        <div style="display:flex; gap:8px;">
+          <button class="pill-btn" onclick="exportConfigJSON()">⬇ 匯出 JSON</button>
+          <label class="pill-btn" for="json-import-input">⬆ 載入 JSON</label>
+          <input type="file" id="json-import-input" accept="application/json" style="display:none;" onchange="importConfigJSON(event)" />
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="pill-btn" onclick="closeEditor()">取消</button>
+          <button class="pill-btn active" onclick="applyEditor()">套用更新</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="egg-note" id="egg-note"><div class="egg-kicker" id="egg-kicker">SECRET FOUND</div><h4 id="egg-title"></h4><p id="egg-body"></p><button class="pill-btn active" onclick="closeEgg()">收下 ✦</button></div>
+  <div class="egg-note" id="wish-modal"><div class="egg-kicker">SECRET WISH</div><h4>偷偷寫下生日願望</h4><p>只存在你這台裝置，誰都看不到。</p>
+    <textarea id="wish-input" style="width:100%;margin-top:10px;min-height:80px;border:1px solid var(--border);border-radius:10px;padding:10px;font-family:inherit;font-size:14px;background:var(--bg-washi)"></textarea>
+    <button class="pill-btn active" onclick="sealWish()">封存願望 ✦</button></div>
+  <div class="toast" id="toast">已套用設定</div>
+
+  <script>
+    const DEFAULT_CONFIG = {
+      recipient: "豪娃花生哥哥",
+      headline: "生日快樂，豪娃花生哥哥！",
+      lead: "跨越 9,800 公里的時差與雲層，這張明信片帶著台灣的暖陽與溫柔琴聲，在巴黎街角咖啡館的晨光裡，為豪娃花生哥哥點亮今年的生日蠟燭。",
+      salutation: "親愛的 豪娃花生哥哥：",
+      letter: "願你在法國的每一天，都能像清晨的左岸陽光一樣溫柔而耀眼。\n\n無論在異鄉追夢、品嚐一杯熱拿鐵，還是偶爾想起台灣的熟悉滋味，請記得在地球的另一端，永遠有一份跨海的祝福陪著你。\n\n祝豪娃花生哥哥新的一歲平安健康、自由閃耀、每個願望都如期綻放！",
+      sign: "— From Alger · 來自台灣的祝福",
+      surprise: "願望已收進巴黎晨光裡！這張「終身有效」的法式咖啡館招待券，隨時可以向台灣兌換一場慶生大餐與滿滿祝福。",
+      heroImageUrl: "./peanut-cafe-hero.jpeg"
+    };
+
+    let cardConfig = { ...DEFAULT_CONFIG };
+    let candleBlown = false;
+
+    function renderConfig() {
+      document.getElementById("env-recipient-preview").textContent = `To ${cardConfig.recipient}`;
+      document.getElementById("display-headline").textContent = cardConfig.headline;
+      document.getElementById("display-lead").textContent = cardConfig.lead;
+      document.getElementById("display-salutation").textContent = cardConfig.salutation;
+      document.getElementById("display-letter").textContent = cardConfig.letter;
+      document.getElementById("display-sign").textContent = cardConfig.sign;
+      document.getElementById("display-surprise").textContent = cardConfig.surprise;
+      document.getElementById("addr-to").textContent = `${cardConfig.recipient} · Paris, France`;
+
+      const img = document.getElementById("hero-custom-img");
+      const svg = document.getElementById("hero-default-svg");
+      if (cardConfig.heroImageUrl) {
+        img.style.display = "block";
+        svg.style.display = "none";
+        img.src = cardConfig.heroImageUrl;
+      } else {
+        img.style.display = "none";
+        svg.style.display = "block";
+      }
+    }
+
+    function handlePhotoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        cardConfig.heroImageUrl = ev.target.result;
+        renderConfig();
+        showToast("已套用專屬人物插畫 ✨");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function switchAct(actNum) {
+      document.querySelectorAll(".act").forEach((el) => {
+        el.classList.remove("entered");
+        setTimeout(() => el.classList.remove("visible"), 450);
+      });
+      setTimeout(() => {
+        const target = document.getElementById(`act-${actNum}`);
+        target.classList.add("visible");
+        requestAnimationFrame(() => target.classList.add("entered"));
+      }, 460);
+    }
+
+    let envelopeOpened = false;
+    function openEnvelope() {
+      if (envelopeOpened) return;
+      envelopeOpened = true;
+      document.getElementById("envelope-el").classList.add("opening");
+      startMusic();
+      spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 42);
+      setTimeout(() => {
+        switchAct(2);
+        setTimeout(runFlightAnimation, 550);
+      }, 950);
+    }
+
+    function runFlightAnimation() {
+      const path = document.getElementById("flight-path-active");
+      const plane = document.getElementById("paper-plane");
+      const kmEl = document.getElementById("flight-km");
+      const capEl = document.getElementById("flight-caption");
+
+      const totalLen = path.getTotalLength();
+      path.style.strokeDasharray = totalLen;
+      path.style.strokeDashoffset = totalLen;
+
+      const duration = 3200;
+      const startTime = performance.now();
+
+      function frame(now) {
+        const t = Math.min(1, (now - startTime) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const dist = eased * totalLen;
+        path.style.strokeDashoffset = totalLen - dist;
+
+        const pt = path.getPointAtLength(dist);
+        const ptNext = path.getPointAtLength(Math.min(totalLen, dist + 2));
+        const angle = Math.atan2(ptNext.y - pt.y, ptNext.x - pt.x) * (180 / Math.PI);
+        plane.setAttribute("transform", `translate(${pt.x}, ${pt.y}) rotate(${angle})`);
+
+        kmEl.textContent = `${Math.round(eased * 9800).toLocaleString()} km`;
+        if (t > 0.35 && t < 0.75) capEl.textContent = "飛越歐亞大陸的晨曦與星塵…";
+        else if (t >= 0.75) capEl.textContent = "已抵達巴黎街角咖啡館 · Bonjour Paris!";
+
+        if (t < 1) requestAnimationFrame(frame);
+        else {
+          setTimeout(() => {
+            switchAct(3);
+            setTimeout(() => launchCelebrationFireworks(), 700);
+          }, 650);
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function flipPostcard() { document.getElementById("postcard-3d").classList.toggle("flipped"); }
+
+    function blowCandle() {
+      if (candleBlown) { launchCelebrationFireworks(); return; }
+      candleBlown = true;
+      document.getElementById("candle-box").classList.add("candle-blown");
+      const heroFlame = document.getElementById("hero-svg-flame");
+      if (heroFlame) heroFlame.style.opacity = "0";
+      document.getElementById("candle-title").textContent = "願望已送出 ✨ 生日快樂！";
+      document.getElementById("candle-desc").textContent = "法式咖啡館彩蛋已解鎖，可點擊卡片翻面閱讀手寫祝福";
+      document.getElementById("cafe-surprise").classList.add("revealed");
+      playChimeChord();
+      launchCelebrationFireworks();
+      showToast("🎂 蠟燭已吹熄！願你所有心願都能實現");
+    }
+
+    function replayCinema() {
+      envelopeOpened = false;
+      candleBlown = false;
+      document.getElementById("envelope-el").classList.remove("opening");
+      document.getElementById("postcard-3d").classList.remove("flipped");
+      document.getElementById("candle-box").classList.remove("candle-blown");
+      const heroFlame = document.getElementById("hero-svg-flame");
+      if (heroFlame) heroFlame.style.opacity = "1";
+      document.getElementById("candle-title").textContent = "點擊吹熄生日蠟燭、許下願望 🕯️";
+      document.getElementById("candle-desc").textContent = "吹熄後將綻放香檳金煙火並解鎖法式咖啡館彩蛋";
+      document.getElementById("cafe-surprise").classList.remove("revealed");
+      switchAct(1);
+    }
+
+    /* Web Audio API — 原創 F 大調鋼琴配樂 */
+    let audioCtx = null, musicPlaying = false, musicTimer = null, stepIndex = 0;
+    const MELODY = [
+      { n: 261.63, d: 0.45, c: [174.61, 220.0] }, { n: 261.63, d: 0.35, c: [] },
+      { n: 293.66, d: 0.75, c: [174.61, 261.63] }, { n: 261.63, d: 0.75, c: [220.0] },
+      { n: 349.23, d: 0.75, c: [196.0, 293.66] }, { n: 329.63, d: 1.35, c: [196.0, 261.63] },
+      { n: 261.63, d: 0.45, c: [196.0, 246.94] }, { n: 261.63, d: 0.35, c: [] },
+      { n: 293.66, d: 0.75, c: [196.0, 293.66] }, { n: 261.63, d: 0.75, c: [261.63] },
+      { n: 392.00, d: 0.75, c: [174.61, 261.63] }, { n: 349.23, d: 1.35, c: [174.61, 220.0] },
+      { n: 261.63, d: 0.45, c: [174.61, 261.63] }, { n: 261.63, d: 0.35, c: [] },
+      { n: 523.25, d: 0.75, c: [220.0, 349.23] }, { n: 440.00, d: 0.75, c: [261.63] },
+      { n: 349.23, d: 0.75, c: [233.08, 293.66] }, { n: 329.63, d: 0.75, c: [196.0] },
+      { n: 293.66, d: 1.15, c: [233.08, 293.66] }, { n: 466.16, d: 0.45, c: [233.08] },
+      { n: 466.16, d: 0.35, c: [] }, { n: 440.00, d: 0.75, c: [174.61, 261.63] },
+      { n: 349.23, d: 0.75, c: [220.0] }, { n: 392.00, d: 0.75, c: [196.0, 261.63] },
+      { n: 349.23, d: 1.80, c: [174.61, 220.0, 261.63] }
+    ];
+
+    function ensureAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+    }
+
+    function playPianoNote(freq, dur, vol = 0.08) {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "triangle"; osc2.type = "sine";
+      osc.frequency.setValueAtTime(freq, now);
+      osc2.frequency.setValueAtTime(freq * 2, now);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(vol, now + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + dur + 0.65);
+      const g2 = audioCtx.createGain(); g2.gain.value = 0.22;
+      osc.connect(gain); osc2.connect(g2); g2.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now); osc2.start(now); osc.stop(now + dur + 0.7); osc2.stop(now + dur + 0.7);
+    }
+
+    function playChimeChord() {
+      ensureAudio();
+      [349.23, 440.0, 523.25, 659.25, 698.46].forEach((f, idx) => setTimeout(() => playPianoNote(f, 1.4, 0.06), idx * 90));
+    }
+
+    function scheduleNextNote() {
+      if (!musicPlaying) return;
+      const item = MELODY[stepIndex % MELODY.length];
+      playPianoNote(item.n, item.d, 0.085);
+      item.c.forEach((cf) => playPianoNote(cf, item.d * 1.1, 0.04));
+      stepIndex++;
+      musicTimer = setTimeout(scheduleNextNote, item.d * 760);
+    }
+
+    function startMusic() { ensureAudio(); if (musicPlaying) return; musicPlaying = true; updateMusicBtn(); scheduleNextNote(); }
+    function stopMusic() { musicPlaying = false; clearTimeout(musicTimer); updateMusicBtn(); }
+    function toggleMusic() { if (musicPlaying) stopMusic(); else startMusic(); }
+    function updateMusicBtn() {
+      const btn = document.getElementById("btn-music");
+      btn.textContent = musicPlaying ? "♪ 鋼琴配樂：播放中" : "♪ 鋼琴配樂：關閉";
+      btn.classList.toggle("active", musicPlaying);
+    }
+
+    /* Canvas 粒子花瓣與香檳金煙火 */
+    const canvas = document.getElementById("fx-canvas");
+    const ctx = canvas.getContext("2d");
+    let W = (canvas.width = window.innerWidth), H = (canvas.height = window.innerHeight);
+    window.addEventListener("resize", () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; });
+
+    const COLORS = ["#C4973B", "#E2BE6F", "#C8797D", "#2C5A47", "#E8B4B8"];
+    const petals = Array.from({ length: 26 }, () => ({
+      x: Math.random() * W, y: Math.random() * H, r: 3 + Math.random() * 4,
+      vx: -0.35 + Math.random() * 0.7, vy: 0.35 + Math.random() * 0.55,
+      rot: Math.random() * Math.PI * 2, vrot: -0.02 + Math.random() * 0.04,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)], alpha: 0.25 + Math.random() * 0.32
+    }));
+    const sparks = [];
+
+    function spawnBurst(x, y, count = 34) {
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.25;
+        const speed = 1.6 + Math.random() * 4.4;
+        sparks.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 0.6, size: 2 + Math.random() * 3.2, life: 1, decay: 0.014 + Math.random() * 0.012, color: COLORS[Math.floor(Math.random() * COLORS.length)] });
+      }
+    }
+
+    function launchCelebrationFireworks() {
+      [[W * 0.22, H * 0.26], [W * 0.78, H * 0.24], [W * 0.5, H * 0.2]].forEach(([x, y], i) => setTimeout(() => spawnBurst(x, y, 40), i * 280));
+    }
+
+    document.addEventListener("click", (e) => {
+      if (e.target.closest("button, input, textarea, label, .modal-card")) return;
+      spawnBurst(e.clientX, e.clientY, 22);
+    });
+
+    function animateFX() {
+      ctx.clearRect(0, 0, W, H);
+      for (const p of petals) {
+        p.x += p.vx; p.y += p.vy; p.rot += p.vrot;
+        if (p.y > H + 12) { p.y = -12; p.x = Math.random() * W; }
+        if (p.x > W + 12) p.x = -12; if (p.x < -12) p.x = W + 12;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color; ctx.beginPath(); ctx.ellipse(0, 0, p.r * 1.4, p.r * 0.65, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      }
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const s = sparks[i];
+        s.x += s.vx; s.y += s.vy; s.vy += 0.045; s.vx *= 0.985; s.life -= s.decay;
+        if (s.life <= 0) { sparks.splice(i, 1); continue; }
+        ctx.save(); ctx.globalAlpha = s.life; ctx.fillStyle = s.color;
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.size * s.life, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      }
+      requestAnimationFrame(animateFX);
+    }
+
+    function openEditor() {
+      document.getElementById("in-headline").value = cardConfig.headline;
+      document.getElementById("in-lead").value = cardConfig.lead;
+      document.getElementById("in-letter").value = cardConfig.letter;
+      document.getElementById("in-sign").value = cardConfig.sign;
+      document.getElementById("in-img-url").value = cardConfig.heroImageUrl.startsWith("data:") ? "" : cardConfig.heroImageUrl;
+      document.getElementById("editor-modal").classList.add("open");
+    }
+    function closeEditor() { document.getElementById("editor-modal").classList.remove("open"); }
+    function applyEditor() {
+      cardConfig.headline = document.getElementById("in-headline").value.trim() || DEFAULT_CONFIG.headline;
+      cardConfig.lead = document.getElementById("in-lead").value.trim() || DEFAULT_CONFIG.lead;
+      cardConfig.letter = document.getElementById("in-letter").value.trim() || DEFAULT_CONFIG.letter;
+      cardConfig.sign = document.getElementById("in-sign").value.trim() || DEFAULT_CONFIG.sign;
+      const urlVal = document.getElementById("in-img-url").value.trim();
+      if (urlVal) cardConfig.heroImageUrl = urlVal;
+      renderConfig(); closeEditor(); showToast("已更新生日卡片文案 ✨");
+    }
+    function exportConfigJSON() {
+      const blob = new Blob([JSON.stringify(cardConfig, null, 2)], { type: "application/json" });
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+      a.download = "peanut-birthday-card-v2-config.json"; a.click(); URL.revokeObjectURL(a.href);
+      showToast("已匯出設定檔 JSON");
+    }
+    function importConfigJSON(e) {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try { cardConfig = { ...cardConfig, ...JSON.parse(ev.target.result) }; renderConfig(); openEditor(); showToast("已載入設定檔 JSON"); }
+        catch { showToast("JSON 格式不正確，請確認檔案"); }
+      };
+      reader.readAsText(file);
+    }
+    function showToast(msg) {
+      const el = document.getElementById("toast"); el.textContent = msg; el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    function useCoupon(el) {
+      el.classList.add("used");
+      const r = el.getBoundingClientRect();
+      spawnBurst(r.left + r.width / 2, r.top + r.height / 2, 26);
+      playChimeChord();
+      showToast(`已預約「${el.querySelector(".name").textContent}」，回台灣就兌現！`);
+    }
+
+    function tickClocks() {
+      const fmt = (tz) => new Intl.DateTimeFormat("zh-TW", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date());
+      document.getElementById("clk-tpe").textContent = fmt("Asia/Taipei");
+      document.getElementById("clk-par").textContent = fmt("Europe/Paris");
+    }
+
+    if (new URLSearchParams(location.search).has("edit")) document.body.classList.add("edit-mode");
+
+    /* ===== 隱藏彩蛋系統 ===== */
+    const EGGS_TOTAL = 5; const found = new Set();
+    function findEgg(id, title, body, kicker = "SECRET FOUND") {
+      const first = id !== "all" && !found.has(id); if (id !== "all") found.add(id);
+      const c = document.getElementById("egg-counter");
+      c.textContent = `🥚 ${found.size}/${EGGS_TOTAL}`; c.classList.add("show");
+      document.getElementById("egg-kicker").textContent = first ? `${kicker} · ${found.size}/${EGGS_TOTAL}` : kicker;
+      document.getElementById("egg-title").textContent = title;
+      document.getElementById("egg-body").textContent = body;
+      document.getElementById("egg-note").classList.add("show");
+      playChimeChord();
+      if (first && found.size === EGGS_TOTAL) setTimeout(allEggsFound, 1800);
+    }
+    function closeEgg() { document.getElementById("egg-note").classList.remove("show"); }
+
+    // 彩蛋 1：連點標題三下 → 花生雨
+    let headTaps = 0, headTimer;
+    function headlineTap() {
+      headTaps++; clearTimeout(headTimer); headTimer = setTimeout(() => headTaps = 0, 900);
+      if (headTaps >= 3) { headTaps = 0; peanutRain();
+        findEgg("peanut", "🥜 花生雨！", "被你發現了～\n全世界只有一個豪娃花生哥哥，\n所以這場花生雨也只為你下。"); }
+    }
+    // 鍵盤輸入 peanut 也會觸發
+    let typed = "";
+    document.addEventListener("keydown", (e) => {
+      typed = (typed + e.key.toLowerCase()).slice(-6);
+      if (typed === "peanut") { peanutRain(); findEgg("peanut", "🥜 花生雨！", "你居然打出了 peanut！\n全世界只有一個豪娃花生哥哥，\n所以這場花生雨也只為你下。"); }
+    });
+    const nuts = [];
+    function peanutRain() { for (let i = 0; i < 60; i++) nuts.push({ x: Math.random() * W, y: -20 - Math.random() * H * 0.8, vy: 2 + Math.random() * 3, rot: Math.random() * 6, vr: -0.08 + Math.random() * 0.16, size: 18 + Math.random() * 14 }); }
+    function drawNuts() {
+      for (let i = nuts.length - 1; i >= 0; i--) { const n = nuts[i]; n.y += n.vy; n.rot += n.vr;
+        if (n.y > H + 40) { nuts.splice(i, 1); continue; }
+        ctx.save(); ctx.translate(n.x, n.y); ctx.rotate(n.rot); ctx.font = `${n.size}px serif`; ctx.textAlign = "center"; ctx.fillText("🥜", 0, 0); ctx.restore(); }
+      requestAnimationFrame(drawNuts);
+    }
+    drawNuts();
+
+    // 彩蛋 2：點郵票 → 艾菲爾鐵塔整點閃燈
+    function eiffelSparkle() {
+      for (let k = 0; k < 14; k++) setTimeout(() => spawnBurst(Math.random() * W, Math.random() * H * 0.6, 14), k * 120);
+      findEgg("eiffel", "🗼 鐵塔為你閃燈", "艾菲爾鐵塔每晚整點會閃 5 分鐘。\n今年生日那晚的某一次閃爍，\n就當作是台灣託它幫忙送的祝福吧 ✨");
+    }
+
+    // 彩蛋 3：點底部時鐘 → 時差
+    function timezoneEgg() {
+      const h = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Taipei", hour: "2-digit", hour12: false }).format(new Date()));
+      const mood = h < 6 ? "台灣還在深夜，但想你的人還醒著。" : h < 12 ? "台灣這邊剛吃完早餐，正在想你。" : h < 18 ? "台灣這邊是下午茶時間，幫你多點一杯珍奶。" : "台灣已經晚上了，夜市剛熱鬧起來。";
+      findEgg("tz", "⏰ 7 小時的時差", `你在巴黎的每一刻，台灣都比你先過了 7 小時。\n${mood}\n時差隔得開時間，隔不開掛念。`);
+    }
+
+    // 彩蛋 4：巴黎深夜打開 → 夜貓子
+    function nightOwlCheck() {
+      const h = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Paris", hour: "2-digit", hour12: false }).format(new Date()));
+      if (h >= 23 || h < 5) setTimeout(() => findEgg("owl", "🌙 夜貓子彩蛋", "巴黎都這麼晚了還沒睡？\n台灣這邊太陽已經出來了，\n看完卡片就乖乖去睡，生日也要好好休息 💤", "PARIS LATE NIGHT"), 1500);
+    }
+
+    // 彩蛋 5：蠟燭吹熄後再長按 2 秒 → 悄悄話願望
+    let pressTimer;
+    const cb = document.getElementById("candle-box");
+    const startPress = () => { if (!candleBlown) return; pressTimer = setTimeout(() => {
+      document.getElementById("wish-modal").classList.add("show"); document.getElementById("wish-input").focus(); }, 2000); };
+    function sealWish() {
+      const w = document.getElementById("wish-input").value.trim();
+      document.getElementById("wish-modal").classList.remove("show");
+      if (!w) return;
+      try { localStorage.setItem("peanut-wish", w); } catch (e) {}
+      findEgg("wish", "🤫 願望已封存", "這個願望被收進只屬於你的時空膠囊裡。\n明年生日再打開這張卡，\n看看它有沒有實現。");
+    }
+    const endPress = () => clearTimeout(pressTimer);
+    cb.addEventListener("mousedown", startPress); cb.addEventListener("touchstart", startPress, { passive: true });
+    ["mouseup", "mouseleave", "touchend"].forEach((ev) => cb.addEventListener(ev, endPress));
+    try { const old = localStorage.getItem("peanut-wish"); if (old) setTimeout(() => showToast(`去年的願望：「${old}」實現了嗎？`), 4000); } catch (e) {}
+
+    // 全部找到 → 終極彩蛋
+    function allEggsFound() {
+      peanutRain(); launchCelebrationFireworks(); setTimeout(launchCelebrationFireworks, 900);
+      document.getElementById("egg-counter").classList.add("done");
+      findEgg("all", "🏆 彩蛋全收集！", "5 個彩蛋全部被你找到了，\n果然是最細心的豪娃花生哥哥。\n\n獎品：回台灣時，大餐由我們請客 🎉", "ALL SECRETS UNLOCKED");
+    }
+    nightOwlCheck();
+    tickClocks(); setInterval(tickClocks, 30000);
+    renderConfig();
+    animateFX();
+  </script>
+</body>
+</html>
