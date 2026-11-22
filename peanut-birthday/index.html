@@ -61,7 +61,7 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      z-index: 2;
+      z-index: 55;
       pointer-events: none;
     }
 
@@ -704,6 +704,26 @@
     .egg-note h4 { font-family: 'Noto Serif TC', serif; font-size: 20px; margin: 6px 0 10px; }
     .egg-note p { font-size: 14px; line-height: 1.9; color: var(--ink-sub); white-space: pre-line; }
     .egg-note button { margin-top: 14px; }
+
+    .voucher-backdrop { position: fixed; inset: 0; background: rgba(29,28,26,.35); backdrop-filter: blur(6px); z-index: 70; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .voucher-backdrop.open { display: flex; }
+    .voucher {
+      width: min(440px, 92vw); background: linear-gradient(135deg, #FFFDF9, #FAF1DE); border-radius: 18px;
+      border: 2px solid var(--gold); box-shadow: var(--shadow-float); position: relative; overflow: hidden;
+      animation: fadeUp .6s var(--ease-cinema) both;
+    }
+    .voucher::before, .voucher::after { content: ""; position: absolute; top: 58%; width: 26px; height: 26px; border-radius: 50%; background: rgba(29,28,26,.35); }
+    .voucher::before { left: -14px; } .voucher::after { right: -14px; }
+    .voucher-top { padding: 24px 24px 16px; text-align: center; border-bottom: 2px dashed var(--gold-light); }
+    .voucher-top .k { font-family: 'Cormorant Garamond', serif; letter-spacing: .24em; font-size: 12px; color: var(--gold); font-weight: 700; }
+    .voucher-top h3 { font-family: 'Noto Serif TC', serif; font-size: 24px; margin: 6px 0 4px; color: var(--sage); }
+    .voucher-top .to { font-size: 14px; color: var(--ink-sub); }
+    .voucher-items { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; font-size: 13px; }
+    .voucher-items div { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 8px; }
+    .voucher-bottom { padding: 16px 24px 20px; font-size: 12.5px; color: var(--ink-sub); line-height: 1.8; }
+    .voucher-bottom b { color: var(--ink-main); }
+    .voucher-serial { font-family: 'Cormorant Garamond', serif; font-size: 15px; letter-spacing: .12em; color: var(--rose); font-weight: 700; }
+    .voucher-actions { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
   </style>
 </head>
 <body>
@@ -945,7 +965,7 @@
               願望已收進巴黎晨光裡！這張「終身有效」的法式咖啡館招待券，隨時可以向台灣兌換一場慶生大餐與滿滿祝福。
             </div>
           </div>
-          <button class="pill-btn active" onclick="launchCelebrationFireworks()">收下祝福禮券 ✦</button>
+          <button class="pill-btn active" onclick="openVoucher()">收下祝福禮券 ✦</button>
         </div>
 
         <div class="homesick">
@@ -996,6 +1016,27 @@
   <div class="egg-note" id="wish-modal"><div class="egg-kicker">SECRET WISH</div><h4>偷偷寫下生日願望</h4><p>只存在你這台裝置，誰都看不到。</p>
     <textarea id="wish-input" style="width:100%;margin-top:10px;min-height:80px;border:1px solid var(--border);border-radius:10px;padding:10px;font-family:inherit;font-size:14px;background:var(--bg-washi)"></textarea>
     <button class="pill-btn active" onclick="sealWish()">封存願望 ✦</button></div>
+  <div class="voucher-backdrop" id="voucher-modal" onclick="if(event.target===this) closeVoucher()">
+    <div class="voucher">
+      <div class="voucher-top">
+        <div class="k">BON CADEAU · 生日祝福禮券</div>
+        <h3>☕ 慶生大餐招待券</h3>
+        <div class="to">持券人：<b id="voucher-name">豪娃花生哥哥</b></div>
+        <div class="voucher-items">
+          <div>🍰 生日蛋糕一份</div><div>🍽 慶生大餐一頓</div>
+          <div>🧋 台灣飲料無限續</div><div>🤗 擁抱 × ∞</div>
+        </div>
+      </div>
+      <div class="voucher-bottom">
+        <div>券號 <span class="voucher-serial" id="voucher-serial"></span></div>
+        <div>效期：<b>終身有效</b>（不限次數、不分時區）</div>
+        <div>兌換方式：<b>截圖保存這張券</b>，回台灣時出示給 Alger，或傳給我們預約時間即可兌換。</div>
+        <div class="voucher-actions">
+          <button class="pill-btn active" onclick="closeVoucher(); launchCelebrationFireworks();">已截圖，收下了 ✦</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="toast" id="toast">已套用設定</div>
 
   <script>
@@ -1111,7 +1152,14 @@
       requestAnimationFrame(frame);
     }
 
-    function flipPostcard() { document.getElementById("postcard-3d").classList.toggle("flipped"); }
+    function flipPostcard() {
+      const card = document.getElementById("postcard-3d");
+      card.classList.toggle("flipped");
+      const face = card.classList.contains("flipped") ? card.querySelector(".postcard-back") : card.querySelector(".postcard-front");
+      face.scrollTop = 0;
+      const y = card.getBoundingClientRect().top + window.scrollY - 52;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
 
     function blowCandle() {
       if (candleBlown) { launchCelebrationFireworks(); return; }
@@ -1389,6 +1437,15 @@
       document.getElementById("egg-counter").classList.add("done");
       findEgg("all", "🏆 彩蛋全收集！", "5 個彩蛋全部被你找到了，\n果然是最細心的豪娃花生哥哥。\n\n獎品：回台灣時，大餐由我們請客 🎉", "ALL SECRETS UNLOCKED");
     }
+
+    function openVoucher() {
+      const d = new Date(); const pad = (n) => String(n).padStart(2, "0");
+      document.getElementById("voucher-serial").textContent = `TPE-CDG-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-🥜`;
+      document.getElementById("voucher-name").textContent = cardConfig.recipient;
+      document.getElementById("voucher-modal").classList.add("open");
+      launchCelebrationFireworks(); playChimeChord();
+    }
+    function closeVoucher() { document.getElementById("voucher-modal").classList.remove("open"); }
     nightOwlCheck();
     tickClocks(); setInterval(tickClocks, 30000);
     renderConfig();
