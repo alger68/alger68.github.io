@@ -22,7 +22,7 @@
     <div>
       <p class="sc-over">12.26 <span></span> 水果家</p>
       <h1>現場計分板</h1>
-      <p class="sc-intro">記下三隊的成績，一起揭曉今年的聖誕水果王。</p>
+      <p class="sc-intro">預設分成三組，可依現場人數調整為 2–8 組。登記四關成績，一起揭曉聖誕水果王。</p>
     </div>
     <a class="action wine" id="award-launch" href="#awards"><span aria-hidden="true">✧</span> 開啟頒獎畫面</a>
   </div>
@@ -30,7 +30,7 @@
   <section class="score-panel" aria-labelledby="entry-heading">
     <div class="entry-bar">
       <h2 id="entry-heading">關卡記分</h2>
-      <button class="text-button" id="team-edit" type="button">編輯隊名</button>
+      <button class="text-button" id="team-edit" type="button">管理組別（3 組）</button>
     </div>
     <div class="round-picks" role="group" aria-label="選擇要登記的關卡" id="round-picks"></div>
     <div class="entry-details">
@@ -38,7 +38,7 @@
         <p class="sc-over" id="round-number"></p>
         <h3 id="round-name"></h3>
         <p id="round-hint" class="muted"></p>
-        <p class="point-note"><span aria-hidden="true">✦</span> 第一名 3 分、第二名 2 分、第三名 1 分。相同成績並列，後一名跳號。</p>
+        <p class="point-note"><span aria-hidden="true">✦</span> <span id="points-rule"></span></p>
       </div>
       <div class="team-entry" id="team-entry"></div>
     </div>
@@ -49,10 +49,10 @@
   </section>
 
   <section class="ranking" aria-labelledby="ranking-heading">
-    <div class="entry-bar"><h2 id="ranking-heading">三隊積分總覽</h2><span class="progress-chip" id="progress-label"></span></div>
-    <div class="table-scroll" role="region" aria-label="三隊四關積分表">
+    <div class="entry-bar"><h2 id="ranking-heading">各組積分總覽</h2><span class="progress-chip" id="progress-label"></span></div>
+    <div class="table-scroll" role="region" aria-label="各組四關積分表">
       <table>
-        <caption class="sr-only">各隊每關積分及總積分，單關需輸入全部三隊成績才納入總分。</caption>
+        <caption class="sr-only">各隊每關積分及總積分，單關需輸入全部組別的成績才納入總分。</caption>
         <thead><tr><th scope="col">隊伍</th><th scope="col"><span class="desk">大家</span>找碴</th><th scope="col"><span class="desk">力拔</span>山河</th><th scope="col"><span class="desk">名人</span>聯想</th><th scope="col"><span class="desk">馴鹿</span>迷走</th><th scope="col">總分</th><th scope="col">名次</th></tr></thead>
         <tbody id="score-body"></tbody>
       </table>
@@ -64,10 +64,17 @@
 
 <dialog id="team-dialog" class="team-dialog" aria-labelledby="team-dialog-title">
   <form id="team-form">
-    <h2 id="team-dialog-title">幫隊伍取個名字</h2>
-    <div id="name-fields"></div>
-    <div class="dialog-actions"><button type="button" id="name-cancel" class="action plain">取消</button><button type="submit" class="action green">儲存隊名</button></div>
+    <h2 id="team-dialog-title">管理組別</h2>
+    <div class="roster-controls">
+      <button type="button" class="action plain" id="team-remove">減少一組</button>
+      <strong id="team-count" role="status">3 組</strong>
+      <button type="button" class="action plain" id="team-add">新增一組</button>
+    </div>
+    <div id="name-fields" class="name-fields"></div>
+    <p class="roster-note" id="roster-note"></p>
+    <label class="remove-confirm" id="remove-confirm" hidden><input type="checkbox" id="confirm-remove"><span id="confirm-text"></span></label>
     <p class="name-error" role="alert" id="name-error"></p>
+    <div class="dialog-actions"><button type="button" id="name-cancel" class="action plain">取消</button><button type="submit" class="action green">儲存設定</button></div>
   </form>
 </dialog>
 
