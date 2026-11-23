@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const directory = new URL('./', location.href);
-  const sessionKey = 'fruitclub-invitation:' + directory.pathname;
+  const sessionKey = 'fruitclub-host-v2:' + directory.pathname;
   const lockEvent = sessionKey + ':lock';
   const form = document.getElementById('unlock-form');
   const field = document.getElementById('invite-code');
@@ -13,12 +13,20 @@
   let observer;
   const from64 = value => Uint8Array.from(atob(value), c => c.charCodeAt(0));
   const as64 = bytes => btoa(String.fromCharCode(...bytes));
-  const readCache = () => { try { return JSON.parse(sessionStorage.getItem(sessionKey)); } catch { return null; } };
+  function lockVersion() { try { return localStorage.getItem(lockEvent) || ''; } catch { return ''; } }
+  function readCache() {
+    try {
+      const stored=JSON.parse(sessionStorage.getItem(sessionKey));
+      if (stored && stored.epoch === lockVersion()) return stored;
+      if (stored) forgetCache();
+    } catch {}
+    return null;
+  }
   function forgetCache() { try { sessionStorage.removeItem(sessionKey); } catch {} }
   function busy(active) {
     field.disabled = active; button.disabled = active; toggle.disabled = active;
     form.setAttribute('aria-busy', String(active));
-    button.textContent = active ? '正在開啟…' : '✦ 開啟邀請';
+    button.textContent = active ? '正在開啟…' : '進入主持人專區';
   }
   function curtain() {
     if (!unlocked) return;
@@ -54,11 +62,11 @@
   async function getPackage() {
     if (packageRequest) return packageRequest;
     packageRequest = (async () => {
-      const response = await fetch(new URL('sealed.json', directory), {cache:'no-store'});
+      const response = await fetch(new URL('host-package.json', directory), {cache:'no-store'});
       if (!response.ok) throw new Error('fetch');
       const manifest = await response.json();
       if (manifest.version !== 1 || !Array.isArray(manifest.parts) || !manifest.parts.length ||
-          manifest.parts.length > 2000 || !manifest.parts.every(path => /^sealed\/[a-f0-9]+-\d{3,}\.bin$/.test(path))) throw new Error('format');
+          manifest.parts.length > 2000 || !manifest.parts.every(path => /^host-sealed\/[a-f0-9]+-\d{3,}\.bin$/.test(path))) throw new Error('format');
       const chunks = await Promise.all(manifest.parts.map(async part => {
         const response = await fetch(new URL(part, directory));
         if (!response.ok) throw new Error('fetch');
@@ -67,7 +75,7 @@
       const bytes = new Uint8Array(chunks.reduce((sum,chunk)=>sum+chunk.length,0));
       let offset=0;
       for (const chunk of chunks) { bytes.set(chunk,offset); offset+=chunk.length; }
-      if (bytes.length < 56 || new TextDecoder().decode(bytes.subarray(0,7)) !== 'FRUIT26' || bytes[7] !== 1) throw new Error('format');
+      if (bytes.length < 56 || new TextDecoder().decode(bytes.subarray(0,7)) !== 'FRUITH2' || bytes[7] !== 1) throw new Error('format');
       const iterations = new DataView(bytes.buffer).getUint32(8);
       if (iterations !== 600000) throw new Error('format');
       return {salt:bytes.subarray(12,28), iv:bytes.subarray(28,40), header:bytes.subarray(0,40), cipher:bytes.subarray(40), iterations};
@@ -81,7 +89,7 @@
   }
   function hydrate(files) {
     const path = location.pathname.split('/').pop() || 'index.html';
-    const page = Object.hasOwn(files,path) && /\.html$/.test(path) ? path : 'index.html';
+    const page = path === 'stage.html' ? path : 'host.html';
     if (!files[page]?.text) throw new Error('content');
     const cache = new Map();
     function filePath(value, base='') {
@@ -157,10 +165,10 @@
     function addLock(parent,floating=false) {
       const control=document.createElement('button');
       control.type='button';control.className='invitation-lock'+(floating?' invitation-lock-float':'');
-      control.textContent='鎖定';control.setAttribute('aria-label','鎖定邀請並離開');
+      control.textContent='鎖定主持區';control.setAttribute('aria-label','鎖定主持人專區');
       control.onclick=()=>lock(true);parent.append(control);
     }
-    const holder=document.querySelector('.masthead .navbuttons,.top .topin nav,.sc-nav nav');
+    const holder=document.querySelector('.hostnav,.top .topin nav');
     addLock(holder||document.body,!holder);
     const award=document.querySelector('.award-top');if(award)addLock(award);
     unlocked = true;
@@ -177,11 +185,12 @@
       }
     });
   }
-  async function openInvitation(code, saved) {
-    busy(true);status.textContent=saved?'正在開啟邀請…':'正在核對邀請密碼…';
+  async function openHost(code, saved) {
+    const epochAtStart = lockVersion();
+    busy(true);status.textContent=saved?'正在開啟主持人專區…':'正在核對主持人密碼…';
     let pkg,raw,salt;
     try {
-      if (!window.crypto?.subtle) throw new Error('insecure');
+      if (!window.crypto?.subtle || !window.DecompressionStream) throw new Error('insecure');
       pkg=await getPackage();salt=as64(pkg.salt);
       if(saved && saved.salt!==salt) {forgetCache();status.textContent='';return;}
       raw=saved?from64(saved.key):await derive(code,pkg);
@@ -191,18 +200,20 @@
       catch {
         forgetCache();
         field.setAttribute('aria-invalid','true');
-        status.textContent=saved?'請重新輸入邀請密碼。':'邀請密碼不符合，請再試一次。';
+        status.textContent=saved?'請重新輸入主持人密碼。':'主持人密碼不符合，請再試一次。';
         return;
       }
-      const content=JSON.parse(new TextDecoder().decode(plain));
+      const stream=new Blob([plain]).stream().pipeThrough(new DecompressionStream('gzip'));
+      const content=await new Response(stream).json();
       if(content.version!==1||!content.files) throw new Error('content');
+      if(epochAtStart!==lockVersion()){forgetCache();status.textContent='主持區已鎖定，請重新輸入密碼。';return;}
       // Only a derived key is retained, scoped to this origin, path and tab session.
-      try {sessionStorage.setItem(sessionKey,JSON.stringify({salt,key:as64(raw)}));}catch{}
+      try {sessionStorage.setItem(sessionKey,JSON.stringify({salt,key:as64(raw),epoch:lockVersion()}));}catch{}
       field.value='';await hydrate(content.files);
     } catch(error) {
       if(unlocked) {forgetCache();curtain();location.reload();return;}
       if(saved)forgetCache();
-      status.textContent=error.message==='insecure'?'請使用支援安全連線的瀏覽器開啟活動網址。':'邀請內容暫時無法載入，請檢查連線後重試。';
+      status.textContent=error.message==='insecure'?'請使用支援安全連線的瀏覽器開啟活動網址。':'主持人資料暫時無法載入，請檢查連線後重試。';
     } finally {
       if(raw instanceof Uint8Array)raw.fill(0);
       if(!unlocked) {busy(false);if(!saved)field.focus();}
@@ -215,8 +226,8 @@
   };
   field.addEventListener('input',()=>{field.removeAttribute('aria-invalid');status.textContent='';});
   form.addEventListener('submit',event=>{
-    event.preventDefault();if(!button.disabled&&field.value.trim())openInvitation(field.value,null);
+    event.preventDefault();if(!button.disabled&&field.value.trim())openHost(field.value,null);
   });
   const saved=readCache();
-  if(saved && typeof saved.key==='string' && typeof saved.salt==='string')openInvitation(null,saved);
+  if(saved && typeof saved.key==='string' && typeof saved.salt==='string')openHost(null,saved);
 })();

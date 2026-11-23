@@ -1,22 +1,92 @@
 <!doctype html>
-<html lang="zh-Hant-TW"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light"><meta name="theme-color" content="#103a30">
-<meta name="robots" content="noindex,nofollow,noarchive">
-<meta name="referrer" content="same-origin">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' blob: data:; script-src 'self' blob:; style-src 'self' 'unsafe-inline' blob:; connect-src 'self'; img-src 'self' blob: data:; font-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'none'">
-<title>水果幫的聖誕邀請｜因為有你，心存感恩</title>
-<link rel="icon" href="cover-citrus.svg" type="image/svg+xml"><link rel="stylesheet" href="invitation.css"><script defer src="invitation.js"></script>
-</head><body>
-<div class="invite-shell">
-<header class="invite-brand"><img src="cover-citrus.svg" width="42" height="42" alt=""><span><b>水果幫</b><small>FRUIT CLUB</small></span></header>
-<main class="invite-card">
-<figure class="invite-paper"><img src="cover.jpg" width="1448" height="1086" alt="水果幫的聖誕邀請卡，書法「因、心」串起因為有你，心存感恩。"></figure>
-<section class="invite-form" aria-labelledby="welcome"><p class="invite-kicker"><span aria-hidden="true">✦</span> CHRISTMAS 2026</p><h1 id="welcome">聖誕邀請函</h1>
-<p class="invite-note">給水果幫的大小朋友<br>輸入邀請密碼，一起來過聖誕。</p>
-<form id="unlock-form"><label for="invite-code">邀請密碼</label><div class="invite-field"><input type="password" id="invite-code" autocomplete="current-password" autocapitalize="characters" spellcheck="false" maxlength="128" required aria-describedby="invite-status"><button type="button" id="show-code" aria-label="顯示密碼" aria-pressed="false">顯示</button></div>
-<button class="invite-enter" id="unlock-button" type="submit"><span aria-hidden="true">✦</span> 開啟邀請</button>
-<p id="invite-status" role="status" aria-live="polite"></p></form><noscript><p>請啟用瀏覽器的 JavaScript，再輸入邀請密碼。</p></noscript>
-</section></main>
-<footer class="invite-foot"><span>因為有你，心存感恩</span><span aria-hidden="true">✧</span><span>水果幫 × 水果家</span></footer>
-</div></body></html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10372e">
+  <title>現場計分與頒獎｜水果幫聖誕感恩聚會</title>
+  <link rel="stylesheet" href="score.css">
+  <script defer src="score.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳至計分板</a>
+<header class="sc-nav">
+  <div class="nav-inner">
+    <a class="sc-brand" href="index.html"><img class="brand-logo" src="assets/citrus.svg" alt="" width="36" height="36"><span>水果幫<small class="brand-season">FRUIT CLUB</small></span></a>
+    <nav aria-label="現場導覽"><a href="index.html">活動首頁</a><a href="rules.html">遊戲規則</a><a class="here" aria-current="page" href="#main">現場計分</a></nav>
+  </div>
+</header>
+
+<main id="main" class="sc-wrap">
+  <div class="sc-hero">
+    <div>
+      <p class="sc-over">12.26 <span></span> 水果家</p>
+      <h1>現場計分板</h1>
+      <p class="sc-intro">記下三隊的成績，一起揭曉今年的聖誕水果王。</p>
+    </div>
+    <a class="action wine" id="award-launch" href="#awards"><span aria-hidden="true">✧</span> 開啟頒獎畫面</a>
+  </div>
+
+  <section class="score-panel" aria-labelledby="entry-heading">
+    <div class="entry-bar">
+      <h2 id="entry-heading">關卡記分</h2>
+      <button class="text-button" id="team-edit" type="button">編輯隊名</button>
+    </div>
+    <div class="round-picks" role="group" aria-label="選擇要登記的關卡" id="round-picks"></div>
+    <div class="entry-details">
+      <div class="entry-copy">
+        <p class="sc-over" id="round-number"></p>
+        <h3 id="round-name"></h3>
+        <p id="round-hint" class="muted"></p>
+        <p class="point-note"><span aria-hidden="true">✦</span> 第一名 3 分、第二名 2 分、第三名 1 分。相同成績並列，後一名跳號。</p>
+      </div>
+      <div class="team-entry" id="team-entry"></div>
+    </div>
+    <div class="entry-footer">
+      <p id="record-status" role="status"></p>
+      <p class="save-caption" id="save-caption">成績儲存在這部裝置</p>
+    </div>
+  </section>
+
+  <section class="ranking" aria-labelledby="ranking-heading">
+    <div class="entry-bar"><h2 id="ranking-heading">三隊積分總覽</h2><span class="progress-chip" id="progress-label"></span></div>
+    <div class="table-scroll" role="region" aria-label="三隊四關積分表">
+      <table>
+        <caption class="sr-only">各隊每關積分及總積分，單關需輸入全部三隊成績才納入總分。</caption>
+        <thead><tr><th scope="col">隊伍</th><th scope="col"><span class="desk">大家</span>找碴</th><th scope="col"><span class="desk">力拔</span>山河</th><th scope="col"><span class="desk">名人</span>聯想</th><th scope="col"><span class="desk">馴鹿</span>迷走</th><th scope="col">總分</th><th scope="col">名次</th></tr></thead>
+        <tbody id="score-body"></tbody>
+      </table>
+    </div>
+    <div class="tie-box" id="ties" hidden></div>
+  </section>
+  <footer class="sc-footer"><a href="index.html">回活動首頁</a><span>因為有你，心存感恩</span><a href="rules.html">回遊戲規則</a></footer>
+</main>
+
+<dialog id="team-dialog" class="team-dialog" aria-labelledby="team-dialog-title">
+  <form id="team-form">
+    <h2 id="team-dialog-title">幫隊伍取個名字</h2>
+    <div id="name-fields"></div>
+    <div class="dialog-actions"><button type="button" id="name-cancel" class="action plain">取消</button><button type="submit" class="action green">儲存隊名</button></div>
+    <p class="name-error" role="alert" id="name-error"></p>
+  </form>
+</dialog>
+
+<section class="award" id="award-view" hidden aria-labelledby="award-title">
+  <div class="award-top">
+    <button type="button" class="award-tool" id="award-back">返回計分板</button>
+    <button type="button" class="award-tool" id="award-full">全螢幕</button>
+  </div>
+  <div class="award-layout">
+    <figure class="award-poster"><img src="cover.jpg" alt="水果幫聖誕海報，因為有你，心存感恩" loading="lazy"></figure>
+    <div class="award-content">
+      <div class="award-stars" aria-hidden="true">✧ <b>✦</b> ✧</div>
+      <p class="award-kicker">水果幫・2026 聖誕感恩聚會</p>
+      <h2 id="award-title">聖誕水果王</h2>
+      <p class="award-winner" id="award-winner"></p>
+      <p class="award-detail" id="award-detail"></p>
+      <ol class="award-list" id="award-list"></ol>
+      <p class="award-blessing">因為有你，心存感恩</p>
+    </div>
+  </div>
+</section>
+</body></html>
