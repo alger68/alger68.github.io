@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>會考基地｜116 會考倒數與學習入口</title>
+<meta name="description" content="116 國中教育會考倒數、今日三步驟、全科闖關／英文每日／讀書計畫一頁直達" />
+<meta property="og:title" content="🎯 會考基地" />
+<meta property="og:description" content="會考倒數・今日三步驟・三個學習網站一頁直達" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#1d3557" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f4f1ea; --card: #ffffff; --ink: #1b1f2a; --muted: #5f6675; --line: #1b1f2a;
+    --navy: #1d3557; --gold: #f2b134; --red: #d1495b; --green: #2a9d8f; --blue: #3a6ea5; --purple: #7b5ea7;
+    --soft: #ebe6da; --shadow: 4px 4px 0 var(--line);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121620; --card: #1c2230; --ink: #eef0f5; --muted: #a3aab8; --line: #000000;
+      --soft: #262d3d; --navy: #0d1b2e; --shadow: 4px 4px 0 #000;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121620; --card: #1c2230; --ink: #eef0f5; --muted: #a3aab8; --line: #000000;
+    --soft: #262d3d; --navy: #0d1b2e; --shadow: 4px 4px 0 #000;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 0 16px 48px; }
+
+  /* HERO */
+  .hero { background: var(--navy); color: #fff; padding: calc(env(safe-area-inset-top) + 22px) 16px 26px; border-bottom: 3px solid var(--line); }
+  .hero .inner { max-width: 560px; margin: 0 auto; }
+  .tag { display: inline-block; background: var(--gold); color: #1b1f2a; border: 2px solid #1b1f2a; border-radius: 999px; padding: 3px 11px; font-size: 12px; font-weight: 900; letter-spacing: .06em; }
+  .hero h1 { font-size: 40px; font-weight: 900; line-height: 1.05; margin: 14px 0 6px; letter-spacing: -.01em; }
+  .hero h1 span { color: var(--gold); }
+  .hero .sub { opacity: .88; font-size: 15px; }
+  .count { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 18px; }
+  .count div { background: #fff; color: #1b1f2a; border: 2.5px solid #1b1f2a; border-radius: 14px; text-align: center; padding: 10px 0 6px; box-shadow: 3px 3px 0 #000; }
+  .count b { display: block; font-size: 28px; font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .count small { font-size: 12px; color: #5f6675; font-weight: 700; }
+  .count div:first-child b { color: var(--red); }
+  .note { font-size: 12px; opacity: .75; margin-top: 10px; }
+  .milestone { margin-top: 14px; background: rgba(255,255,255,.1); border: 1.5px solid rgba(255,255,255,.35); border-radius: 12px; padding: 10px 12px; font-size: 14px; }
+  .milestone b { color: var(--gold); }
+
+  h2 { font-size: 20px; font-weight: 900; margin: 30px 0 12px; display: flex; align-items: center; gap: 8px; }
+  h2 .num { background: var(--ink); color: var(--bg); width: 26px; height: 26px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 14px; }
+
+  /* TODAY */
+  .today { background: var(--card); border: 2.5px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
+  .step { display: flex; align-items: center; gap: 12px; padding: 14px; border-bottom: 1.5px dashed var(--soft); }
+  .step:last-child { border-bottom: 0; }
+  .check { flex: none; width: 30px; height: 30px; border: 2.5px solid var(--line); border-radius: 9px; background: var(--bg); display: grid; place-items: center; font-weight: 900; font-size: 18px; cursor: pointer; color: transparent; }
+  .step.done .check { background: var(--green); color: #fff; }
+  .step.done .txt b { text-decoration: line-through; opacity: .6; }
+  .txt { flex: 1; min-width: 0; }
+  .txt b { display: block; font-size: 15.5px; }
+  .txt small { color: var(--muted); font-size: 13px; }
+  .go { flex: none; font-size: 13px; font-weight: 900; border: 2px solid var(--line); border-radius: 10px; padding: 6px 10px; background: var(--gold); color: #1b1f2a; }
+  .streak { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--soft); font-size: 14px; font-weight: 700; }
+  .streak b { font-size: 20px; color: var(--red); }
+  .week { display: flex; gap: 5px; }
+  .week i { width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid var(--line); background: var(--card); }
+  .week i.on { background: var(--green); }
+  .week i.part { background: var(--gold); }
+
+  /* SITES */
+  .site { display: block; background: var(--card); border: 2.5px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 16px; margin-bottom: 14px; position: relative; overflow: hidden; transition: transform .12s, box-shadow .12s; }
+  .site:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--line); }
+  .site::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: var(--c); }
+  .site .head { display: flex; align-items: center; gap: 10px; padding-left: 6px; }
+  .site .ico { font-size: 30px; }
+  .site h3 { font-size: 18px; font-weight: 900; line-height: 1.25; }
+  .site .kind { font-size: 12px; color: var(--muted); font-weight: 700; }
+  .site p { color: var(--muted); font-size: 14px; margin: 8px 0 10px 6px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding-left: 6px; }
+  .chip { font-size: 12.5px; font-weight: 700; border: 1.5px solid var(--line); border-radius: 999px; padding: 3px 10px; background: var(--bg); }
+  a.chip { background: var(--card); }
+  .open { position: absolute; right: 14px; top: 16px; font-weight: 900; font-size: 20px; }
+
+  /* PHASES */
+  .phases { display: grid; gap: 10px; }
+  .phase { background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+  .phase.now { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .phase .when { font-size: 12px; font-weight: 900; color: var(--muted); letter-spacing: .04em; }
+  .phase b { font-size: 15.5px; }
+  .phase p { font-size: 13.5px; color: var(--muted); }
+  .phase .badge { float: right; font-size: 11px; font-weight: 900; background: var(--gold); color: #1b1f2a; border: 1.5px solid #1b1f2a; border-radius: 999px; padding: 1px 8px; }
+
+  .tips { background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: 14px; }
+  .tips li { margin: 4px 0 4px 18px; }
+  footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 32px; }
+  footer button { font: inherit; background: none; border: 1.5px solid var(--muted); color: var(--muted); border-radius: 8px; padding: 3px 10px; margin-top: 8px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="inner">
+    <span class="tag">🎯 116 國中教育會考</span>
+    <h1>會考<span>基地</span></h1>
+    <p class="sub">每天打開這一頁：看倒數、照三步驟做完，就是很好的一天。</p>
+    <div class="count" aria-live="polite">
+      <div><b id="cd-d">--</b><small>天</small></div>
+      <div><b id="cd-h">--</b><small>時</small></div>
+      <div><b id="cd-m">--</b><small>分</small></div>
+      <div><b id="cd-s">--</b><small>秒</small></div>
+    </div>
+    <p class="note">預定 2027/5/15（六）–5/16（日），實際日期以心測中心公告的簡章為準。</p>
+    <div class="milestone" id="milestone"></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <h2><span class="num">1</span>今天的三步驟</h2>
+  <div class="today" id="today">
+    <div class="step" data-k="en">
+      <button class="check" aria-label="完成英文每日一課">✓</button>
+      <div class="txt"><b>英文每日一課</b><small>一篇短文＋單字片語，約 20 分鐘</small></div>
+      <a class="go" href="/JHSEE-English-Adventure/">開始</a>
+    </div>
+    <div class="step" data-k="all">
+      <button class="check" aria-label="完成全科今日任務">✓</button>
+      <div class="txt"><b>全科今日任務</b><small>五科闖關或錯題復仇，約 30 分鐘</small></div>
+      <a class="go" href="/JHSEE-All-Subjects/">開始</a>
+    </div>
+    <div class="step" data-k="plan">
+      <button class="check" aria-label="完成讀書計畫打卡">✓</button>
+      <div class="txt"><b>讀書計畫打卡</b><small>看弱點、排明天，約 5 分鐘</small></div>
+      <a class="go" href="/JHSEE-Study-Planner/">開始</a>
+    </div>
+    <div class="streak">
+      <span>連續完成 <b id="streak">0</b> 天</span>
+      <span class="week" id="week" aria-label="最近七天"></span>
+    </div>
+  </div>
+
+  <h2><span class="num">2</span>學習網站</h2>
+
+  <a class="site" style="--c: var(--red)" href="/JHSEE-All-Subjects/">
+    <span class="open">→</span>
+    <div class="head"><span class="ico">⚔️</span><div><h3>116 會考大冒險</h3><span class="kind">全科闖關・模擬考</span></div></div>
+    <p>國英數自社五個世界，普通關＋Boss 戰，答題累積 EXP；限時模考、錯題間隔複習、能力分析都在這裡。</p>
+    <div class="chips"><span class="chip">五科關卡</span><span class="chip">限時模考</span><span class="chip">115 官方試題</span><span class="chip">錯題復仇</span></div>
+  </a>
+
+  <a class="site" style="--c: var(--blue)" href="/JHSEE-English-Adventure/">
+    <span class="open">→</span>
+    <div class="head"><span class="ico">📘</span><div><h3>會考英文每日冒險</h3><span class="kind">英文・250 天課程</span></div></div>
+    <p>250 篇原創短文、1,600 多道閱讀題、單字和片語，一天一課；可以朗讀，也能下載題本列印。</p>
+    <div class="chips"><span class="chip">每日一課</span><span class="chip">36 個 Boss</span><span class="chip">朗讀</span></div>
+  </a>
+  <div class="chips" style="margin:-4px 0 18px">
+    <a class="chip" href="/JHSEE-English-Adventure/downloads/">📥 英文教材與題本下載</a>
+  </div>
+
+  <a class="site" style="--c: var(--green)" href="/JHSEE-Study-Planner/">
+    <span class="open">→</span>
+    <div class="head"><span class="ico">🗓️</span><div><h3>會考讀書計畫</h3><span class="kind">計畫・弱點・複習</span></div></div>
+    <p>輸入模考成績做診斷，排出每日任務；追蹤弱點、錯題複習時間，每週看趨勢。也有五科課程筆記。</p>
+    <div class="chips"><span class="chip">模考診斷</span><span class="chip">每日任務</span><span class="chip">每週趨勢</span><span class="chip">課程筆記</span></div>
+  </a>
+
+  <h2><span class="num">3</span>半年路線圖</h2>
+  <div class="phases" id="phases">
+    <div class="phase" data-from="2026-11-01" data-to="2027-01-31"><span class="when">11 月 – 1 月</span><br><b>打底期：九上進度＋舊單元補洞</b><p>每天三步驟不中斷；全科網站以「錯題復仇」為主，英文跟著每日一課走。</p></div>
+    <div class="phase" data-from="2027-02-01" data-to="2027-03-31"><span class="when">2 月 – 3 月</span><br><b>總複習期：一到五冊系統複習</b><p>讀書計畫輸入每次模考成績，讓弱點科目自動加權；每週一次限時模考。</p></div>
+    <div class="phase" data-from="2027-04-01" data-to="2027-05-08"><span class="when">4 月 – 5 月初</span><br><b>衝刺期：整份模考＋時間分配</b><p>照會考時程整份寫，練作答節奏；錯題只留最常錯的主題反覆練。</p></div>
+    <div class="phase" data-from="2027-05-09" data-to="2027-05-16"><span class="when">考前一週</span><br><b>穩定期：只複習、不熬夜</b><p>看錯題本和筆記重點，作息調到考試時間；准考證、文具、手錶前一晚備好。</p></div>
+  </div>
+
+  <h2><span class="num">4</span>小提醒</h2>
+  <ul class="tips">
+    <li>三個網站的進度各自存在<b>這支手機／這台電腦的瀏覽器</b>，換裝置不會跟過去，盡量固定用同一台。</li>
+    <li>網站上的練習題多為 AI 原創，用來練習；正式難度以心測中心歷屆試題為準。</li>
+    <li>累了就休息。連續天數斷了也沒關係，明天再開始。</li>
+  </ul>
+
+  <footer>
+    會考基地・家用學習入口<br>
+    <button id="reset" type="button">清除本頁打卡紀錄</button>
+  </footer>
+</main>
+
+<script>
+(function () {
+  // 預定 116 會考第一天 08:20（台灣時間）；心測中心公告後可在此修改
+  var EXAM = new Date('2027-05-15T08:20:00+08:00');
+  var KEY = 'jhsee-hub-v1';
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function tick() {
+    var ms = EXAM - new Date();
+    if (ms <= 0) {
+      document.querySelector('.count').innerHTML = '<div style="grid-column:1/-1;padding:14px"><b>加油！今天就是會考 💪</b></div>';
+      return;
+    }
+    var s = Math.floor(ms / 1000);
+    document.getElementById('cd-d').textContent = Math.floor(s / 86400);
+    document.getElementById('cd-h').textContent = pad(Math.floor(s % 86400 / 3600));
+    document.getElementById('cd-m').textContent = pad(Math.floor(s % 3600 / 60));
+    document.getElementById('cd-s').textContent = pad(s % 60);
+    setTimeout(tick, 1000);
+  }
+  tick();
+
+  // 台灣日期字串 YYYY-MM-DD
+  function twDate(d) {
+    return new Date(d.getTime() + 8 * 3600e3).toISOString().slice(0, 10);
+  }
+  var today = twDate(new Date());
+
+  // 里程碑：剩餘週數與目前階段
+  var days = Math.ceil((EXAM - new Date()) / 86400e3);
+  var ms = document.getElementById('milestone');
+  if (days > 0) {
+    ms.innerHTML = '還有 <b>' + Math.floor(days / 7) + ' 週又 ' + (days % 7) + ' 天</b>，大約 <b>' + days + '</b> 次「今天的三步驟」。';
+  } else { ms.style.display = 'none'; }
+  document.querySelectorAll('.phase').forEach(function (p) {
+    if (today >= p.dataset.from && today <= p.dataset.to) {
+      p.classList.add('now');
+      p.insertAdjacentHTML('afterbegin', '<span class="badge">現在</span>');
+    }
+  });
+
+  // 打卡紀錄（只存在本機瀏覽器）
+  var data = {};
+  try { data = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { data = {}; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {} }
+  function count(day) { var r = data[day] || {}; return ['en', 'all', 'plan'].filter(function (k) { return r[k]; }).length; }
+
+  function render() {
+    var rec = data[today] || {};
+    document.querySelectorAll('.step').forEach(function (el) {
+      el.classList.toggle('done', !!rec[el.dataset.k]);
+    });
+    // 連續完成天數：今天若尚未全完成，從昨天往回算
+    var streak = 0, d = new Date();
+    if (count(today) < 3) d = new Date(d.getTime() - 86400e3);
+    while (count(twDate(d)) === 3) { streak++; d = new Date(d.getTime() - 86400e3); }
+    document.getElementById('streak').textContent = streak;
+    var w = '';
+    for (var i = 6; i >= 0; i--) {
+      var c = count(twDate(new Date(Date.now() - i * 86400e3)));
+      w += '<i class="' + (c === 3 ? 'on' : c > 0 ? 'part' : '') + '"></i>';
+    }
+    document.getElementById('week').innerHTML = w;
+  }
+
+  document.querySelectorAll('.step .check').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var k = btn.parentNode.dataset.k;
+      data[today] = data[today] || {};
+      data[today][k] = !data[today][k];
+      save(); render();
+    });
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    if (confirm('確定清除本頁所有打卡紀錄？（不影響三個學習網站的進度）')) { data = {}; save(); render(); }
+  });
+  render();
+})();
+</script>
+</body>
+</html>
