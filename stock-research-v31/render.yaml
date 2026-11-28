@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: stockmaster-v31-api
+    runtime: python
+    rootDir: stock-research-v31
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: STOCKMASTER_MODE
+        value: public
+    autoDeploy: false
